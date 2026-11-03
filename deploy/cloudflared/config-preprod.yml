@@ -1,0 +1,10 @@
+# Cloudflare Tunnel — mgpl-preprod (preprod.m-gpl.com)
+# Deployed to: /etc/cloudflared/config-preprod.yml
+# The credentials file is decoded from Doppler CLOUDFLARED_TUNNEL_CREDENTIALS_B64
+# to /etc/cloudflared/mgpl-preprod.json (root-only, mode 0600) — never committed.
+tunnel: mgpl-preprod
+credentials-file: /etc/cloudflared/mgpl-preprod.json
+ingress:
+  - hostname: preprod.m-gpl.com
+    service: http://localhost:2082
+  - service: http_status:404

@@ -1,0 +1,115 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev",
+      "type": "shell",
+      "command": "doppler run -- npm run dev",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "test:unit",
+      "type": "shell",
+      "command": "npm run test:unit",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:e2e",
+      "type": "shell",
+      "command": "npm run test:e2e",
+      "problemMatcher": []
+    },
+    {
+      "label": "lint",
+      "type": "shell",
+      "command": "npm run lint",
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "seed",
+      "type": "shell",
+      "command": "npm run db:seed",
+      "problemMatcher": []
+    },
+    {
+      "label": "reset",
+      "type": "shell",
+      "command": "npm run db:reset",
+      "problemMatcher": []
+    },
+    {
+      "label": "db:diff",
+      "type": "shell",
+      "command": "npm run db:diff",
+      "problemMatcher": []
+    },
+    {
+      "label": "db:validate",
+      "type": "shell",
+      "command": "npm run db:validate",
+      "problemMatcher": []
+    },
+    {
+      "label": "db:docs",
+      "type": "shell",
+      "command": "npm run db:docs",
+      "label": "doctor",
+      "type": "shell",
+      "command": "npm run doctor",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:types",
+      "type": "shell",
+      "command": "npm run test:types",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:client",
+      "type": "shell",
+      "command": "npm run test:client",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:spell",
+      "type": "shell",
+      "command": "npm run test:spell",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:unit",
+      "type": "shell",
+      "command": "npm run test:unit",
+      "problemMatcher": []
+    },
+    {
+      "label": "test:e2e",
+      "type": "shell",
+      "command": "npm run test:e2e",
+      "problemMatcher": []
+    },
+    {
+      "label": "seed",
+      "type": "shell",
+      "command": "npm run db:seed",
+      "problemMatcher": []
+    },
+    {
+      "label": "reset",
+      "type": "shell",
+      "command": "npm run db:reset",
+      "problemMatcher": []
+    },
+    {
+      "label": "gates",
+      "type": "shell",
+      "command": "bash gates/run-all.sh",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .agents/skills/mgpl-gate-runner/scripts/run-gates.ps1",
+      "problemMatcher": []
+    }
+  ]
+}

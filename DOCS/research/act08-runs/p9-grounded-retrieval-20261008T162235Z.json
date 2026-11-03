@@ -1,0 +1,1090 @@
+{
+  "probe": "p9-grounded-retrieval",
+  "evidence_contract": "DOCS/specs/ACT-08-google-cloud-capability-exploration.md",
+  "executed_by": "Implementer: Cline × ChatGPT Subscription, the lane AGENTS.md section 3.1 entry #117 names (the run's report confirms who ran it)",
+  "started_at": "2026-10-08T16:22:35.872Z",
+  "argv": ["--run"],
+  "git_head": "2007523ea9a9c9c03a9ec7e956557d7f71564696",
+  "node_version": "v22.23.2",
+  "sdk": {
+    "package": "@google/genai",
+    "version": "2.23.0"
+  },
+  "project": "mgpl-508415",
+  "location": "us-central1",
+  "credential": "Application Default Credentials, not inspected by the script. Record the identity per the runbook.",
+  "interrupt_note": "Ctrl+C stops the run before its next request; a request already sent is allowed to finish and is recorded",
+  "ledger_entry": "#117",
+  "run_id": "20261008T162235Z-46b78435",
+  "reservation": {
+    "max_requests": 50,
+    "max_usd": 5
+  },
+  "model": "gemini-2.5-flash",
+  "endpoint_expected": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+  "rate": {
+    "model": "gemini-2.5-flash",
+    "tier": "Standard (Gemini 2.5 table tabs: Standard | Priority | Flex/Batch)",
+    "unit": "USD per 1M tokens",
+    "verbatim_rows": [
+      "ModelTypeToken Price <= 200K tokensPrice > 200K tokensPrice <= 200K cached input tokensPrice > 200K cached input tokens",
+      "Gemini 2.5 FlashInput (text, image, video)$0.30$0.30$0.03$0.03",
+      "Audio Input$1.00$0.30$0.10$0.10",
+      "Text output (response and reasoning)$2.50$2.50N/AN/A",
+      "Context Cache Storage: ModelPrice Tok/hr<= 200K input tokensPrice Tok/hr > 200K input tokens",
+      "Gemini 2.5 Flash$0.000001$0.000001"
+    ],
+    "source_url": "not reported by the fetch tool; the page title read \"Agent Platform Pricing | Google Cloud\" (on 2026-09-24 the page redirected to https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing)",
+    "read_at": "2026-10-08T03:45:00Z"
+  },
+  "grounding_fee": {
+    "usd_per_1000": 35,
+    "unit": "USD per 1,000 Grounding Prompts",
+    "free_allowance": "1,500 Grounding Prompts per day combined for Gemini 2.0 Flash, 2.5 Flash and 2.5 Flash-Lite; 10,000 per day for Gemini 2.5 Pro. The run guard assumes none: every grounded request is bounded and computed at the full fee.",
+    "verbatim_rows": [
+      "FeatureUsagePrice (USD)",
+      "Grounding with Google SearchGemini 2.0 Flash, 2.5 Flash and 2.5 Flash-Lite include a combined 1,500 Grounding Prompts per day at no additional charge. Gemini 2.5 Pro includes 10,000 Grounding Prompts per day at no additional charge.Grounding Prompts exceeding those limits are billed at $35 per 1,000 Grounding Prompts.",
+      "0 count to 10,000 count$0.00 (Free)",
+      "10,000 count and above$35.00",
+      "** Grounding with Google Search and Web Grounding for Enterprise are billed only when a Grounding Prompt successfully returns sources (i.e., results containing at least one support URL from the web). Gemini model usage fees apply separately."
+    ]
+  },
+  "schema_source": {
+    "file": "src/db.ts",
+    "table": "AppGames_Staging",
+    "ddl_verbatim": "CREATE TABLE IF NOT EXISTS AppGames_Staging (\n      staging_id TEXT PRIMARY KEY NOT NULL,\n      run_id TEXT NOT NULL,\n      model_id TEXT NOT NULL,\n      source TEXT NOT NULL,\n      fetched_at DATETIME NOT NULL,\n      game_id TEXT NOT NULL,\n      title TEXT NOT NULL,\n      publisher TEXT,\n      original_game_release_date TEXT,\n      confidence_score REAL NOT NULL CHECK (confidence_score >= 0 AND confidence_score <= 1),\n      steam_app_id TEXT,\n      studio TEXT,\n      tags TEXT,\n      source_citation TEXT,\n      UNIQUE(run_id, game_id)\n    )"
+  },
+  "response_schema": {
+    "type": "OBJECT",
+    "properties": {
+      "title": {
+        "type": "STRING"
+      },
+      "publisher": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "original_game_release_date": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "confidence_score": {
+        "type": "NUMBER",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "steam_app_id": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "studio": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "tags": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "source_citation": {
+        "type": "STRING",
+        "nullable": true
+      }
+    },
+    "required": [
+      "title",
+      "publisher",
+      "original_game_release_date",
+      "confidence_score",
+      "steam_app_id",
+      "studio",
+      "tags",
+      "source_citation"
+    ]
+  },
+  "steps": [
+    {
+      "step": "bare 1",
+      "mode": "bare",
+      "title": "Hollow Knight",
+      "expectation": "known",
+      "input_source": "DOCS/research/ACT-08-RETEST-EVIDENCE.md P1; P-4 fixture set",
+      "form": "schema",
+      "request": {
+        "model": "gemini-2.5-flash",
+        "contents": "Enrich the catalogue entry for the video game titled \"Hollow Knight\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.",
+        "config": {
+          "maxOutputTokens": 2048,
+          "thinkingConfig": {
+            "thinkingBudget": 0
+          },
+          "responseMimeType": "application/json",
+          "responseSchema": {
+            "type": "OBJECT",
+            "properties": {
+              "title": {
+                "type": "STRING"
+              },
+              "publisher": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "original_game_release_date": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "confidence_score": {
+                "type": "NUMBER",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "steam_app_id": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "studio": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "tags": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "source_citation": {
+                "type": "STRING",
+                "nullable": true
+              }
+            },
+            "required": [
+              "title",
+              "publisher",
+              "original_game_release_date",
+              "confidence_score",
+              "steam_app_id",
+              "studio",
+              "tags",
+              "source_citation"
+            ]
+          }
+        }
+      },
+      "latency_ms": 9323,
+      "usage": {
+        "promptTokenCount": 114,
+        "candidatesTokenCount": 152,
+        "totalTokenCount": 266,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 114
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 152
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0004142,
+        "tokens_in": 114,
+        "tokens_in_cached": 0,
+        "tokens_out": 152,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        }
+      },
+      "text": "{\n  \"title\": \"Hollow Knight\",\n  \"publisher\": \"Team Cherry\",\n  \"original_game_release_date\": \"2017-02-24\",\n  \"confidence_score\": 1,\n  \"steam_app_id\": \"367520\",\n  \"studio\": \"Team Cherry\",\n  \"tags\": \"Metroidvania, Platformer, Souls-like, Indie, Adventure, Exploration, Dark Fantasy, 2D, Difficult, Atmospheric, Fantasy, Great Soundtrack, Combat, Boss Rush, Mystery, Singleplayer, Hand-drawn, Lore-rich, Action, Controller\",\n  \"source_citation\": \"Steam\"\n}",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true,
+      "grounding": null,
+      "provenance": {
+        "finding": "no_match",
+        "citation": "Steam",
+        "matched_source": null,
+        "sources": []
+      },
+      "exchange_indexes": [1]
+    },
+    {
+      "step": "bare 2",
+      "mode": "bare",
+      "title": "Quarnix Vortex Protocol IX",
+      "expectation": "nonexistent",
+      "input_source": "scripts/probes/g2-fixture.json Tranche A",
+      "form": "schema",
+      "request": {
+        "model": "gemini-2.5-flash",
+        "contents": "Enrich the catalogue entry for the video game titled \"Quarnix Vortex Protocol IX\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.",
+        "config": {
+          "maxOutputTokens": 2048,
+          "thinkingConfig": {
+            "thinkingBudget": 0
+          },
+          "responseMimeType": "application/json",
+          "responseSchema": {
+            "type": "OBJECT",
+            "properties": {
+              "title": {
+                "type": "STRING"
+              },
+              "publisher": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "original_game_release_date": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "confidence_score": {
+                "type": "NUMBER",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "steam_app_id": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "studio": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "tags": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "source_citation": {
+                "type": "STRING",
+                "nullable": true
+              }
+            },
+            "required": [
+              "title",
+              "publisher",
+              "original_game_release_date",
+              "confidence_score",
+              "steam_app_id",
+              "studio",
+              "tags",
+              "source_citation"
+            ]
+          }
+        }
+      },
+      "latency_ms": 1017,
+      "usage": {
+        "promptTokenCount": 117,
+        "candidatesTokenCount": 63,
+        "totalTokenCount": 180,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 117
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 63
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0001926,
+        "tokens_in": 117,
+        "tokens_in_cached": 0,
+        "tokens_out": 63,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        }
+      },
+      "text": "{\"title\": \"Quarnix Vortex Protocol IX\", \"publisher\": null, \"original_game_release_date\": null, \"confidence_score\": 0.1, \"steam_app_id\": null, \"studio\": null, \"tags\": null, \"source_citation\": null}",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true,
+      "grounding": null,
+      "provenance": {
+        "finding": "null",
+        "citation": null,
+        "sources": []
+      },
+      "exchange_indexes": [2]
+    },
+    {
+      "step": "bare 3",
+      "mode": "bare",
+      "title": "Barkley, Shut Up and Jam: Gaiden",
+      "expectation": "obscure",
+      "input_source": "scripts/probes/g2-fixture.json Tranche B",
+      "form": "schema",
+      "request": {
+        "model": "gemini-2.5-flash",
+        "contents": "Enrich the catalogue entry for the video game titled \"Barkley, Shut Up and Jam: Gaiden\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.",
+        "config": {
+          "maxOutputTokens": 2048,
+          "thinkingConfig": {
+            "thinkingBudget": 0
+          },
+          "responseMimeType": "application/json",
+          "responseSchema": {
+            "type": "OBJECT",
+            "properties": {
+              "title": {
+                "type": "STRING"
+              },
+              "publisher": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "original_game_release_date": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "confidence_score": {
+                "type": "NUMBER",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "steam_app_id": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "studio": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "tags": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "source_citation": {
+                "type": "STRING",
+                "nullable": true
+              }
+            },
+            "required": [
+              "title",
+              "publisher",
+              "original_game_release_date",
+              "confidence_score",
+              "steam_app_id",
+              "studio",
+              "tags",
+              "source_citation"
+            ]
+          }
+        }
+      },
+      "latency_ms": 1843,
+      "usage": {
+        "promptTokenCount": 121,
+        "candidatesTokenCount": 132,
+        "totalTokenCount": 253,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 121
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 132
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0003663,
+        "tokens_in": 121,
+        "tokens_in_cached": 0,
+        "tokens_out": 132,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        }
+      },
+      "text": "{\"title\": \"Barkley, Shut Up and Jam: Gaiden\", \"publisher\": null, \"original_game_release_date\": \"2008-01-22\", \"confidence_score\": 0.7, \"steam_app_id\": null, \"studio\": \"Tales of Games\", \"tags\": \"RPG, Post-apocalyptic, Comedy, Cult Classic, Turn-Based Combat, Indie\", \"source_citation\": \"https://www.giantbomb.com/barkley-shut-up-and-jam-gaiden/3030-22108/\"}",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true,
+      "grounding": null,
+      "provenance": {
+        "finding": "no_match",
+        "citation": "https://www.giantbomb.com/barkley-shut-up-and-jam-gaiden/3030-22108/",
+        "matched_source": null,
+        "sources": []
+      },
+      "exchange_indexes": [3]
+    },
+    {
+      "step": "grounded preflight",
+      "mode": "grounded",
+      "title": "Hollow Knight",
+      "expectation": "known",
+      "input_source": "DOCS/research/ACT-08-RETEST-EVIDENCE.md P1; P-4 fixture set",
+      "form": "schema",
+      "request": {
+        "model": "gemini-2.5-flash",
+        "contents": "Enrich the catalogue entry for the video game titled \"Hollow Knight\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.",
+        "config": {
+          "maxOutputTokens": 2048,
+          "thinkingConfig": {
+            "thinkingBudget": 0
+          },
+          "responseMimeType": "application/json",
+          "responseSchema": {
+            "type": "OBJECT",
+            "properties": {
+              "title": {
+                "type": "STRING"
+              },
+              "publisher": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "original_game_release_date": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "confidence_score": {
+                "type": "NUMBER",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "steam_app_id": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "studio": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "tags": {
+                "type": "STRING",
+                "nullable": true
+              },
+              "source_citation": {
+                "type": "STRING",
+                "nullable": true
+              }
+            },
+            "required": [
+              "title",
+              "publisher",
+              "original_game_release_date",
+              "confidence_score",
+              "steam_app_id",
+              "studio",
+              "tags",
+              "source_citation"
+            ]
+          },
+          "tools": [
+            {
+              "googleSearch": {}
+            }
+          ]
+        }
+      },
+      "latency_ms": 191,
+      "error": {
+        "name": "ApiError",
+        "status": 400,
+        "message": "{\"error\":{\"code\":400,\"message\":\"Unable to submit request because controlled generation is not supported with Search tool. Learn more: https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/gemini\",\"status\":\"INVALID_ARGUMENT\"}}"
+      },
+      "exchange_indexes": [4]
+    },
+    {
+      "step": "grounded 1",
+      "mode": "grounded",
+      "title": "Hollow Knight",
+      "expectation": "known",
+      "input_source": "DOCS/research/ACT-08-RETEST-EVIDENCE.md P1; P-4 fixture set",
+      "form": "described",
+      "request": {
+        "model": "gemini-2.5-flash",
+        "contents": "Enrich the catalogue entry for the video game titled \"Hollow Knight\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\n\nAnswer with only one JSON object, and no other text, with exactly these keys:\n- title: string, required, never null\n- publisher: string, or null\n- original_game_release_date: string, or null\n- confidence_score: number, required, never null, 0 to 1\n- steam_app_id: string, or null\n- studio: string, or null\n- tags: string, or null\n- source_citation: string, or null",
+        "config": {
+          "maxOutputTokens": 2048,
+          "thinkingConfig": {
+            "thinkingBudget": 0
+          },
+          "tools": [
+            {
+              "googleSearch": {}
+            }
+          ]
+        }
+      },
+      "latency_ms": 3079,
+      "usage": {
+        "promptTokenCount": 160,
+        "candidatesTokenCount": 249,
+        "totalTokenCount": 409,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 160
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 249
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0356705,
+        "tokens_in": 160,
+        "tokens_in_cached": 0,
+        "tokens_out": 249,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        },
+        "grounding_fee_usd": 0.035,
+        "grounding_fee_note": "the full per-prompt fee, with no free allowance assumed; Google bills it only when sources come back"
+      },
+      "text": "```json\n{\n \"title\": \"Hollow Knight\",\n \"publisher\": \"Team Cherry\",\n \"original_game_release_date\": \"2017-02-24\",\n \"confidence_score\": 1,\n \"steam_app_id\": \"367520\",\n \"studio\": \"Team Cherry\",\n \"tags\": \"Metroidvania, Platformer, Souls-like, Difficult, Great Soundtrack, 2D, Indie, Singleplayer, Exploration, Atmospheric, Adventure, Story Rich, Hand-drawn, Multiple Endings, Action, Dark Fantasy, Open World, Cute, Controller, Side Scroller\",\n \"source_citation\": \"1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28\"\n}\n```",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true,
+      "grounding": {
+        "webSearchQueries": [
+          "Hollow Knight game details",
+          "Hollow Knight publisher",
+          "Hollow Knight release date",
+          "Hollow Knight steam app id",
+          "Hollow Knight developer",
+          "Hollow Knight tags",
+          "Hollow Knight source citation"
+        ],
+        "groundingChunks": null,
+        "groundingSupports": null,
+        "searchEntryPoint": {
+          "renderedContent": "<style>\n.container {\n  align-items: center;\n  border-radius: 8px;\n  display: flex;\n  font-family: Google Sans, Roboto, sans-serif;\n  font-size: 14px;\n  line-height: 20px;\n  padding: 8px 12px;\n}\n.chip {\n  display: inline-block;\n  border: solid 1px;\n  border-radius: 16px;\n  min-width: 14px;\n  padding: 5px 16px;\n  text-align: center;\n  user-select: none;\n  margin: 0 8px;\n  -webkit-tap-highlight-color: transparent;\n}\n.carousel {\n  overflow: auto;\n  scrollbar-width: none;\n  white-space: nowrap;\n  margin-right: -12px;\n}\n.headline {\n  display: flex;\n  margin-right: 4px;\n}\n.gradient-container {\n  position: relative;\n}\n.gradient {\n  position: absolute;\n  transform: translate(3px, -9px);\n  height: 36px;\n  width: 9px;\n}\n@media (prefers-color-scheme: light) {\n  .container {\n    background-color: #fafafa;\n    box-shadow: 0 0 0 1px #0000000f;\n  }\n  .headline-label {\n    color: #1f1f1f;\n  }\n  .chip {\n    background-color: #ffffff;\n    border-color: #d2d2d2;\n    color: #5e5e5e;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #f2f2f2;\n  }\n  .chip:focus {\n    background-color: #f2f2f2;\n  }\n  .chip:active {\n    background-color: #d8d8d8;\n    border-color: #b6b6b6;\n  }\n  .logo-dark {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\n  }\n}\n@media (prefers-color-scheme: dark) {\n  .container {\n    background-color: #1f1f1f;\n    box-shadow: 0 0 0 1px #ffffff26;\n  }\n  .headline-label {\n    color: #fff;\n  }\n  .chip {\n    background-color: #2c2c2c;\n    border-color: #3c4043;\n    color: #fff;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #353536;\n  }\n  .chip:focus {\n    background-color: #353536;\n  }\n  .chip:active {\n    background-color: #464849;\n    border-color: #53575b;\n  }\n  .logo-light {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\n  }\n}\n</style>\n<div class=\"container\">\n  <div class=\"headline\">\n    <svg class=\"logo-light\" width=\"18\" height=\"18\" viewBox=\"9 9 35 35\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\" fill=\"#4285F4\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\" fill=\"#34A853\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\" fill=\"#FBBC05\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\" fill=\"#EA4335\"/>\n    </svg>\n    <svg class=\"logo-dark\" width=\"18\" height=\"18\" viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"24\" cy=\"23\" fill=\"#FFF\" r=\"22\"/>\n      <path d=\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\" fill=\"#4285F4\"/>\n      <path d=\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\" fill=\"#34A853\"/>\n      <path d=\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\" fill=\"#FBBC05\"/>\n      <path d=\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\" fill=\"#EA4335\"/>\n    </svg>\n    <div class=\"gradient-container\"><div class=\"gradient\"></div></div>\n  </div>\n  <div class=\"carousel\">\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHq8DHdjp0bSuGQKyF2oz9u0_XVmIglxALqfbulkcLckFSVni4I5_p6UaDaM82jp0k630vEq2SnYZ7Um5l23hv2436LE8NDpCLdrFC4cdGC9yDvpsqSTeE5EIhRH-8LTYGg53QA6DfVZerydubC9N86Otd3ZllLKJoF3HC7kI1JV4jaS9QwYK4ewhv7frgjsmCzBpmWZIT5WjN2\">Hollow Knight developer</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGsvPweT4JCeTW5AY0S5VEd-PrB-VWF-tIvFrBqMHH84iVIH4wVaKNyNK2pP8uZghOuduQUEwaloTaUbuQUExRXHe8UqSfGNl_FrJJfnPmcCcjbQWDLHBNRqDwrnBG8FhUMLzDYG2hXd4g5B0SGJpGjV2kAiZXqWLpdcCc4STP-Cm4c-yuJtUvtrGwO-e5vxXS5RNqgWzl0XxsUvzKK\">Hollow Knight release date</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGDQmp7r4NxhLUk3ei4PD3kx2QBRJOi2APvd575nakizOsO7R-3qWWVJHMB9PVp7gXTkcCzJbQaP2hdE87xe7znnqYN7WBDYYsuytWNsn8129VVOQEL_p1DPATEdPN7FjpCDKC53p0ne3hjbOXvZL6UyhON58GhUUreS46xbCoWqmZQB7LiradINJDqddfJSvfDfsaDD2q3OLfvdupL\">Hollow Knight game details</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGbO-8GDGeuSgWxCQoLXuryxv3_YdelBxpa7qZH5wktBkmkvtOev55oKhr4sRh1F0Hzbyhuh6puXMgpDJuNkS-cusX960bPknOGroW4J4ohTeqRmzcWLcy9lzRU6BqDxzsvZ_qtRks-AQDIhjNJYHdXoXhpIpL3srzRxpQhIiXKvXNL8zE6i-zs_9rZS35rTEqIaYbOWHLQlhee\">Hollow Knight publisher</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEu0Q3ch5s9cBC0R3tfrWUGMxmmXsfE_28LvTfUljZvRRX7ntF1BU4mIrG-MilBMcjUf88SYG7jB8jbWCkuk_zh1rau_aTQ5A_hU4iixONyUvxm0FbdvZjYBo8R37aX9D994WZUq9mMZrwH7ozMHdKnTz_stUgO7E8bbQqitoBidyqCy9AS5ZhvlHblkmLopp9mKaD5_w==\">Hollow Knight tags</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHqx5x0E_DkyekmDyLiQeBAcPcX4NROvmIcp2S46k7XdwVbJtzcACxdk8f97paGlAw_PymqXjhdY8JeplTUSSuer9_34icv6r-k8_Z73hP_I1Rfu5zX0f96H1VKTY8W2brWt0dfsYDR15IInHLHbKfDfWpNmCvS6ublCPDnWfbSy9UFMybaYAwHrxiWTcdBBwzU0LHsQFQuu4kIL5oL-J_V\">Hollow Knight source citation</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE9eoUAr7l1KfAp-Oi4voWB9_-oN519HrJN-DzQMy6i1gA90othLAIXvR-5TltCG4htIQIREYWc_Wh-Of5_0kuiXECnWgUgPsh2DOAMSIK1B4sOCkyT3P5sRxfbE2pdC8iy_o8aViOqwvnh12SrynfevniIyMGOUBmpyMWy3-CNP479mTPDFleTLPOhctkxEP-5bfGXKrHLlDeUlfj5\">Hollow Knight steam app id</a>\n  </div>\n</div>\n"
+        }
+      },
+      "provenance": {
+        "finding": "no_match",
+        "citation": "1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28",
+        "matched_source": null,
+        "sources": []
+      },
+      "exchange_indexes": [5]
+    },
+    {
+      "step": "grounded 2",
+      "mode": "grounded",
+      "title": "Quarnix Vortex Protocol IX",
+      "expectation": "nonexistent",
+      "input_source": "scripts/probes/g2-fixture.json Tranche A",
+      "form": "described",
+      "request": {
+        "model": "gemini-2.5-flash",
+        "contents": "Enrich the catalogue entry for the video game titled \"Quarnix Vortex Protocol IX\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\n\nAnswer with only one JSON object, and no other text, with exactly these keys:\n- title: string, required, never null\n- publisher: string, or null\n- original_game_release_date: string, or null\n- confidence_score: number, required, never null, 0 to 1\n- steam_app_id: string, or null\n- studio: string, or null\n- tags: string, or null\n- source_citation: string, or null",
+        "config": {
+          "maxOutputTokens": 2048,
+          "thinkingConfig": {
+            "thinkingBudget": 0
+          },
+          "tools": [
+            {
+              "googleSearch": {}
+            }
+          ]
+        }
+      },
+      "latency_ms": 2208,
+      "usage": {
+        "promptTokenCount": 163,
+        "candidatesTokenCount": 78,
+        "totalTokenCount": 241,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 163
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 78
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0352439,
+        "tokens_in": 163,
+        "tokens_in_cached": 0,
+        "tokens_out": 78,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        },
+        "grounding_fee_usd": 0.035,
+        "grounding_fee_note": "the full per-prompt fee, with no free allowance assumed; Google bills it only when sources come back"
+      },
+      "text": "```json\n{\n \"title\": \"Quarnix Vortex Protocol IX\",\n \"publisher\": null,\n \"original_game_release_date\": null,\n \"confidence_score\": 0.3,\n \"steam_app_id\": null,\n \"studio\": null,\n \"tags\": null,\n \"source_citation\": null\n}\n```",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true,
+      "grounding": {
+        "webSearchQueries": [
+          "Quarnix Vortex Protocol IX game details",
+          "Quarnix Vortex Protocol IX publisher",
+          "Quarnix Vortex Protocol IX release date",
+          "Quarnix Vortex Protocol IX studio",
+          "Quarnix Vortex Protocol IX tags",
+          "Quarnix Vortex Protocol IX steam app id"
+        ],
+        "groundingChunks": null,
+        "groundingSupports": null,
+        "searchEntryPoint": {
+          "renderedContent": "<style>\n.container {\n  align-items: center;\n  border-radius: 8px;\n  display: flex;\n  font-family: Google Sans, Roboto, sans-serif;\n  font-size: 14px;\n  line-height: 20px;\n  padding: 8px 12px;\n}\n.chip {\n  display: inline-block;\n  border: solid 1px;\n  border-radius: 16px;\n  min-width: 14px;\n  padding: 5px 16px;\n  text-align: center;\n  user-select: none;\n  margin: 0 8px;\n  -webkit-tap-highlight-color: transparent;\n}\n.carousel {\n  overflow: auto;\n  scrollbar-width: none;\n  white-space: nowrap;\n  margin-right: -12px;\n}\n.headline {\n  display: flex;\n  margin-right: 4px;\n}\n.gradient-container {\n  position: relative;\n}\n.gradient {\n  position: absolute;\n  transform: translate(3px, -9px);\n  height: 36px;\n  width: 9px;\n}\n@media (prefers-color-scheme: light) {\n  .container {\n    background-color: #fafafa;\n    box-shadow: 0 0 0 1px #0000000f;\n  }\n  .headline-label {\n    color: #1f1f1f;\n  }\n  .chip {\n    background-color: #ffffff;\n    border-color: #d2d2d2;\n    color: #5e5e5e;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #f2f2f2;\n  }\n  .chip:focus {\n    background-color: #f2f2f2;\n  }\n  .chip:active {\n    background-color: #d8d8d8;\n    border-color: #b6b6b6;\n  }\n  .logo-dark {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\n  }\n}\n@media (prefers-color-scheme: dark) {\n  .container {\n    background-color: #1f1f1f;\n    box-shadow: 0 0 0 1px #ffffff26;\n  }\n  .headline-label {\n    color: #fff;\n  }\n  .chip {\n    background-color: #2c2c2c;\n    border-color: #3c4043;\n    color: #fff;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #353536;\n  }\n  .chip:focus {\n    background-color: #353536;\n  }\n  .chip:active {\n    background-color: #464849;\n    border-color: #53575b;\n  }\n  .logo-light {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\n  }\n}\n</style>\n<div class=\"container\">\n  <div class=\"headline\">\n    <svg class=\"logo-light\" width=\"18\" height=\"18\" viewBox=\"9 9 35 35\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\" fill=\"#4285F4\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\" fill=\"#34A853\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\" fill=\"#FBBC05\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\" fill=\"#EA4335\"/>\n    </svg>\n    <svg class=\"logo-dark\" width=\"18\" height=\"18\" viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"24\" cy=\"23\" fill=\"#FFF\" r=\"22\"/>\n      <path d=\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\" fill=\"#4285F4\"/>\n      <path d=\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\" fill=\"#34A853\"/>\n      <path d=\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\" fill=\"#FBBC05\"/>\n      <path d=\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\" fill=\"#EA4335\"/>\n    </svg>\n    <div class=\"gradient-container\"><div class=\"gradient\"></div></div>\n  </div>\n  <div class=\"carousel\">\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHyk2an7SRYu1Nm4T1cMCpsHrK_wBlHC3pW6lO0Qd2YibqWUPWwj4_7XFT7RjW8t0QFFIjzaEu0sqDinEUbvtde30G1ZsUx-I-F7QKcLt069HrxwPv6sCniyNF7DdsgwfSHlCTuzIeLMfqlsdVhasI_Eah8YOanVgYFU7SMsfyFXM7zLB1s8ZKqgzNRi2G_Pl_9TAS6urcV6NEePmNnJ2d4lT_Q5Q==\">Quarnix Vortex Protocol IX studio</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEgkS5ZkKkzceXIqsKCe-XVOKUjesqZg9xpTphxnKkCrLW1doDYa6eJrNGMfy6VOzyoz6H4lSkkv9tIPgjpL24rsCzvWv4C6ad00_Hp8ZlvkwnmSce2C6ZdmkZSJwlfsWr0_L5IW5q5sMo70Vq2L9Fj_3Ox9rplPaqPJ6Y4ieX3wQYlLnckFwZWnhLbxOtR5ZdbIi34vhl60eWEaerGg8gGMqAcTg6IlQ==\">Quarnix Vortex Protocol IX publisher</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGS4dY6D_GzhdUkwCCilZZ0lhmT6dUjr9xPV6libbIDG7MSx76ZSBqOHv3lHh95FkzZ1oKGQI_fqsVfRfg4oxXe7VjHuODq1EdUA2vVwkzsemcaVCVNHh8zKOkyKRgWsYEaHXxb7FycLaTC87ULIYucLRP_9kH-hOOjLKLhg-r2Z1s7y7rBHPV83r3SDRrnpe4oBC35T5zSsiDdDGhH-SadBHucAOOxXa-glA==\">Quarnix Vortex Protocol IX game details</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHMTZyDbr_a-Tmo7gaEqCLGGFXjjiRo7sa75PaHjX7mjMoCxzP49CgKMgYDlRjdX6m8LwT4PD_yB7N2hpv50_OinzF2e1c83stSXJLsUvC4gm5UVTAoJHvM4xMPhyuaZAbZfwFjUUN0sCdpxLOH_n9gIAu58iBHPNKkVAlVbdzNgi1q7g0LEaHk7roRvjHocp-nDZ-v2Vuki9vrn8BrBwXxxiaITewQxgTlYw==\">Quarnix Vortex Protocol IX release date</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFs-lpRPQTdVTmziBB1TphmPEI-Un2MHpwn25f0fz9DyQ5WkqIkpCPg4QjanKml_-W-t1giImj96E5cj0495yk3TCIF-8drK9F_R0W7Had1VeVIPTJJQ_d3IXGFh6T5E2FP29Qwh0_uJiAI0a0HN7y6oMNHADrCVEkEO4sM7M83pQhzhQIgVqpayybLK2aTyeHvIttdu4jwhcqow28PEtMgyxZfT7F_QIbceg==\">Quarnix Vortex Protocol IX steam app id</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFth2CEfi2eWmxRewz-glInyAfUp3XcJG1w035FxP2vTZKsMWXD566EQB1yAr1v-6cJ45F7l63tVjvQT9jBvSELyxxv1kEWjMYmIIDwR7L4m5RT7ZTVFyQI0OQJZWn2tPF4Pq6ioQHtpWd3B646XSttjT0zykUZhJa2DybDShdYc1zbczXOzyO1c1HuIplmonNU3LAjmyk5aKnXrOTra7Tku7s=\">Quarnix Vortex Protocol IX tags</a>\n  </div>\n</div>\n"
+        }
+      },
+      "provenance": {
+        "finding": "null",
+        "citation": null,
+        "sources": []
+      },
+      "exchange_indexes": [6]
+    },
+    {
+      "step": "grounded 3",
+      "mode": "grounded",
+      "title": "Barkley, Shut Up and Jam: Gaiden",
+      "expectation": "obscure",
+      "input_source": "scripts/probes/g2-fixture.json Tranche B",
+      "form": "described",
+      "request": {
+        "model": "gemini-2.5-flash",
+        "contents": "Enrich the catalogue entry for the video game titled \"Barkley, Shut Up and Jam: Gaiden\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\n\nAnswer with only one JSON object, and no other text, with exactly these keys:\n- title: string, required, never null\n- publisher: string, or null\n- original_game_release_date: string, or null\n- confidence_score: number, required, never null, 0 to 1\n- steam_app_id: string, or null\n- studio: string, or null\n- tags: string, or null\n- source_citation: string, or null",
+        "config": {
+          "maxOutputTokens": 2048,
+          "thinkingConfig": {
+            "thinkingBudget": 0
+          },
+          "tools": [
+            {
+              "googleSearch": {}
+            }
+          ]
+        }
+      },
+      "latency_ms": 4118,
+      "usage": {
+        "promptTokenCount": 167,
+        "candidatesTokenCount": 143,
+        "totalTokenCount": 310,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 167
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 143
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0354076,
+        "tokens_in": 167,
+        "tokens_in_cached": 0,
+        "tokens_out": 143,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        },
+        "grounding_fee_usd": 0.035,
+        "grounding_fee_note": "the full per-prompt fee, with no free allowance assumed; Google bills it only when sources come back"
+      },
+      "text": "```json\n{\n \"title\": \"Barkley, Shut Up and Jam: Gaiden\",\n \"publisher\": \"Tales of Game's Studios\",\n \"original_game_release_date\": \"January 2008\",\n \"confidence_score\": 1,\n \"steam_app_id\": null,\n \"studio\": \"Tales of Game's Studios\",\n \"tags\": \"RPG, Freeware, Parody, JRPG, Indie\",\n \"source_citation\": \"1, 3, 4, 5, 6, 9, 10, 12, 13, 17\"\n}\n```",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true,
+      "grounding": {
+        "webSearchQueries": [
+          "\"Barkley, Shut Up and Jam: Gaiden\" game details",
+          "\"Barkley, Shut Up and Jam: Gaiden\" publisher",
+          "\"Barkley, Shut Up and Jam: Gaiden\" original release date",
+          "\"Barkley, Shut Up and Jam: Gaiden\" Steam App ID",
+          "\"Barkley, Shut Up and Jam: Gaiden\" studio",
+          "\"Barkley, Shut Up and Jam: Gaiden\" tags"
+        ],
+        "groundingChunks": null,
+        "groundingSupports": null,
+        "searchEntryPoint": {
+          "renderedContent": "<style>\n.container {\n  align-items: center;\n  border-radius: 8px;\n  display: flex;\n  font-family: Google Sans, Roboto, sans-serif;\n  font-size: 14px;\n  line-height: 20px;\n  padding: 8px 12px;\n}\n.chip {\n  display: inline-block;\n  border: solid 1px;\n  border-radius: 16px;\n  min-width: 14px;\n  padding: 5px 16px;\n  text-align: center;\n  user-select: none;\n  margin: 0 8px;\n  -webkit-tap-highlight-color: transparent;\n}\n.carousel {\n  overflow: auto;\n  scrollbar-width: none;\n  white-space: nowrap;\n  margin-right: -12px;\n}\n.headline {\n  display: flex;\n  margin-right: 4px;\n}\n.gradient-container {\n  position: relative;\n}\n.gradient {\n  position: absolute;\n  transform: translate(3px, -9px);\n  height: 36px;\n  width: 9px;\n}\n@media (prefers-color-scheme: light) {\n  .container {\n    background-color: #fafafa;\n    box-shadow: 0 0 0 1px #0000000f;\n  }\n  .headline-label {\n    color: #1f1f1f;\n  }\n  .chip {\n    background-color: #ffffff;\n    border-color: #d2d2d2;\n    color: #5e5e5e;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #f2f2f2;\n  }\n  .chip:focus {\n    background-color: #f2f2f2;\n  }\n  .chip:active {\n    background-color: #d8d8d8;\n    border-color: #b6b6b6;\n  }\n  .logo-dark {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\n  }\n}\n@media (prefers-color-scheme: dark) {\n  .container {\n    background-color: #1f1f1f;\n    box-shadow: 0 0 0 1px #ffffff26;\n  }\n  .headline-label {\n    color: #fff;\n  }\n  .chip {\n    background-color: #2c2c2c;\n    border-color: #3c4043;\n    color: #fff;\n    text-decoration: none;\n  }\n  .chip:hover {\n    background-color: #353536;\n  }\n  .chip:focus {\n    background-color: #353536;\n  }\n  .chip:active {\n    background-color: #464849;\n    border-color: #53575b;\n  }\n  .logo-light {\n    display: none;\n  }\n  .gradient {\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\n  }\n}\n</style>\n<div class=\"container\">\n  <div class=\"headline\">\n    <svg class=\"logo-light\" width=\"18\" height=\"18\" viewBox=\"9 9 35 35\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\" fill=\"#4285F4\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\" fill=\"#34A853\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\" fill=\"#FBBC05\"/>\n      <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\" fill=\"#EA4335\"/>\n    </svg>\n    <svg class=\"logo-dark\" width=\"18\" height=\"18\" viewBox=\"0 0 48 48\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"24\" cy=\"23\" fill=\"#FFF\" r=\"22\"/>\n      <path d=\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\" fill=\"#4285F4\"/>\n      <path d=\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\" fill=\"#34A853\"/>\n      <path d=\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\" fill=\"#FBBC05\"/>\n      <path d=\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\" fill=\"#EA4335\"/>\n    </svg>\n    <div class=\"gradient-container\"><div class=\"gradient\"></div></div>\n  </div>\n  <div class=\"carousel\">\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGXtorv9_7H3Wz78aU_rDB2iR-69BR06jODJZ9UKsks2CpkEMn7tdMiyWOb9Ij93hDq7FGdnMOiaj8BFSmo5JdiCGkv84AFk21gnbPoOlJs9luDoCPhPZEJhHHBy-PHw19yxwdCcX8xxmjoid_87SQsOSq1emrwZuH04iU708UB0RGne3nc_MY1LZzarAWFtQ-xQtxg3ukeR8dZIdlf6-zfVOyIYUaaz9AHibCBNtUJ\">&quot;Barkley, Shut Up and Jam: Gaiden&quot; studio</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHH_ImSCzJwEzHIby51Ih2l0SMix6Z6_Kkh8_fiAjh23PcxvgIROLJ_IrDKo5FUtnl6rrwBWwf2ZVNLrCdMKwR0ApC4p4SjEKVbA2wTlqo8xTeaFZ_NdCCdgfWEYkDEU__UNOb34T0Vuj_Gk9Hozz7PzQKCsXRKusr3a2phR5G8PMG4VusjUqpnGnZHacpamqKdwIRpRAdffS4YOMz-JyNs-zg8IsIsNAvDiQlQpRbGiOTRl8t0uaWvcC02T-g-kQ==\">&quot;Barkley, Shut Up and Jam: Gaiden&quot; original release date</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGA06KS2i_ZdCVmBghR2mbpntRRug1zQgWCNCOXYCkk3efYjbtDJ54QMoRhUiXfSY7Fi0Fb3__4TeiffvBbI1IFuOGKZqLqdqXREYyGp3bO3YCnABE5mMEvn46YTIPRrhoXCxBWJpnoLUPUXhgDxRvASyypl3zq0XYPgpFzTL93V_JGQFXgw5NpVrQkjVVEt5dhh10UqYW1gbGxh-Z7DLOHKeoEqM6VrVBPluiymWVddgmcATPLEg==\">&quot;Barkley, Shut Up and Jam: Gaiden&quot; game details</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHX3C5J4q0FthEA5wdOl9X6ixAvjh1NQmlQbIDx0cW_QYoilWwPHVLJ5XFCzdZdOGlhIOczqT8J4PHfM3I5_USXvPaISlntRIn19K55svcsHgN-34wdi8YOiZGrsxbMmAgJIRWYTP0Ak6MwsJArmp_cD_ukNyGodNdowd9uh5rV-yFVOGm3_4jMfELME534cjN8XnRZ4bROizh0XdiiFId8MvUUlBFVsx6K39Cdc8pozNbe\">&quot;Barkley, Shut Up and Jam: Gaiden&quot; publisher</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFmD2LDa2XUkTbE5_k_Ur3iDC-_YXzuwWp_VJiZl_KDJcXm-s0BhESZr7Uze1bBdbuYXQLUxkb2T_XydM3P1vw5UoahLZLTI1kFpErog34xiN7N2lUs748HXGsark9ChLg9ou1-ayTIzHi8VEu-gR1qQcQev4mQ18XpzpMndcyMpdw_FtlMPc5KrcgrCPELWAy4-9WgAeY5YBg8Rm9S97vZo5YNIPxvPEL1x-vLig==\">&quot;Barkley, Shut Up and Jam: Gaiden&quot; tags</a>\n    <a class=\"chip\" href=\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHHc7btWmzZI8Ifg0fA1CjWd5pwOYEGE7pZhZN_ABwofPUVwENc5m-Hnyc5ZfD4Fn2eX8j4xezHf7dLjUPM0cC5TU3EOJL1MSOQGRb3KnlnHtjrikTNBih9f6J3oCcu1dgAWkvovbozc8LkSQHOESE5aLl36flg1ijcDs3KvQyuyulqVy_zPIWCyFP-4oIPaAYmskUQ3KdqmIlKGIyvPUWKAeN4RGeKMxFb6ebl32ANpFb6Y8YbJw==\">&quot;Barkley, Shut Up and Jam: Gaiden&quot; Steam App ID</a>\n  </div>\n</div>\n"
+        }
+      },
+      "provenance": {
+        "finding": "no_match",
+        "citation": "1, 3, 4, 5, 6, 9, 10, 12, 13, 17",
+        "matched_source": null,
+        "sources": []
+      },
+      "exchange_indexes": [7]
+    }
+  ],
+  "exchanges": [
+    {
+      "attempt": 1,
+      "started_at": "2026-10-08T16:22:43.660Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Hollow Knight\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\"}],\"role\":\"user\"}],\"generationConfig\":{\"maxOutputTokens\":2048,\"responseMimeType\":\"application/json\",\"responseSchema\":{\"type\":\"OBJECT\",\"properties\":{\"title\":{\"type\":\"STRING\"},\"publisher\":{\"type\":\"STRING\",\"nullable\":true},\"original_game_release_date\":{\"type\":\"STRING\",\"nullable\":true},\"confidence_score\":{\"type\":\"NUMBER\",\"minimum\":0,\"maximum\":1},\"steam_app_id\":{\"type\":\"STRING\",\"nullable\":true},\"studio\":{\"type\":\"STRING\",\"nullable\":true},\"tags\":{\"type\":\"STRING\",\"nullable\":true},\"source_citation\":{\"type\":\"STRING\",\"nullable\":true}},\"required\":[\"title\",\"publisher\",\"original_game_release_date\",\"confidence_score\",\"steam_app_id\",\"studio\",\"tags\",\"source_citation\"]},\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 1882,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 08 Oct 2026 16:22:44 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"{\\n  \\\"title\\\": \\\"Hollow Knight\\\",\\n  \\\"publisher\\\": \\\"Team Cherry\\\",\\n  \\\"original_game_release_date\\\": \\\"2017-02-24\\\",\\n  \\\"confidence_score\\\": 1,\\n  \\\"steam_app_id\\\": \\\"367520\\\",\\n  \\\"studio\\\": \\\"Team Cherry\\\",\\n  \\\"tags\\\": \\\"Metroidvania, Platformer, Souls-like, Indie, Adventure, Exploration, Dark Fantasy, 2D, Difficult, Atmospheric, Fantasy, Great Soundtrack, Combat, Boss Rush, Mystery, Singleplayer, Hand-drawn, Lore-rich, Action, Controller\\\",\\n  \\\"source_citation\\\": \\\"Steam\\\"\\n}\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\"\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 114,\n    \"candidatesTokenCount\": 152,\n    \"totalTokenCount\": 266,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 114\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 152\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-10-08T16:22:43.477190Z\",\n  \"responseId\": \"U8PHaoaQHfXo88AP6azUyQk\"\n}\n",
+      "guard": {
+        "outcome": "priced",
+        "computed_cost_usd": 0.0004142
+      }
+    },
+    {
+      "attempt": 2,
+      "started_at": "2026-10-08T16:22:45.557Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Quarnix Vortex Protocol IX\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\"}],\"role\":\"user\"}],\"generationConfig\":{\"maxOutputTokens\":2048,\"responseMimeType\":\"application/json\",\"responseSchema\":{\"type\":\"OBJECT\",\"properties\":{\"title\":{\"type\":\"STRING\"},\"publisher\":{\"type\":\"STRING\",\"nullable\":true},\"original_game_release_date\":{\"type\":\"STRING\",\"nullable\":true},\"confidence_score\":{\"type\":\"NUMBER\",\"minimum\":0,\"maximum\":1},\"steam_app_id\":{\"type\":\"STRING\",\"nullable\":true},\"studio\":{\"type\":\"STRING\",\"nullable\":true},\"tags\":{\"type\":\"STRING\",\"nullable\":true},\"source_citation\":{\"type\":\"STRING\",\"nullable\":true}},\"required\":[\"title\",\"publisher\",\"original_game_release_date\",\"confidence_score\",\"steam_app_id\",\"studio\",\"tags\",\"source_citation\"]},\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 1011,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 08 Oct 2026 16:22:46 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"{\\\"title\\\": \\\"Quarnix Vortex Protocol IX\\\", \\\"publisher\\\": null, \\\"original_game_release_date\\\": null, \\\"confidence_score\\\": 0.1, \\\"steam_app_id\\\": null, \\\"studio\\\": null, \\\"tags\\\": null, \\\"source_citation\\\": null}\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\": -0.0059446072767651266\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 117,\n    \"candidatesTokenCount\": 63,\n    \"totalTokenCount\": 180,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 117\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 63\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-10-08T16:22:45.175398Z\",\n  \"responseId\": \"VcPHaqbaCpD688APvYTBoAI\"\n}\n",
+      "guard": {
+        "outcome": "priced",
+        "computed_cost_usd": 0.0001926
+      }
+    },
+    {
+      "attempt": 3,
+      "started_at": "2026-10-08T16:22:46.575Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Barkley, Shut Up and Jam: Gaiden\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\"}],\"role\":\"user\"}],\"generationConfig\":{\"maxOutputTokens\":2048,\"responseMimeType\":\"application/json\",\"responseSchema\":{\"type\":\"OBJECT\",\"properties\":{\"title\":{\"type\":\"STRING\"},\"publisher\":{\"type\":\"STRING\",\"nullable\":true},\"original_game_release_date\":{\"type\":\"STRING\",\"nullable\":true},\"confidence_score\":{\"type\":\"NUMBER\",\"minimum\":0,\"maximum\":1},\"steam_app_id\":{\"type\":\"STRING\",\"nullable\":true},\"studio\":{\"type\":\"STRING\",\"nullable\":true},\"tags\":{\"type\":\"STRING\",\"nullable\":true},\"source_citation\":{\"type\":\"STRING\",\"nullable\":true}},\"required\":[\"title\",\"publisher\",\"original_game_release_date\",\"confidence_score\",\"steam_app_id\",\"studio\",\"tags\",\"source_citation\"]},\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 1837,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 08 Oct 2026 16:22:47 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"{\\\"title\\\": \\\"Barkley, Shut Up and Jam: Gaiden\\\", \\\"publisher\\\": null, \\\"original_game_release_date\\\": \\\"2008-01-22\\\", \\\"confidence_score\\\": 0.7, \\\"steam_app_id\\\": null, \\\"studio\\\": \\\"Tales of Games\\\", \\\"tags\\\": \\\"RPG, Post-apocalyptic, Comedy, Cult Classic, Turn-Based Combat, Indie\\\", \\\"source_citation\\\": \\\"https://www.giantbomb.com/barkley-shut-up-and-jam-gaiden/3030-22108/\\\"}\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\"\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 121,\n    \"candidatesTokenCount\": 132,\n    \"totalTokenCount\": 253,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 121\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 132\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-10-08T16:22:46.205032Z\",\n  \"responseId\": \"VsPHaujBDNmI88AP5K2oyAc\"\n}\n",
+      "guard": {
+        "outcome": "priced",
+        "computed_cost_usd": 0.0003663
+      }
+    },
+    {
+      "attempt": 4,
+      "started_at": "2026-10-08T16:22:48.417Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Hollow Knight\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\"}],\"role\":\"user\"}],\"tools\":[{\"googleSearch\":{}}],\"generationConfig\":{\"maxOutputTokens\":2048,\"responseMimeType\":\"application/json\",\"responseSchema\":{\"type\":\"OBJECT\",\"properties\":{\"title\":{\"type\":\"STRING\"},\"publisher\":{\"type\":\"STRING\",\"nullable\":true},\"original_game_release_date\":{\"type\":\"STRING\",\"nullable\":true},\"confidence_score\":{\"type\":\"NUMBER\",\"minimum\":0,\"maximum\":1},\"steam_app_id\":{\"type\":\"STRING\",\"nullable\":true},\"studio\":{\"type\":\"STRING\",\"nullable\":true},\"tags\":{\"type\":\"STRING\",\"nullable\":true},\"source_citation\":{\"type\":\"STRING\",\"nullable\":true}},\"required\":[\"title\",\"publisher\",\"original_game_release_date\",\"confidence_score\",\"steam_app_id\",\"studio\",\"tags\",\"source_citation\"]},\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 187,
+      "status": 400,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 08 Oct 2026 16:22:48 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Unable to submit request because controlled generation is not supported with Search tool. Learn more: https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/gemini\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n",
+      "guard": {
+        "outcome": "http_error",
+        "computed_cost_usd": null
+      }
+    },
+    {
+      "attempt": 5,
+      "started_at": "2026-10-08T16:22:48.608Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Hollow Knight\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\\n\\nAnswer with only one JSON object, and no other text, with exactly these keys:\\n- title: string, required, never null\\n- publisher: string, or null\\n- original_game_release_date: string, or null\\n- confidence_score: number, required, never null, 0 to 1\\n- steam_app_id: string, or null\\n- studio: string, or null\\n- tags: string, or null\\n- source_citation: string, or null\"}],\"role\":\"user\"}],\"tools\":[{\"googleSearch\":{}}],\"generationConfig\":{\"maxOutputTokens\":2048,\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 3065,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 08 Oct 2026 16:22:51 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"```json\\n{\\n \\\"title\\\": \\\"Hollow Knight\\\",\\n \\\"publisher\\\": \\\"Team Cherry\\\",\\n \\\"original_game_release_date\\\": \\\"2017-02-24\\\",\\n \\\"confidence_score\\\": 1,\\n \\\"steam_app_id\\\": \\\"367520\\\",\\n \\\"studio\\\": \\\"Team Cherry\\\",\\n \\\"tags\\\": \\\"Metroidvania, Platformer, Souls-like, Difficult, Great Soundtrack, 2D, Indie, Singleplayer, Exploration, Atmospheric, Adventure, Story Rich, Hand-drawn, Multiple Endings, Action, Dark Fantasy, Open World, Cute, Controller, Side Scroller\\\",\\n \\\"source_citation\\\": \\\"1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28\\\"\\n}\\n```\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\",\n      \"groundingMetadata\": {\n        \"webSearchQueries\": [\n          \"Hollow Knight game details\",\n          \"Hollow Knight publisher\",\n          \"Hollow Knight release date\",\n          \"Hollow Knight steam app id\",\n          \"Hollow Knight developer\",\n          \"Hollow Knight tags\",\n          \"Hollow Knight source citation\"\n        ],\n        \"searchEntryPoint\": {\n          \"renderedContent\": \"\\u003cstyle\\u003e\\n.container {\\n  align-items: center;\\n  border-radius: 8px;\\n  display: flex;\\n  font-family: Google Sans, Roboto, sans-serif;\\n  font-size: 14px;\\n  line-height: 20px;\\n  padding: 8px 12px;\\n}\\n.chip {\\n  display: inline-block;\\n  border: solid 1px;\\n  border-radius: 16px;\\n  min-width: 14px;\\n  padding: 5px 16px;\\n  text-align: center;\\n  user-select: none;\\n  margin: 0 8px;\\n  -webkit-tap-highlight-color: transparent;\\n}\\n.carousel {\\n  overflow: auto;\\n  scrollbar-width: none;\\n  white-space: nowrap;\\n  margin-right: -12px;\\n}\\n.headline {\\n  display: flex;\\n  margin-right: 4px;\\n}\\n.gradient-container {\\n  position: relative;\\n}\\n.gradient {\\n  position: absolute;\\n  transform: translate(3px, -9px);\\n  height: 36px;\\n  width: 9px;\\n}\\n@media (prefers-color-scheme: light) {\\n  .container {\\n    background-color: #fafafa;\\n    box-shadow: 0 0 0 1px #0000000f;\\n  }\\n  .headline-label {\\n    color: #1f1f1f;\\n  }\\n  .chip {\\n    background-color: #ffffff;\\n    border-color: #d2d2d2;\\n    color: #5e5e5e;\\n    text-decoration: none;\\n  }\\n  .chip:hover {\\n    background-color: #f2f2f2;\\n  }\\n  .chip:focus {\\n    background-color: #f2f2f2;\\n  }\\n  .chip:active {\\n    background-color: #d8d8d8;\\n    border-color: #b6b6b6;\\n  }\\n  .logo-dark {\\n    display: none;\\n  }\\n  .gradient {\\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\\n  }\\n}\\n@media (prefers-color-scheme: dark) {\\n  .container {\\n    background-color: #1f1f1f;\\n    box-shadow: 0 0 0 1px #ffffff26;\\n  }\\n  .headline-label {\\n    color: #fff;\\n  }\\n  .chip {\\n    background-color: #2c2c2c;\\n    border-color: #3c4043;\\n    color: #fff;\\n    text-decoration: none;\\n  }\\n  .chip:hover {\\n    background-color: #353536;\\n  }\\n  .chip:focus {\\n    background-color: #353536;\\n  }\\n  .chip:active {\\n    background-color: #464849;\\n    border-color: #53575b;\\n  }\\n  .logo-light {\\n    display: none;\\n  }\\n  .gradient {\\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\\n  }\\n}\\n\\u003c/style\\u003e\\n\\u003cdiv class=\\\"container\\\"\\u003e\\n  \\u003cdiv class=\\\"headline\\\"\\u003e\\n    \\u003csvg class=\\\"logo-light\\\" width=\\\"18\\\" height=\\\"18\\\" viewBox=\\\"9 9 35 35\\\" fill=\\\"none\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\\\" fill=\\\"#4285F4\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\\\" fill=\\\"#34A853\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\\\" fill=\\\"#FBBC05\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\\\" fill=\\\"#EA4335\\\"/\\u003e\\n    \\u003c/svg\\u003e\\n    \\u003csvg class=\\\"logo-dark\\\" width=\\\"18\\\" height=\\\"18\\\" viewBox=\\\"0 0 48 48\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"\\u003e\\n      \\u003ccircle cx=\\\"24\\\" cy=\\\"23\\\" fill=\\\"#FFF\\\" r=\\\"22\\\"/\\u003e\\n      \\u003cpath d=\\\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\\\" fill=\\\"#4285F4\\\"/\\u003e\\n      \\u003cpath d=\\\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\\\" fill=\\\"#34A853\\\"/\\u003e\\n      \\u003cpath d=\\\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\\\" fill=\\\"#FBBC05\\\"/\\u003e\\n      \\u003cpath d=\\\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\\\" fill=\\\"#EA4335\\\"/\\u003e\\n    \\u003c/svg\\u003e\\n    \\u003cdiv class=\\\"gradient-container\\\"\\u003e\\u003cdiv class=\\\"gradient\\\"\\u003e\\u003c/div\\u003e\\u003c/div\\u003e\\n  \\u003c/div\\u003e\\n  \\u003cdiv class=\\\"carousel\\\"\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHq8DHdjp0bSuGQKyF2oz9u0_XVmIglxALqfbulkcLckFSVni4I5_p6UaDaM82jp0k630vEq2SnYZ7Um5l23hv2436LE8NDpCLdrFC4cdGC9yDvpsqSTeE5EIhRH-8LTYGg53QA6DfVZerydubC9N86Otd3ZllLKJoF3HC7kI1JV4jaS9QwYK4ewhv7frgjsmCzBpmWZIT5WjN2\\\"\\u003eHollow Knight developer\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGsvPweT4JCeTW5AY0S5VEd-PrB-VWF-tIvFrBqMHH84iVIH4wVaKNyNK2pP8uZghOuduQUEwaloTaUbuQUExRXHe8UqSfGNl_FrJJfnPmcCcjbQWDLHBNRqDwrnBG8FhUMLzDYG2hXd4g5B0SGJpGjV2kAiZXqWLpdcCc4STP-Cm4c-yuJtUvtrGwO-e5vxXS5RNqgWzl0XxsUvzKK\\\"\\u003eHollow Knight release date\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGDQmp7r4NxhLUk3ei4PD3kx2QBRJOi2APvd575nakizOsO7R-3qWWVJHMB9PVp7gXTkcCzJbQaP2hdE87xe7znnqYN7WBDYYsuytWNsn8129VVOQEL_p1DPATEdPN7FjpCDKC53p0ne3hjbOXvZL6UyhON58GhUUreS46xbCoWqmZQB7LiradINJDqddfJSvfDfsaDD2q3OLfvdupL\\\"\\u003eHollow Knight game details\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGbO-8GDGeuSgWxCQoLXuryxv3_YdelBxpa7qZH5wktBkmkvtOev55oKhr4sRh1F0Hzbyhuh6puXMgpDJuNkS-cusX960bPknOGroW4J4ohTeqRmzcWLcy9lzRU6BqDxzsvZ_qtRks-AQDIhjNJYHdXoXhpIpL3srzRxpQhIiXKvXNL8zE6i-zs_9rZS35rTEqIaYbOWHLQlhee\\\"\\u003eHollow Knight publisher\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEu0Q3ch5s9cBC0R3tfrWUGMxmmXsfE_28LvTfUljZvRRX7ntF1BU4mIrG-MilBMcjUf88SYG7jB8jbWCkuk_zh1rau_aTQ5A_hU4iixONyUvxm0FbdvZjYBo8R37aX9D994WZUq9mMZrwH7ozMHdKnTz_stUgO7E8bbQqitoBidyqCy9AS5ZhvlHblkmLopp9mKaD5_w==\\\"\\u003eHollow Knight tags\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHqx5x0E_DkyekmDyLiQeBAcPcX4NROvmIcp2S46k7XdwVbJtzcACxdk8f97paGlAw_PymqXjhdY8JeplTUSSuer9_34icv6r-k8_Z73hP_I1Rfu5zX0f96H1VKTY8W2brWt0dfsYDR15IInHLHbKfDfWpNmCvS6ublCPDnWfbSy9UFMybaYAwHrxiWTcdBBwzU0LHsQFQuu4kIL5oL-J_V\\\"\\u003eHollow Knight source citation\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQE9eoUAr7l1KfAp-Oi4voWB9_-oN519HrJN-DzQMy6i1gA90othLAIXvR-5TltCG4htIQIREYWc_Wh-Of5_0kuiXECnWgUgPsh2DOAMSIK1B4sOCkyT3P5sRxfbE2pdC8iy_o8aViOqwvnh12SrynfevniIyMGOUBmpyMWy3-CNP479mTPDFleTLPOhctkxEP-5bfGXKrHLlDeUlfj5\\\"\\u003eHollow Knight steam app id\\u003c/a\\u003e\\n  \\u003c/div\\u003e\\n\\u003c/div\\u003e\\n\"\n        },\n        \"retrievalMetadata\": {}\n      }\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 160,\n    \"candidatesTokenCount\": 249,\n    \"totalTokenCount\": 409,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 160\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 249\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-10-08T16:22:48.280959Z\",\n  \"responseId\": \"WMPHav-SEbqc7rcPxOTymAo\"\n}\n",
+      "guard": {
+        "outcome": "priced",
+        "computed_cost_usd": 0.0356705
+      }
+    },
+    {
+      "attempt": 6,
+      "started_at": "2026-10-08T16:22:51.687Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Quarnix Vortex Protocol IX\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\\n\\nAnswer with only one JSON object, and no other text, with exactly these keys:\\n- title: string, required, never null\\n- publisher: string, or null\\n- original_game_release_date: string, or null\\n- confidence_score: number, required, never null, 0 to 1\\n- steam_app_id: string, or null\\n- studio: string, or null\\n- tags: string, or null\\n- source_citation: string, or null\"}],\"role\":\"user\"}],\"tools\":[{\"googleSearch\":{}}],\"generationConfig\":{\"maxOutputTokens\":2048,\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 2202,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 08 Oct 2026 16:22:53 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"```json\\n{\\n \\\"title\\\": \\\"Quarnix Vortex Protocol IX\\\",\\n \\\"publisher\\\": null,\\n \\\"original_game_release_date\\\": null,\\n \\\"confidence_score\\\": 0.3,\\n \\\"steam_app_id\\\": null,\\n \\\"studio\\\": null,\\n \\\"tags\\\": null,\\n \\\"source_citation\\\": null\\n}\\n```\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\",\n      \"groundingMetadata\": {\n        \"webSearchQueries\": [\n          \"Quarnix Vortex Protocol IX game details\",\n          \"Quarnix Vortex Protocol IX publisher\",\n          \"Quarnix Vortex Protocol IX release date\",\n          \"Quarnix Vortex Protocol IX studio\",\n          \"Quarnix Vortex Protocol IX tags\",\n          \"Quarnix Vortex Protocol IX steam app id\"\n        ],\n        \"searchEntryPoint\": {\n          \"renderedContent\": \"\\u003cstyle\\u003e\\n.container {\\n  align-items: center;\\n  border-radius: 8px;\\n  display: flex;\\n  font-family: Google Sans, Roboto, sans-serif;\\n  font-size: 14px;\\n  line-height: 20px;\\n  padding: 8px 12px;\\n}\\n.chip {\\n  display: inline-block;\\n  border: solid 1px;\\n  border-radius: 16px;\\n  min-width: 14px;\\n  padding: 5px 16px;\\n  text-align: center;\\n  user-select: none;\\n  margin: 0 8px;\\n  -webkit-tap-highlight-color: transparent;\\n}\\n.carousel {\\n  overflow: auto;\\n  scrollbar-width: none;\\n  white-space: nowrap;\\n  margin-right: -12px;\\n}\\n.headline {\\n  display: flex;\\n  margin-right: 4px;\\n}\\n.gradient-container {\\n  position: relative;\\n}\\n.gradient {\\n  position: absolute;\\n  transform: translate(3px, -9px);\\n  height: 36px;\\n  width: 9px;\\n}\\n@media (prefers-color-scheme: light) {\\n  .container {\\n    background-color: #fafafa;\\n    box-shadow: 0 0 0 1px #0000000f;\\n  }\\n  .headline-label {\\n    color: #1f1f1f;\\n  }\\n  .chip {\\n    background-color: #ffffff;\\n    border-color: #d2d2d2;\\n    color: #5e5e5e;\\n    text-decoration: none;\\n  }\\n  .chip:hover {\\n    background-color: #f2f2f2;\\n  }\\n  .chip:focus {\\n    background-color: #f2f2f2;\\n  }\\n  .chip:active {\\n    background-color: #d8d8d8;\\n    border-color: #b6b6b6;\\n  }\\n  .logo-dark {\\n    display: none;\\n  }\\n  .gradient {\\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\\n  }\\n}\\n@media (prefers-color-scheme: dark) {\\n  .container {\\n    background-color: #1f1f1f;\\n    box-shadow: 0 0 0 1px #ffffff26;\\n  }\\n  .headline-label {\\n    color: #fff;\\n  }\\n  .chip {\\n    background-color: #2c2c2c;\\n    border-color: #3c4043;\\n    color: #fff;\\n    text-decoration: none;\\n  }\\n  .chip:hover {\\n    background-color: #353536;\\n  }\\n  .chip:focus {\\n    background-color: #353536;\\n  }\\n  .chip:active {\\n    background-color: #464849;\\n    border-color: #53575b;\\n  }\\n  .logo-light {\\n    display: none;\\n  }\\n  .gradient {\\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\\n  }\\n}\\n\\u003c/style\\u003e\\n\\u003cdiv class=\\\"container\\\"\\u003e\\n  \\u003cdiv class=\\\"headline\\\"\\u003e\\n    \\u003csvg class=\\\"logo-light\\\" width=\\\"18\\\" height=\\\"18\\\" viewBox=\\\"9 9 35 35\\\" fill=\\\"none\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\\\" fill=\\\"#4285F4\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\\\" fill=\\\"#34A853\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\\\" fill=\\\"#FBBC05\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\\\" fill=\\\"#EA4335\\\"/\\u003e\\n    \\u003c/svg\\u003e\\n    \\u003csvg class=\\\"logo-dark\\\" width=\\\"18\\\" height=\\\"18\\\" viewBox=\\\"0 0 48 48\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"\\u003e\\n      \\u003ccircle cx=\\\"24\\\" cy=\\\"23\\\" fill=\\\"#FFF\\\" r=\\\"22\\\"/\\u003e\\n      \\u003cpath d=\\\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\\\" fill=\\\"#4285F4\\\"/\\u003e\\n      \\u003cpath d=\\\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\\\" fill=\\\"#34A853\\\"/\\u003e\\n      \\u003cpath d=\\\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\\\" fill=\\\"#FBBC05\\\"/\\u003e\\n      \\u003cpath d=\\\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\\\" fill=\\\"#EA4335\\\"/\\u003e\\n    \\u003c/svg\\u003e\\n    \\u003cdiv class=\\\"gradient-container\\\"\\u003e\\u003cdiv class=\\\"gradient\\\"\\u003e\\u003c/div\\u003e\\u003c/div\\u003e\\n  \\u003c/div\\u003e\\n  \\u003cdiv class=\\\"carousel\\\"\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHyk2an7SRYu1Nm4T1cMCpsHrK_wBlHC3pW6lO0Qd2YibqWUPWwj4_7XFT7RjW8t0QFFIjzaEu0sqDinEUbvtde30G1ZsUx-I-F7QKcLt069HrxwPv6sCniyNF7DdsgwfSHlCTuzIeLMfqlsdVhasI_Eah8YOanVgYFU7SMsfyFXM7zLB1s8ZKqgzNRi2G_Pl_9TAS6urcV6NEePmNnJ2d4lT_Q5Q==\\\"\\u003eQuarnix Vortex Protocol IX studio\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEgkS5ZkKkzceXIqsKCe-XVOKUjesqZg9xpTphxnKkCrLW1doDYa6eJrNGMfy6VOzyoz6H4lSkkv9tIPgjpL24rsCzvWv4C6ad00_Hp8ZlvkwnmSce2C6ZdmkZSJwlfsWr0_L5IW5q5sMo70Vq2L9Fj_3Ox9rplPaqPJ6Y4ieX3wQYlLnckFwZWnhLbxOtR5ZdbIi34vhl60eWEaerGg8gGMqAcTg6IlQ==\\\"\\u003eQuarnix Vortex Protocol IX publisher\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGS4dY6D_GzhdUkwCCilZZ0lhmT6dUjr9xPV6libbIDG7MSx76ZSBqOHv3lHh95FkzZ1oKGQI_fqsVfRfg4oxXe7VjHuODq1EdUA2vVwkzsemcaVCVNHh8zKOkyKRgWsYEaHXxb7FycLaTC87ULIYucLRP_9kH-hOOjLKLhg-r2Z1s7y7rBHPV83r3SDRrnpe4oBC35T5zSsiDdDGhH-SadBHucAOOxXa-glA==\\\"\\u003eQuarnix Vortex Protocol IX game details\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHMTZyDbr_a-Tmo7gaEqCLGGFXjjiRo7sa75PaHjX7mjMoCxzP49CgKMgYDlRjdX6m8LwT4PD_yB7N2hpv50_OinzF2e1c83stSXJLsUvC4gm5UVTAoJHvM4xMPhyuaZAbZfwFjUUN0sCdpxLOH_n9gIAu58iBHPNKkVAlVbdzNgi1q7g0LEaHk7roRvjHocp-nDZ-v2Vuki9vrn8BrBwXxxiaITewQxgTlYw==\\\"\\u003eQuarnix Vortex Protocol IX release date\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFs-lpRPQTdVTmziBB1TphmPEI-Un2MHpwn25f0fz9DyQ5WkqIkpCPg4QjanKml_-W-t1giImj96E5cj0495yk3TCIF-8drK9F_R0W7Had1VeVIPTJJQ_d3IXGFh6T5E2FP29Qwh0_uJiAI0a0HN7y6oMNHADrCVEkEO4sM7M83pQhzhQIgVqpayybLK2aTyeHvIttdu4jwhcqow28PEtMgyxZfT7F_QIbceg==\\\"\\u003eQuarnix Vortex Protocol IX steam app id\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFth2CEfi2eWmxRewz-glInyAfUp3XcJG1w035FxP2vTZKsMWXD566EQB1yAr1v-6cJ45F7l63tVjvQT9jBvSELyxxv1kEWjMYmIIDwR7L4m5RT7ZTVFyQI0OQJZWn2tPF4Pq6ioQHtpWd3B646XSttjT0zykUZhJa2DybDShdYc1zbczXOzyO1c1HuIplmonNU3LAjmyk5aKnXrOTra7Tku7s=\\\"\\u003eQuarnix Vortex Protocol IX tags\\u003c/a\\u003e\\n  \\u003c/div\\u003e\\n\\u003c/div\\u003e\\n\"\n        },\n        \"retrievalMetadata\": {}\n      }\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 163,\n    \"candidatesTokenCount\": 78,\n    \"totalTokenCount\": 241,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 163\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 78\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-10-08T16:22:51.313870Z\",\n  \"responseId\": \"W8PHao6UE8nc88AP18CSmQo\"\n}\n",
+      "guard": {
+        "outcome": "priced",
+        "computed_cost_usd": 0.0352439
+      }
+    },
+    {
+      "attempt": 7,
+      "started_at": "2026-10-08T16:22:53.895Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Barkley, Shut Up and Jam: Gaiden\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\\n\\nAnswer with only one JSON object, and no other text, with exactly these keys:\\n- title: string, required, never null\\n- publisher: string, or null\\n- original_game_release_date: string, or null\\n- confidence_score: number, required, never null, 0 to 1\\n- steam_app_id: string, or null\\n- studio: string, or null\\n- tags: string, or null\\n- source_citation: string, or null\"}],\"role\":\"user\"}],\"tools\":[{\"googleSearch\":{}}],\"generationConfig\":{\"maxOutputTokens\":2048,\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 3280,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 08 Oct 2026 16:22:56 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"```json\\n{\\n \\\"title\\\": \\\"Barkley, Shut Up and Jam: Gaiden\\\",\\n \\\"publisher\\\": \\\"Tales of Game's Studios\\\",\\n \\\"original_game_release_date\\\": \\\"January 2008\\\",\\n \\\"confidence_score\\\": 1,\\n \\\"steam_app_id\\\": null,\\n \\\"studio\\\": \\\"Tales of Game's Studios\\\",\\n \\\"tags\\\": \\\"RPG, Freeware, Parody, JRPG, Indie\\\",\\n \\\"source_citation\\\": \\\"1, 3, 4, 5, 6, 9, 10, 12, 13, 17\\\"\\n}\\n```\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\",\n      \"groundingMetadata\": {\n        \"webSearchQueries\": [\n          \"\\\"Barkley, Shut Up and Jam: Gaiden\\\" game details\",\n          \"\\\"Barkley, Shut Up and Jam: Gaiden\\\" publisher\",\n          \"\\\"Barkley, Shut Up and Jam: Gaiden\\\" original release date\",\n          \"\\\"Barkley, Shut Up and Jam: Gaiden\\\" Steam App ID\",\n          \"\\\"Barkley, Shut Up and Jam: Gaiden\\\" studio\",\n          \"\\\"Barkley, Shut Up and Jam: Gaiden\\\" tags\"\n        ],\n        \"searchEntryPoint\": {\n          \"renderedContent\": \"\\u003cstyle\\u003e\\n.container {\\n  align-items: center;\\n  border-radius: 8px;\\n  display: flex;\\n  font-family: Google Sans, Roboto, sans-serif;\\n  font-size: 14px;\\n  line-height: 20px;\\n  padding: 8px 12px;\\n}\\n.chip {\\n  display: inline-block;\\n  border: solid 1px;\\n  border-radius: 16px;\\n  min-width: 14px;\\n  padding: 5px 16px;\\n  text-align: center;\\n  user-select: none;\\n  margin: 0 8px;\\n  -webkit-tap-highlight-color: transparent;\\n}\\n.carousel {\\n  overflow: auto;\\n  scrollbar-width: none;\\n  white-space: nowrap;\\n  margin-right: -12px;\\n}\\n.headline {\\n  display: flex;\\n  margin-right: 4px;\\n}\\n.gradient-container {\\n  position: relative;\\n}\\n.gradient {\\n  position: absolute;\\n  transform: translate(3px, -9px);\\n  height: 36px;\\n  width: 9px;\\n}\\n@media (prefers-color-scheme: light) {\\n  .container {\\n    background-color: #fafafa;\\n    box-shadow: 0 0 0 1px #0000000f;\\n  }\\n  .headline-label {\\n    color: #1f1f1f;\\n  }\\n  .chip {\\n    background-color: #ffffff;\\n    border-color: #d2d2d2;\\n    color: #5e5e5e;\\n    text-decoration: none;\\n  }\\n  .chip:hover {\\n    background-color: #f2f2f2;\\n  }\\n  .chip:focus {\\n    background-color: #f2f2f2;\\n  }\\n  .chip:active {\\n    background-color: #d8d8d8;\\n    border-color: #b6b6b6;\\n  }\\n  .logo-dark {\\n    display: none;\\n  }\\n  .gradient {\\n    background: linear-gradient(90deg, #fafafa 15%, #fafafa00 100%);\\n  }\\n}\\n@media (prefers-color-scheme: dark) {\\n  .container {\\n    background-color: #1f1f1f;\\n    box-shadow: 0 0 0 1px #ffffff26;\\n  }\\n  .headline-label {\\n    color: #fff;\\n  }\\n  .chip {\\n    background-color: #2c2c2c;\\n    border-color: #3c4043;\\n    color: #fff;\\n    text-decoration: none;\\n  }\\n  .chip:hover {\\n    background-color: #353536;\\n  }\\n  .chip:focus {\\n    background-color: #353536;\\n  }\\n  .chip:active {\\n    background-color: #464849;\\n    border-color: #53575b;\\n  }\\n  .logo-light {\\n    display: none;\\n  }\\n  .gradient {\\n    background: linear-gradient(90deg, #1f1f1f 15%, #1f1f1f00 100%);\\n  }\\n}\\n\\u003c/style\\u003e\\n\\u003cdiv class=\\\"container\\\"\\u003e\\n  \\u003cdiv class=\\\"headline\\\"\\u003e\\n    \\u003csvg class=\\\"logo-light\\\" width=\\\"18\\\" height=\\\"18\\\" viewBox=\\\"9 9 35 35\\\" fill=\\\"none\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M42.8622 27.0064C42.8622 25.7839 42.7525 24.6084 42.5487 23.4799H26.3109V30.1568H35.5897C35.1821 32.3041 33.9596 34.1222 32.1258 35.3448V39.6864H37.7213C40.9814 36.677 42.8622 32.2571 42.8622 27.0064V27.0064Z\\\" fill=\\\"#4285F4\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M26.3109 43.8555C30.9659 43.8555 34.8687 42.3195 37.7213 39.6863L32.1258 35.3447C30.5898 36.3792 28.6306 37.0061 26.3109 37.0061C21.8282 37.0061 18.0195 33.9811 16.6559 29.906H10.9194V34.3573C13.7563 39.9841 19.5712 43.8555 26.3109 43.8555V43.8555Z\\\" fill=\\\"#34A853\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M16.6559 29.8904C16.3111 28.8559 16.1074 27.7588 16.1074 26.6146C16.1074 25.4704 16.3111 24.3733 16.6559 23.3388V18.8875H10.9194C9.74388 21.2072 9.06992 23.8247 9.06992 26.6146C9.06992 29.4045 9.74388 32.022 10.9194 34.3417L15.3864 30.8621L16.6559 29.8904V29.8904Z\\\" fill=\\\"#FBBC05\\\"/\\u003e\\n      \\u003cpath fill-rule=\\\"evenodd\\\" clip-rule=\\\"evenodd\\\" d=\\\"M26.3109 16.2386C28.85 16.2386 31.107 17.1164 32.9095 18.8091L37.8466 13.8719C34.853 11.082 30.9659 9.3736 26.3109 9.3736C19.5712 9.3736 13.7563 13.245 10.9194 18.8875L16.6559 23.3388C18.0195 19.2636 21.8282 16.2386 26.3109 16.2386V16.2386Z\\\" fill=\\\"#EA4335\\\"/\\u003e\\n    \\u003c/svg\\u003e\\n    \\u003csvg class=\\\"logo-dark\\\" width=\\\"18\\\" height=\\\"18\\\" viewBox=\\\"0 0 48 48\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\"\\u003e\\n      \\u003ccircle cx=\\\"24\\\" cy=\\\"23\\\" fill=\\\"#FFF\\\" r=\\\"22\\\"/\\u003e\\n      \\u003cpath d=\\\"M33.76 34.26c2.75-2.56 4.49-6.37 4.49-11.26 0-.89-.08-1.84-.29-3H24.01v5.99h8.03c-.4 2.02-1.5 3.56-3.07 4.56v.75l3.91 2.97h.88z\\\" fill=\\\"#4285F4\\\"/\\u003e\\n      \\u003cpath d=\\\"M15.58 25.77A8.845 8.845 0 0 0 24 31.86c1.92 0 3.62-.46 4.97-1.31l4.79 3.71C31.14 36.7 27.65 38 24 38c-5.93 0-11.01-3.4-13.45-8.36l.17-1.01 4.06-2.85h.8z\\\" fill=\\\"#34A853\\\"/\\u003e\\n      \\u003cpath d=\\\"M15.59 20.21a8.864 8.864 0 0 0 0 5.58l-5.03 3.86c-.98-2-1.53-4.25-1.53-6.64 0-2.39.55-4.64 1.53-6.64l1-.22 3.81 2.98.22 1.08z\\\" fill=\\\"#FBBC05\\\"/\\u003e\\n      \\u003cpath d=\\\"M24 14.14c2.11 0 4.02.75 5.52 1.98l4.36-4.36C31.22 9.43 27.81 8 24 8c-5.93 0-11.01 3.4-13.45 8.36l5.03 3.85A8.86 8.86 0 0 1 24 14.14z\\\" fill=\\\"#EA4335\\\"/\\u003e\\n    \\u003c/svg\\u003e\\n    \\u003cdiv class=\\\"gradient-container\\\"\\u003e\\u003cdiv class=\\\"gradient\\\"\\u003e\\u003c/div\\u003e\\u003c/div\\u003e\\n  \\u003c/div\\u003e\\n  \\u003cdiv class=\\\"carousel\\\"\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGXtorv9_7H3Wz78aU_rDB2iR-69BR06jODJZ9UKsks2CpkEMn7tdMiyWOb9Ij93hDq7FGdnMOiaj8BFSmo5JdiCGkv84AFk21gnbPoOlJs9luDoCPhPZEJhHHBy-PHw19yxwdCcX8xxmjoid_87SQsOSq1emrwZuH04iU708UB0RGne3nc_MY1LZzarAWFtQ-xQtxg3ukeR8dZIdlf6-zfVOyIYUaaz9AHibCBNtUJ\\\"\\u003e&quot;Barkley, Shut Up and Jam: Gaiden&quot; studio\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHH_ImSCzJwEzHIby51Ih2l0SMix6Z6_Kkh8_fiAjh23PcxvgIROLJ_IrDKo5FUtnl6rrwBWwf2ZVNLrCdMKwR0ApC4p4SjEKVbA2wTlqo8xTeaFZ_NdCCdgfWEYkDEU__UNOb34T0Vuj_Gk9Hozz7PzQKCsXRKusr3a2phR5G8PMG4VusjUqpnGnZHacpamqKdwIRpRAdffS4YOMz-JyNs-zg8IsIsNAvDiQlQpRbGiOTRl8t0uaWvcC02T-g-kQ==\\\"\\u003e&quot;Barkley, Shut Up and Jam: Gaiden&quot; original release date\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGA06KS2i_ZdCVmBghR2mbpntRRug1zQgWCNCOXYCkk3efYjbtDJ54QMoRhUiXfSY7Fi0Fb3__4TeiffvBbI1IFuOGKZqLqdqXREYyGp3bO3YCnABE5mMEvn46YTIPRrhoXCxBWJpnoLUPUXhgDxRvASyypl3zq0XYPgpFzTL93V_JGQFXgw5NpVrQkjVVEt5dhh10UqYW1gbGxh-Z7DLOHKeoEqM6VrVBPluiymWVddgmcATPLEg==\\\"\\u003e&quot;Barkley, Shut Up and Jam: Gaiden&quot; game details\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHX3C5J4q0FthEA5wdOl9X6ixAvjh1NQmlQbIDx0cW_QYoilWwPHVLJ5XFCzdZdOGlhIOczqT8J4PHfM3I5_USXvPaISlntRIn19K55svcsHgN-34wdi8YOiZGrsxbMmAgJIRWYTP0Ak6MwsJArmp_cD_ukNyGodNdowd9uh5rV-yFVOGm3_4jMfELME534cjN8XnRZ4bROizh0XdiiFId8MvUUlBFVsx6K39Cdc8pozNbe\\\"\\u003e&quot;Barkley, Shut Up and Jam: Gaiden&quot; publisher\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFmD2LDa2XUkTbE5_k_Ur3iDC-_YXzuwWp_VJiZl_KDJcXm-s0BhESZr7Uze1bBdbuYXQLUxkb2T_XydM3P1vw5UoahLZLTI1kFpErog34xiN7N2lUs748HXGsark9ChLg9ou1-ayTIzHi8VEu-gR1qQcQev4mQ18XpzpMndcyMpdw_FtlMPc5KrcgrCPELWAy4-9WgAeY5YBg8Rm9S97vZo5YNIPxvPEL1x-vLig==\\\"\\u003e&quot;Barkley, Shut Up and Jam: Gaiden&quot; tags\\u003c/a\\u003e\\n    \\u003ca class=\\\"chip\\\" href=\\\"https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHHc7btWmzZI8Ifg0fA1CjWd5pwOYEGE7pZhZN_ABwofPUVwENc5m-Hnyc5ZfD4Fn2eX8j4xezHf7dLjUPM0cC5TU3EOJL1MSOQGRb3KnlnHtjrikTNBih9f6J3oCcu1dgAWkvovbozc8LkSQHOESE5aLl36flg1ijcDs3KvQyuyulqVy_zPIWCyFP-4oIPaAYmskUQ3KdqmIlKGIyvPUWKAeN4RGeKMxFb6ebl32ANpFb6Y8YbJw==\\\"\\u003e&quot;Barkley, Shut Up and Jam: Gaiden&quot; Steam App ID\\u003c/a\\u003e\\n  \\u003c/div\\u003e\\n\\u003c/div\\u003e\\n\"\n        },\n        \"retrievalMetadata\": {}\n      }\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 167,\n    \"candidatesTokenCount\": 143,\n    \"totalTokenCount\": 310,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 167\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 143\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-10-08T16:22:53.522053Z\",\n  \"responseId\": \"XcPHasXuH4-M7rcPvI6GiAE\"\n}\n",
+      "guard": {
+        "outcome": "priced",
+        "computed_cost_usd": 0.0354076
+      }
+    }
+  ],
+  "preflight_finding": {
+    "schema_with_search": "refused",
+    "status": 400,
+    "message": "{\"error\":{\"code\":400,\"message\":\"Unable to submit request because controlled generation is not supported with Search tool. Learn more: https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/gemini\",\"status\":\"INVALID_ARGUMENT\"}}",
+    "consequence": "the grounded cases describe the schema in the prompt and are parsed from text"
+  },
+  "grounded_form": "described",
+  "result": {
+    "stop_reason": null,
+    "requests_sent": 7,
+    "grounded_form": "described",
+    "computed_cost_bare": {
+      "computed_cost_usd": 0.0009731,
+      "computed_cost_usd_priced_items_only": 0.0009731,
+      "unpriceable_items": 0
+    },
+    "computed_cost_grounded": {
+      "computed_cost_usd": 0.106322,
+      "computed_cost_usd_priced_items_only": 0.106322,
+      "unpriceable_items": 0
+    },
+    "provenance": [
+      {
+        "step": "bare 1",
+        "title": "Hollow Knight",
+        "finding": "no_match"
+      },
+      {
+        "step": "bare 2",
+        "title": "Quarnix Vortex Protocol IX",
+        "finding": "null"
+      },
+      {
+        "step": "bare 3",
+        "title": "Barkley, Shut Up and Jam: Gaiden",
+        "finding": "no_match"
+      },
+      {
+        "step": "grounded 1",
+        "title": "Hollow Knight",
+        "finding": "no_match"
+      },
+      {
+        "step": "grounded 2",
+        "title": "Quarnix Vortex Protocol IX",
+        "finding": "null"
+      },
+      {
+        "step": "grounded 3",
+        "title": "Barkley, Shut Up and Jam: Gaiden",
+        "finding": "no_match"
+      }
+    ],
+    "provenance_rules": [
+      "null: the model returned no source_citation",
+      "exact_uri: a URL in the citation equals a grounding source's URI, compared as parsed URLs",
+      "same_host: a URL in the citation has exactly the host a grounding source's title names (Vertex titles sources by domain)",
+      "exact_title: the whole citation equals a grounding source's title, ignoring case and surrounding space",
+      "title_mentioned: a grounding source's title appears inside the citation as a separate word or domain, not as part of a longer name",
+      "no_match: none of the above; this says only that the text does not correspond to a source, not where the model took it from"
+    ],
+    "tool_use_prompt_tokens": [
+      {
+        "step": "grounded 1",
+        "toolUsePromptTokenCount": null
+      },
+      {
+        "step": "grounded 2",
+        "toolUsePromptTokenCount": null
+      },
+      {
+        "step": "grounded 3",
+        "toolUsePromptTokenCount": null
+      }
+    ],
+    "note": "computed_cost_usd is computed from usage and rates.json, not charged; reconciliation against the billing export follows (AGENTS.md section 3.1)"
+  },
+  "computed_cost_usd": 0.1072951,
+  "computed_cost_totals": {
+    "computed_cost_usd": 0.1072951,
+    "computed_cost_usd_priced_items_only": 0.1072951,
+    "unpriceable_items": 0
+  },
+  "exit_status": 0,
+  "finished_at": "2026-10-08T16:22:58.014Z"
+}

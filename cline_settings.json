@@ -1,0 +1,36 @@
+{
+  "vibe_coding_version": "5.0.3",
+  "operating_model": "Executive Operator Model",
+  "architectural_authority": "Human Operator",
+  "routing_config": {
+    "tier_1_build": {
+      "primary": "deepseek-v4-flash",
+      "escalation": "deepseek-v4-pro",
+      "offline_fallback": "deepseek-coder-v2:16b"
+    },
+    "tier_2_think": {
+      "primary": "claude-sonnet-5",
+      "escalation": "claude-opus-5",
+      "cost_ceiling_guard": "claude-fable-5"
+    },
+    "tier_2a_execute": {
+      "primary": "gemini-3.6-flash",
+      "escalation": "gemini-3.1-pro-preview"
+    },
+    "tier_3_assist": {
+      "models": [
+        "Provider-dependent free models"
+      ],
+      "constraint": "Non-production scaffolding only, must be refined by Tier 1 before gate evaluation"
+    }
+  },
+  "escalation_rules": {
+    "E-01": "deepseek-v4-flash fails 3 consecutive attempts on a single task -> Escalate to deepseek-v4-pro",
+    "E-02": "deepseek-v4-pro fails 2 consecutive attempts or encounters architectural ambiguity -> Escalate to Tier 2 (claude-sonnet-5)",
+    "E-03": "claude-sonnet-5 reasoning failure -> Escalate to claude-opus-5",
+    "E-04": "claude-opus-5 ceiling failure (when agentic execution is the bottleneck) -> Escalate to gemini-3.1-pro-preview",
+    "E-05": "gemini-3.6-flash fails 2x -> Escalate to gemini-3.1-pro-preview (2x) -> Escalate to human review",
+    "E-06": "Security Gate Failure (S1-S4) -> Mechanical fixes return to deepseek-v4-flash; architectural/ambiguous security failures escalate directly to claude-sonnet-5 minimum",
+    "E-07": "Claude Fable 5 Access -> Requires explicit, documented justification prior to invocation"
+  }
+}

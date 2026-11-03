@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Stub `docker` for ai056-preprod-contended-stop-test/run.sh. Answers the driver's
+# calls from F_* variables and appends every call to $CALLS. Never touches Docker.
+# The helper "container" is modelled by the file $CALLS.helper: it exists while the
+# container runs, independently of the `docker run` client process.
+echo "$*" >> "$CALLS"
+cmd=$1; shift
+HELPER_FILE="$CALLS.helper"
+after_start() { [ -e "$CALLS.started" ]; }
+case "$cmd" in
+  inspect)
+    [ -n "${F_INSPECT_HANG:-}" ] && exec "$REAL_SLEEP" 3600
+    [ -n "${F_INSPECT_FAILS:-}" ] && { echo "Error: No such object: $3" >&2; exit 1; }
+    f=$2 # $1 is -f
+    case "$f" in
+      *"ENV {{"*)
+        if [ -n "${F_INSPECT_GARBAGE:-}" ]; then printf 'garbage\x01\n{"unexpected": true}\n\n'; exit 0; fi
+        printf 'ENV NODE_ENV=production\n'
+        [ -n "${F_DC+x}" ] && printf 'ENV DOPPLER_CONFIG=%s\n' "$F_DC"
+        printf 'ENV DB_PATH=%s\nLABEL %s\nMOUNT %s\nNET %s \n' "$F_DB" "$F_PROJ" "$F_SRC" "$F_NET" ;;
+      *"image={{.Image}} StopTimeout"*) echo "image=sha256:stub StopTimeout=30 cfgfiles=stub state=running/$F_HEALTH" ;;
+      *"State.ExitCode="*) echo "State.ExitCode=$F_XC OOMKilled=false StartedAt=a FinishedAt=b" ;;
+      *"state={{"*) echo "state=running/$F_HEALTH image=sha256:stub started=c" ;;
+      *"{{.State.Status}}/"*) if after_start && [ -n "${F_UNHEALTHY_AFTER_START:-}" ]; then echo running/unhealthy; else echo "running/$F_HEALTH"; fi ;;
+      "{{.State.ExitCode}}") echo "$F_XC" ;;
+      "{{.State.Health.Status}}") if after_start && [ -n "${F_UNHEALTHY_AFTER_START:-}" ]; then echo unhealthy; else echo "$F_HEALTH"; fi ;;
+      *) echo "stub: unhandled inspect format $f" >&2; exit 9 ;;
+    esac ;;
+  ps)
+    echo mgpl-preprod-app
+    [ -e "$HELPER_FILE" ] && echo "ai056-helper-65"
+    exit 0 ;;
+  run)
+    cat > /dev/null
+    : > "$HELPER_FILE"
+    hang() { while [ -e "$HELPER_FILE" ]; do sleep 0.1; done; exit 137; }
+    case "$F_HELPER" in
+      send) printf 'REGISTER_ATTEMPT account=stub\nregister status=201 account=stub session=yes\nLOCK_HELD\nREQUEST_SENT\n'
+            sleep 0.3
+            [ -n "${F_CONTAINER_OUTLIVES_CLIENT:-}" ] || rm -f "$HELPER_FILE"
+            exit "$F_HRC" ;;
+      refuse) echo "TARGET_FAIL app_name"; rm -f "$HELPER_FILE"; exit 2 ;;
+      hang-before-register) echo "TARGET verified"; hang ;;
+      attempt-then-hang) echo "REGISTER_ATTEMPT account=stub"; hang ;;
+      locked-then-hang) printf 'REGISTER_ATTEMPT account=stub\nregister status=201 account=stub session=yes\nLOCK_HELD\n'; hang ;;
+    esac ;;
+  kill) [ -n "${F_KILL_FAILS:-}" ] && { echo "Error response from daemon: cannot kill" >&2; exit 1; }
+        rm -f "$HELPER_FILE"; echo "$1" ;;
+  stop) [ -n "${F_STOP_HANG:-}" ] && exec "$REAL_SLEEP" 3600
+        echo "$1"; exit "$F_STOPRC" ;;
+  start) : > "$CALLS.started"; echo "$1"; exit "$F_STARTRC" ;;
+  logs) echo "[shutdown] stub" ;;
+  exec) [ "$F_HZRC" = 0 ] || exit "$F_HZRC"; echo "$F_HZ" ;;
+  *) echo "stub: unhandled docker $cmd" >&2; exit 9 ;;
+esac

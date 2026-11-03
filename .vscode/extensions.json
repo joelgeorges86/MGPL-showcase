@@ -1,0 +1,22 @@
+{
+  "recommendations": [
+    "anthropic.claude-code",
+    "saoudrizwan.claude-dev",
+    "openai.chatgpt",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker",
+    "ms-playwright.playwright",
+    "bradlc.vscode-tailwindcss",
+    "redhat.vscode-yaml",
+    "eamodio.gitlens",
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "ms-azuretools.vscode-docker",
+    "ms-azuretools.vscode-containers",
+    "qwtel.sqlite-viewer",
+    "humao.rest-client",
+    "ms-vscode.powershell"
+  ],
+  "unwantedRecommendations": ["prisma.prisma"]
+}

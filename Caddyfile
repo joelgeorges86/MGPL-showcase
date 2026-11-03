@@ -1,0 +1,62 @@
+# MGPL v1.1 - Caddy Reverse Proxy Configuration
+#
+# Listens on internal port 2080 for Cloudflare Tunnel ingress. TLS is
+# terminated at Cloudflare (the tunnel origin is plain HTTP on localhost:2080),
+# so `auto_https off` is set globally to guarantee Caddy never attempts its
+# own ACME certificate issuance or binds to 80/443 on this internal node.
+# HSTS is still emitted for defense-in-depth should the origin ever be
+# reached directly.
+#
+# Hosts (matched by Host header, all forwarded to the same upstream today):
+#   staging.mgpl.io  -> app:4000  (MGPL staging API, staging compose service)
+#   mgpl.io          -> app:4000  (MGPL production API, once cut over)
+#   (any other host) -> app:4000  (default/catch-all, e.g. IP-based healthz)
+#
+# Upstream is resolved via the Docker Compose network DNS (service name
+# `app`, see docker-compose.staging.yml).
+{
+	# Never attempt automatic HTTPS (ACME) or bind to 80/443 on this
+	# internal node; Cloudflare Tunnel delivers plain HTTP to :2080 only.
+	auto_https off
+}
+
+# Shared security headers applied to every response.
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Remove the Caddy server banner from responses.
+		-Server
+	}
+}
+
+# Structured JSON access logging.
+(access_log) {
+	log {
+		output file /var/log/caddy/access.log
+		format json
+	}
+}
+
+:2080 {
+	import security_headers
+	import access_log
+
+	@staging host staging.mgpl.io
+	handle @staging {
+		reverse_proxy app:4000
+	}
+
+	@production host mgpl.io
+	handle @production {
+		reverse_proxy app:4000
+	}
+
+	# Default/catch-all: any other Host header (e.g. direct IP health
+	# probes from the CI/CD healthz retry loop) still reaches the app.
+	handle {
+		reverse_proxy app:4000
+	}
+}

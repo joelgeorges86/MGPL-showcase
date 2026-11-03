@@ -1,0 +1,31 @@
+# MGPL Test — internal Caddy reverse proxy (per-stack).
+#
+# Cloudflare Tunnel (mgpl-test) terminates TLS and forwards plain HTTP to this
+# stack's Caddy on the host loopback. The single upstream is the Test app over
+# the Compose network. `auto_https off` guarantees Caddy never attempts ACME.
+{
+	auto_https off
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Frame-Options "SAMEORIGIN"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}
+
+(access_log) {
+	log {
+		output file /var/log/caddy/access.log
+		format json
+	}
+}
+
+:80 {
+	import security_headers
+	import access_log
+	reverse_proxy app:4000
+}

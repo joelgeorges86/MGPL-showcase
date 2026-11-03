@@ -1,0 +1,5 @@
+interface:
+  display_name: "MGPL Gate Runner"
+  short_description: "Run all MGPL quality gates through Doppler"
+  default_prompt: "Run the complete MGPL gate chain and report each result without deploying or merging."
+  default_prompt: "Run npm run doctor, then the complete MGPL gate chain, and report each result without deploying or merging."

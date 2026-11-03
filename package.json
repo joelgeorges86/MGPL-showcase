@@ -1,0 +1,101 @@
+{
+  "name": "mpgl-api",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "check:agents": "node scripts/check-agents-md-integrity.js",
+    "doctor": "node scripts/doctor.js",
+    "gates": "powershell -NoProfile -ExecutionPolicy Bypass -File .agents/skills/mgpl-gate-runner/scripts/run-gates.ps1",
+    "dev": "npm run dev:server",
+    "dev:server": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "node scripts/check-eslint-changed.js",
+    "lint:fix": "eslint src test public scripts --ext .ts,.js --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"public/**/*.js\" \"scripts/**/*.js\" \"*.{json,md,yml}\"",
+    "format:check": "node scripts/check-format-changed.js",
+    "prepare": "husky || true",
+    "db:diff": "ts-node src/scripts/schema-diff.ts",
+    "db:validate": "ts-node src/scripts/validate-migration.ts",
+    "db:seed": "ts-node src/scripts/seed-db.ts",
+    "db:reset": "ts-node src/scripts/reset-test-db.ts",
+    "db:docs": "ts-node src/scripts/generate-schema-docs.ts",
+    "db:normalize": "ts-node src/scripts/normalizeDb_better.ts",
+    "test:client": "node scripts/check-client-syntax.js",
+    "test:e2e": "playwright test --workers=1",
+    "test:e2e:all": "playwright test test/e2e/ --workers=1",
+    "test:benchmark": "ts-node scripts/test-runner.ts",
+    "test:types": "tsc --noEmit",
+    "test:unit": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:spell": "cspell lint \"src/**/*.ts\" \"public/*.js\" \"test/**/*.ts\"",
+    "mod:sweep": "ts-node scripts/mod-link-sweep.ts",
+    "mod:sweep:dry": "ts-node scripts/mod-link-sweep.ts --dry-run",
+    "smoke:postdeploy": "ts-node scripts/smoke-test-post-deployment.ts",
+    "validate:flags": "ts-node scripts/validate-feature-flags.ts",
+    "snapshot:predeploy": "ts-node scripts/pre-deploy-snapshot.ts",
+    "dr:verify": "ts-node src/scripts/verify-restored-db.ts",
+    "dr:restore:preprod": "bash scripts/restore-staging-drill.sh",
+    "catalog:trust:audit": "node scripts/catalog-trust-audit.js"
+  },
+  "dependencies": {
+    "@sentry/node": "10.73.0",
+    "argon2": "^0.45.1",
+    "axios": "^1.7.4",
+    "better-sqlite3": "^13.0.3",
+    "compression": "^1.8.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.6.2",
+    "helmet": "^8.3.0",
+    "howlongtobeat": "^1.8.0",
+    "jsonwebtoken": "^9.0.3",
+    "node-cron": "^4.6.0",
+    "psn-api": "^2.18.0",
+    "systeminformation": "^5.33.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^10.0.1",
+    "@google/genai": "^2.23.0",
+    "@playwright/test": "^1.62.1",
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/compression": "^1.8.1",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.19",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.14.6",
+    "@types/node-cron": "^3.0.11",
+    "@vitest/coverage-v8": "^4.1.11",
+    "cspell": "^10.0.1",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.4.1",
+    "prettier": "^3.9.6",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.0",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^4.1.11"
+  },
+  "allowScripts": {
+    "argon2@0.45.1": true
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix --max-warnings=0",
+      "prettier --write"
+    ],
+    "*.{json,md,yml}": [
+      "prettier --write"
+    ]
+  },
+  "overrides": {
+    "axios": "^1.7.4",
+    "qs": "^6.16.0"
+  }
+}

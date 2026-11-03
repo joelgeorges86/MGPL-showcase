@@ -1,0 +1,10 @@
+# Cloudflare Tunnel — mgpl-test (test.m-gpl.com)
+# Deployed to: /etc/cloudflared/config-test.yml
+# The credentials file is decoded from Doppler CLOUDFLARED_TUNNEL_CREDENTIALS_B64
+# to /etc/cloudflared/mgpl-test.json (root-only, mode 0600) — never committed.
+tunnel: mgpl-test
+credentials-file: /etc/cloudflared/mgpl-test.json
+ingress:
+  - hostname: test.m-gpl.com
+    service: http://localhost:2081
+  - service: http_status:404

@@ -1,0 +1,38 @@
+# MGPL Preprod — Litestream SQLite WAL replication (mirrors Production durability).
+#
+# Replicates /data/mgpl-preprod.db to two independent S3-compatible object stores:
+#   1. Cloudflare R2  (primary,   1s  sync-interval, 168h retention)
+#   2. Backblaze B2   (secondary, 30s sync-interval, 168h retention)
+#
+# Credentials are injected at runtime by Doppler (R2_* / B2_* secrets in the
+# preprod config). Replica paths use the `mgpl-preprod` prefix to stay isolated
+# from the Production and Staging replicas.
+
+dbs:
+  - path: /data/mgpl-preprod.db
+    replicas:
+      - name: mgpl-db-replica
+        type: s3
+        endpoint: ${R2_ENDPOINT}
+        bucket: mgpl-db-replica
+        path: mgpl-preprod
+        region: auto
+        access-key-id: ${R2_ACCESS_KEY_ID}
+        secret-access-key: ${R2_SECRET_ACCESS_KEY}
+        force-path-style: true
+        sync-interval: 1s
+        retention: 168h
+
+      - name: mgpl-db-backup
+        type: s3
+        endpoint: ${B2_ENDPOINT}
+        bucket: mgpl-db-backup
+        path: mgpl-preprod
+        region: auto
+        access-key-id: ${B2_ACCESS_KEY_ID}
+        secret-access-key: ${B2_SECRET_ACCESS_KEY}
+        force-path-style: true
+        sync-interval: 30s
+        retention: 168h
+
+snapshot-interval: 24h

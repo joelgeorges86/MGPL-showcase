@@ -1,0 +1,439 @@
+/* =========================================================================
+ * MGPL Custom Theme Engine (FEAT-0167)
+ * -------------------------------------------------------------------------
+ * Pure CSS custom-property theming. The default (:root) palette mirrors the
+ * existing slate-900/950 look so there is no visual regression. Each
+ * [data-theme="..."] block redefines the semantic tokens; attribute-scoped
+ * overrides below let the custom variables win over Tailwind utility classes
+ * without touching the default theme.
+ * ========================================================================= */
+
+/* ---- Default theme (current slate look) ---- */
+:root {
+  --bg-primary: #0b0f19;
+  --bg-surface: #0f172a;
+  --bg-elevated: #1e293b;
+  --bg-input: #020617;
+  --border: #1e293b;
+  --border-strong: #334155;
+  --accent: #0ea5e9;
+  --accent-strong: #38bdf8;
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --success: #34d399;
+  --warning: #fbbf24;
+  --danger: #fb7185;
+  --focus-ring: #0ea5e9;
+}
+
+/* ---- OLED: pure black, high-contrast slate borders, electric blue ---- */
+[data-theme="oled"] {
+  --bg-primary: #000000;
+  --bg-surface: #000000;
+  --bg-elevated: #0a0a0a;
+  --bg-input: #000000;
+  --border: #2a2a2a;
+  --border-strong: #3f3f46;
+  --accent: #3b82f6;
+  --accent-strong: #60a5fa;
+  --text-primary: #fafafa;
+  --text-secondary: #d4d4d8;
+  --text-muted: #a1a1aa;
+  --text-faint: #71717a;
+  --success: #4ade80;
+  --warning: #facc15;
+  --danger: #f87171;
+  --focus-ring: #3b82f6;
+}
+
+/* ---- Cyberpunk: deep navy, neon yellow/cyan/magenta ---- */
+[data-theme="cyberpunk"] {
+  --bg-primary: #0a0e2a;
+  --bg-surface: #111638;
+  --bg-elevated: #1a2150;
+  --bg-input: #070a1f;
+  --border: #2a2f6b;
+  --border-strong: #3b3f8f;
+  --accent: #facc15;
+  --accent-strong: #22d3ee;
+  --text-primary: #f8fafc;
+  --text-secondary: #c7d2fe;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --success: #34d399;
+  --warning: #f472b6;
+  --danger: #fb7185;
+  --focus-ring: #22d3ee;
+}
+
+/* ---- Retro: slate gray, muted amber/green phosphor terminal ---- */
+[data-theme="retro"] {
+  --bg-primary: #1a1d1a;
+  --bg-surface: #202420;
+  --bg-elevated: #2a2f2a;
+  --bg-input: #141714;
+  --border: #3a403a;
+  --border-strong: #4a524a;
+  --accent: #fbbf24;
+  --accent-strong: #4ade80;
+  --text-primary: #e7e5e4;
+  --text-secondary: #d6d3d1;
+  --text-muted: #a8a29e;
+  --text-faint: #78716c;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --focus-ring: #4ade80;
+}
+
+/* ---- Contrast: maximum contrast white/black, WCAG AAA ---- */
+[data-theme="contrast"] {
+  --bg-primary: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f4f4f5;
+  --bg-input: #ffffff;
+  --border: #000000;
+  --border-strong: #000000;
+  --accent: #0000ee;
+  --accent-strong: #0000ee;
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --text-muted: #1f2937;
+  --text-faint: #374151;
+  --success: #006400;
+  --warning: #7a5c00;
+  --danger: #b00020;
+  --focus-ring: #0000ee;
+}
+
+/* ---- Apply tokens to the document surface ---- */
+html,
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+/* ---- Attribute-scoped overrides so custom tokens win over Tailwind ----
+ * These only apply when a [data-theme] is active on <html>, so the default
+ * theme is untouched. */
+[data-theme] body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme] .bg-slate-950,
+[data-theme] .bg-slate-900,
+[data-theme] .bg-slate-800,
+[data-theme] .bg-slate-900\/90,
+[data-theme] .bg-slate-950\/60,
+[data-theme] .bg-slate-950\/80,
+[data-theme] .bg-slate-900\/40,
+[data-theme] .bg-slate-900\/60 {
+  background-color: var(--bg-surface);
+}
+
+[data-theme] .bg-slate-800 {
+  background-color: var(--bg-elevated);
+}
+
+[data-theme] .border-slate-800,
+[data-theme] .border-slate-700,
+[data-theme] .border-slate-800\/80,
+[data-theme] .border-slate-700\/60 {
+  border-color: var(--border);
+}
+
+[data-theme] .text-white {
+  color: var(--text-primary);
+}
+
+[data-theme] .text-slate-200,
+[data-theme] .text-slate-300 {
+  color: var(--text-secondary);
+}
+
+[data-theme] .text-slate-400,
+[data-theme] .text-slate-500 {
+  color: var(--text-muted);
+}
+
+[data-theme] .text-brand-400 {
+  color: var(--accent);
+}
+
+[data-theme] .bg-brand-500,
+[data-theme] .bg-brand-600 {
+  background-color: var(--accent);
+}
+
+[data-theme] .focus\:border-brand-500:focus {
+  border-color: var(--accent);
+}
+
+[data-theme] .focus\:ring-brand-500:focus {
+  --tw-ring-color: var(--accent);
+}
+
+/* ---- Accessibility: visible focus ring ----
+ * High-contrast emerald focus indicator applied to every focusable element,
+ * including dynamically-injected buttons/inputs/pills (EPIC-COMPLIANCE-0001
+ * Sprint 1). The double ring (surface + emerald) preserves visibility on both
+ * the dark slate palette and the light "contrast" theme. This is the CSS
+ * equivalent of the Tailwind utilities:
+ *   focus-visible:ring-2 focus-visible:ring-emerald-400
+ *   focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900
+ */
+.focus-visible-ring:focus-visible,
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--bg-primary),
+    0 0 0 4px #34d399;
+  border-radius: 6px;
+}
+
+/* ---- Reduced motion override ----
+ * Applied to <html> when the user prefers reduced motion. Disables
+ * animations/transitions and the ping/pulse effects. */
+.reduced-motion-override *,
+.reduced-motion-override *::before,
+.reduced-motion-override *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================================
+ * Auth UI (Sprint 4 / FEAT-AUTH-UI-0001)
+ * -------------------------------------------------------------------------
+ * Small additive rules for the tabbed Log In / Sign Up modal and the header
+ * user pill. All layout/color utilities live in the Tailwind classes in
+ * auth.js; these tokens only guarantee the modal surface follows the active
+ * custom theme and that keyboard focus is visibly announced.
+ * ========================================================================= */
+
+/* Modal surface adapts to the active custom theme so OLED/cyberpunk/retro/
+   contrast palettes keep a cohesive look. */
+[data-theme] #auth-modal .bg-slate-900 {
+  background-color: var(--bg-surface);
+}
+
+[data-theme] #auth-modal .bg-slate-950,
+[data-theme] #auth-modal .bg-slate-950\/60,
+[data-theme] #auth-modal .bg-slate-950\/80 {
+  background-color: var(--bg-input);
+}
+
+[data-theme] #auth-modal .border-slate-700,
+[data-theme] #auth-modal .border-slate-800 {
+  border-color: var(--border);
+}
+
+/* Subtle entrance animation for the dialog card (skipped under reduced motion
+   by the global override above). */
+@keyframes mgpl-auth-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+#auth-modal > div:not(#auth-backdrop) {
+  animation: mgpl-auth-pop 0.18s ease-out;
+}
+
+/* Tabs: keep the active tab visually tied to the brand accent. */
+[data-theme] #auth-modal .bg-brand-600 {
+  background-color: var(--accent);
+}
+
+[data-theme] #auth-modal .text-brand-400 {
+  color: var(--accent);
+}
+
+/* Header user pill initials badge. */
+[data-theme] #auth-user-pill .bg-brand-600 {
+  background-color: var(--accent);
+}
+
+/* Deals Sparklines & Arbitrage Badges */
+.price-sparkline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.badge-arbitrage {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.375rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-historical-low {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.375rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Affiliate / Commercial Disclosure Badge (EPIC-COMPLIANCE-0001 Sprint 3)
+ * FTC 16 CFR Part 255 & EU Ordinary Consumer expectations. Uses the theme
+ * success token for text color so WCAG 2.1 AA contrast holds on every palette
+ * (dark slate and the light "contrast" theme). */
+.affiliate-disclosure {
+  margin: 0.375rem 0 0;
+  font-size: 0.625rem;
+  line-height: 1.4;
+  font-style: italic;
+  color: var(--success);
+}
+
+/* Error banner respects the active theme's danger token. */
+[data-theme] #auth-error-banner {
+  /* Solid fallback for browsers without color-mix() support. */
+  background-color: var(--bg-surface);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* color-mix() is only supported in modern browsers (Chrome/Edge 111+,
+   Firefox 113+, Safari 16.2+). Guard it with @supports so older browsers
+   keep the solid fallback instead of dropping the whole rule. */
+@supports (color: color-mix(in srgb, red 50%, transparent)) {
+  [data-theme] #auth-error-banner {
+    background-color: color-mix(in srgb, var(--danger) 18%, transparent);
+    border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+  }
+}
+
+/* Fleet Management & Compatibility UI Theme Integration */
+[data-theme] #fleet-add-modal .bg-slate-900 {
+  background-color: var(--bg-surface);
+}
+
+[data-theme] #fleet-add-modal .bg-slate-950\/80 {
+  background-color: var(--bg-input);
+}
+
+[data-theme] #fleet-add-modal .border-slate-800 {
+  border-color: var(--border);
+}
+
+[data-theme] #drawer-compat-output .bg-slate-950\/50,
+[data-theme] #drawer-compat-output .bg-slate-900 {
+  background-color: var(--bg-input);
+  border-color: var(--border);
+}
+
+/* ==========================================================================
+   Sprint 3 (WUD-3.1 / EPICUX01): Desktop left rail, mobile tab bar & search FAB
+   ========================================================================== */
+
+/* Left rail scrollbar hygiene (the responsive .no-scrollbar rules in
+   index.html only apply below 768px, so the desktop rail needs its own). */
+#desktop-rail .flex-1::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+#desktop-rail .flex-1::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+#desktop-rail .flex-1 {
+  scrollbar-width: thin;
+  scrollbar-color: #1e293b transparent;
+}
+
+/* Keep the mobile bottom tab bar above the search FAB and below overlays. */
+#search-fab {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The bottom tab bar must not overlap the page footer on small screens. */
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 72px;
+  }
+}
+
+/* ==========================================================================
+   Sprint 4 (EPICUX04): Mods Hub 2.0
+   ========================================================================== */
+/* File-level conflict badge anchored to the top-right of a mod card. */
+.mod-conflict-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fecaca;
+  background: rgba(244, 63, 94, 0.15);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  pointer-events: none;
+}
+
+/* Drag-and-drop affordance for load order rows. */
+.load-order-row {
+  transition: box-shadow 150ms ease, opacity 150ms ease;
+}
+.load-order-row[draggable="true"] {
+  cursor: grab;
+}
+.load-order-row.drag-over {
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.6);
+}
+.load-order-row:focus-visible {
+  outline: 2px solid rgba(245, 158, 11, 0.6);
+  outline-offset: 1px;
+}

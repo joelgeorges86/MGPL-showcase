@@ -1,0 +1,12 @@
+dist/
+coverage/
+node_modules/
+playwright-report/
+test-results/
+.tmp_pi003/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite-shm
+*.sqlite-wal
+package-lock.json

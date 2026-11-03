@@ -1,0 +1,375 @@
+{
+  "probe": "p1-structured-output",
+  "evidence_contract": "DOCS/specs/ACT-08-google-cloud-capability-exploration.md",
+  "executed_by": "Principal Operator (operator-run script; the recording agent did not execute this)",
+  "started_at": "2026-09-24T23:44:52.297Z",
+  "argv": ["--run"],
+  "git_head": "a99b840c91cc2607f60b7e329286f0f599bb8d11",
+  "node_version": "v22.23.2",
+  "sdk": {
+    "package": "@google/genai",
+    "version": "2.23.0"
+  },
+  "project": "mgpl-508415",
+  "location": "us-central1",
+  "credential": "Application Default Credentials, not inspected by the script. Record the identity per the runbook.",
+  "model": "gemini-2.5-flash",
+  "endpoint_expected": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+  "rate": {
+    "model": "gemini-2.5-flash",
+    "tier": "Standard (Gemini 2.5 table tabs: Standard | Priority | Flex/Batch)",
+    "unit": "USD per 1M tokens",
+    "verbatim_rows": [
+      "Model | Type | Token Price <= 200K tokens | Price > 200K tokens | Price <= 200K cached input tokens | Price > 200K cached input tokens |",
+      "Gemini 2.5 Flash | Input (text, image, video) | $0.30 | $0.30 | $0.03 | $0.03 |",
+      " | Text output (response and reasoning) | $2.50 | $2.50 | N/A | N/A |"
+    ],
+    "source_url": "https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+    "read_at": "2026-09-24T22:24:45.622Z"
+  },
+  "schema_source": {
+    "file": "src/db.ts",
+    "table": "AppGames_Staging",
+    "ddl_verbatim": "CREATE TABLE IF NOT EXISTS AppGames_Staging (\n      staging_id TEXT PRIMARY KEY NOT NULL,\n      run_id TEXT NOT NULL,\n      model_id TEXT NOT NULL,\n      source TEXT NOT NULL,\n      fetched_at DATETIME NOT NULL,\n      game_id TEXT NOT NULL,\n      title TEXT NOT NULL,\n      publisher TEXT,\n      original_game_release_date TEXT,\n      confidence_score REAL NOT NULL CHECK (confidence_score >= 0 AND confidence_score <= 1),\n      steam_app_id TEXT,\n      studio TEXT,\n      tags TEXT,\n      source_citation TEXT,\n      UNIQUE(run_id, game_id)\n    )",
+    "mapping_rules": [
+      "SQLite TEXT and DATETIME -> STRING; REAL -> NUMBER; INTEGER -> INTEGER",
+      "NOT NULL -> non-nullable; otherwise nullable: true",
+      "every model column is listed in required, so a nullable field must be present as an explicit null rather than omitted",
+      "CHECK (col >= a AND col <= b) -> minimum a / maximum b; any other CHECK is recorded as unmapped, not approximated",
+      "pipeline-filled columns excluded: staging_id, run_id, model_id, source, fetched_at, game_id"
+    ]
+  },
+  "unmapped_constraints": ["UNIQUE(run_id, game_id)"],
+  "response_schema": {
+    "type": "OBJECT",
+    "properties": {
+      "title": {
+        "type": "STRING"
+      },
+      "publisher": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "original_game_release_date": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "confidence_score": {
+        "type": "NUMBER",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "steam_app_id": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "studio": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "tags": {
+        "type": "STRING",
+        "nullable": true
+      },
+      "source_citation": {
+        "type": "STRING",
+        "nullable": true
+      }
+    },
+    "required": [
+      "title",
+      "publisher",
+      "original_game_release_date",
+      "confidence_score",
+      "steam_app_id",
+      "studio",
+      "tags",
+      "source_citation"
+    ]
+  },
+  "config": {
+    "thinkingConfig": {
+      "thinkingBudget": 0
+    },
+    "responseMimeType": "application/json",
+    "responseSchema": {
+      "type": "OBJECT",
+      "properties": {
+        "title": {
+          "type": "STRING"
+        },
+        "publisher": {
+          "type": "STRING",
+          "nullable": true
+        },
+        "original_game_release_date": {
+          "type": "STRING",
+          "nullable": true
+        },
+        "confidence_score": {
+          "type": "NUMBER",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "steam_app_id": {
+          "type": "STRING",
+          "nullable": true
+        },
+        "studio": {
+          "type": "STRING",
+          "nullable": true
+        },
+        "tags": {
+          "type": "STRING",
+          "nullable": true
+        },
+        "source_citation": {
+          "type": "STRING",
+          "nullable": true
+        }
+      },
+      "required": [
+        "title",
+        "publisher",
+        "original_game_release_date",
+        "confidence_score",
+        "steam_app_id",
+        "studio",
+        "tags",
+        "source_citation"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "title": "Hollow Knight",
+      "input_source": "DOCS/research/ACT-08-RETEST-EVIDENCE.md P1; P-4 fixture set",
+      "expectation": "known",
+      "prompt": "Enrich the catalogue entry for the video game titled \"Hollow Knight\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.",
+      "latency_ms": 8425,
+      "usage": {
+        "promptTokenCount": 114,
+        "candidatesTokenCount": 157,
+        "totalTokenCount": 271,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 114
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 157
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0004267,
+        "tokens_in": 114,
+        "tokens_in_cached": 0,
+        "tokens_out": 157,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        }
+      },
+      "text": "{\n  \"title\": \"Hollow Knight\",\n  \"publisher\": \"Team Cherry\",\n  \"original_game_release_date\": \"2017-02-24\",\n  \"confidence_score\": 1,\n  \"steam_app_id\": \"367520\",\n  \"studio\": \"Team Cherry\",\n  \"tags\": \"Metroidvania, Souls-like, Platformer, Indie, Adventure, Atmospheric, Exploration, Difficult, Hand-drawn, Great Soundtrack, Fantasy, Mystery, Singleplayer, Dark, Combat, Boss Rush, Action, Lore-Rich, 2D, Challenging\",\n  \"source_citation\": \"Steam store page for Hollow Knight\"\n}",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true
+    },
+    {
+      "title": "Quarnix Vortex Protocol IX",
+      "input_source": "scripts/probes/g2-fixture.json Tranche A",
+      "expectation": "nonexistent",
+      "prompt": "Enrich the catalogue entry for the video game titled \"Quarnix Vortex Protocol IX\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.",
+      "latency_ms": 1330,
+      "usage": {
+        "promptTokenCount": 117,
+        "candidatesTokenCount": 81,
+        "totalTokenCount": 198,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 117
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 81
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0002376,
+        "tokens_in": 117,
+        "tokens_in_cached": 0,
+        "tokens_out": 81,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        }
+      },
+      "text": "{\n  \"title\": \"Quarnix Vortex Protocol IX\",\n  \"publisher\": null,\n  \"original_game_release_date\": null,\n  \"confidence_score\": 0.1,\n  \"steam_app_id\": null,\n  \"studio\": null,\n  \"tags\": null,\n  \"source_citation\": null\n}",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true,
+      "non_null_fields_for_nonexistent_title": []
+    },
+    {
+      "title": "Barkley, Shut Up and Jam: Gaiden",
+      "input_source": "scripts/probes/g2-fixture.json Tranche B",
+      "expectation": "obscure",
+      "prompt": "Enrich the catalogue entry for the video game titled \"Barkley, Shut Up and Jam: Gaiden\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.",
+      "latency_ms": 1359,
+      "usage": {
+        "promptTokenCount": 121,
+        "candidatesTokenCount": 67,
+        "totalTokenCount": 188,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 121
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 67
+          }
+        ]
+      },
+      "cost": {
+        "computed_cost_usd": 0.0002038,
+        "tokens_in": 121,
+        "tokens_in_cached": 0,
+        "tokens_out": 67,
+        "context_tier": "<=200K",
+        "formula": "((prompt - cached + toolUsePrompt) * input + cached * cached_input + (candidates + thoughts) * output) / 1e6",
+        "assumptions": [
+          "toolUsePromptTokenCount billed at the input rate (the page has no separate tool line)",
+          "thoughtsTokenCount billed as output, per the page's 'response and reasoning' wording"
+        ],
+        "rates_per_1m": {
+          "input": 0.3,
+          "cached_input": 0.03,
+          "output": 2.5
+        }
+      },
+      "text": "{\"title\": \"Barkley, Shut Up and Jam: Gaiden\", \"publisher\": null, \"original_game_release_date\": null, \"confidence_score\": 0.2, \"steam_app_id\": null, \"studio\": null, \"tags\": null, \"source_citation\": null}",
+      "parse_ok": true,
+      "violations": [],
+      "schema_honoured": true
+    }
+  ],
+  "exchanges": [
+    {
+      "attempt": 1,
+      "started_at": "2026-09-24T23:44:59.535Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Hollow Knight\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\"}],\"role\":\"user\"}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseSchema\":{\"type\":\"OBJECT\",\"properties\":{\"title\":{\"type\":\"STRING\"},\"publisher\":{\"type\":\"STRING\",\"nullable\":true},\"original_game_release_date\":{\"type\":\"STRING\",\"nullable\":true},\"confidence_score\":{\"type\":\"NUMBER\",\"minimum\":0,\"maximum\":1},\"steam_app_id\":{\"type\":\"STRING\",\"nullable\":true},\"studio\":{\"type\":\"STRING\",\"nullable\":true},\"tags\":{\"type\":\"STRING\",\"nullable\":true},\"source_citation\":{\"type\":\"STRING\",\"nullable\":true}},\"required\":[\"title\",\"publisher\",\"original_game_release_date\",\"confidence_score\",\"steam_app_id\",\"studio\",\"tags\",\"source_citation\"]},\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 2236,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 24 Sep 2026 23:45:03 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"{\\n  \\\"title\\\": \\\"Hollow Knight\\\",\\n  \\\"publisher\\\": \\\"Team Cherry\\\",\\n  \\\"original_game_release_date\\\": \\\"2017-02-24\\\",\\n  \\\"confidence_score\\\": 1,\\n  \\\"steam_app_id\\\": \\\"367520\\\",\\n  \\\"studio\\\": \\\"Team Cherry\\\",\\n  \\\"tags\\\": \\\"Metroidvania, Souls-like, Platformer, Indie, Adventure, Atmospheric, Exploration, Difficult, Hand-drawn, Great Soundtrack, Fantasy, Mystery, Singleplayer, Dark, Combat, Boss Rush, Action, Lore-Rich, 2D, Challenging\\\",\\n  \\\"source_citation\\\": \\\"Steam store page for Hollow Knight\\\"\\n}\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\",\n      \"avgLogprobs\": -0.23656147756394308\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 114,\n    \"candidatesTokenCount\": 157,\n    \"totalTokenCount\": 271,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 114\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 157\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-09-24T23:45:01.816471Z\",\n  \"responseId\": \"_bW1atfqMbaQtPUP-uu8sQg\"\n}\n"
+    },
+    {
+      "attempt": 2,
+      "started_at": "2026-09-24T23:45:01.783Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Quarnix Vortex Protocol IX\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\"}],\"role\":\"user\"}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseSchema\":{\"type\":\"OBJECT\",\"properties\":{\"title\":{\"type\":\"STRING\"},\"publisher\":{\"type\":\"STRING\",\"nullable\":true},\"original_game_release_date\":{\"type\":\"STRING\",\"nullable\":true},\"confidence_score\":{\"type\":\"NUMBER\",\"minimum\":0,\"maximum\":1},\"steam_app_id\":{\"type\":\"STRING\",\"nullable\":true},\"studio\":{\"type\":\"STRING\",\"nullable\":true},\"tags\":{\"type\":\"STRING\",\"nullable\":true},\"source_citation\":{\"type\":\"STRING\",\"nullable\":true}},\"required\":[\"title\",\"publisher\",\"original_game_release_date\",\"confidence_score\",\"steam_app_id\",\"studio\",\"tags\",\"source_citation\"]},\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 1310,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 24 Sep 2026 23:45:04 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"{\\n  \\\"title\\\": \\\"Quarnix Vortex Protocol IX\\\",\\n  \\\"publisher\\\": null,\\n  \\\"original_game_release_date\\\": null,\\n  \\\"confidence_score\\\": 0.1,\\n  \\\"steam_app_id\\\": null,\\n  \\\"studio\\\": null,\\n  \\\"tags\\\": null,\\n  \\\"source_citation\\\": null\\n}\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\"\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 117,\n    \"candidatesTokenCount\": 81,\n    \"totalTokenCount\": 198,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 117\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 81\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-09-24T23:45:03.673587Z\",\n  \"responseId\": \"_7W1arOOKZ-MtPUP_b-4uAI\"\n}\n"
+    },
+    {
+      "attempt": 3,
+      "started_at": "2026-09-24T23:45:03.113Z",
+      "method": "POST",
+      "url": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+      "request_headers": {
+        "content-type": "application/json",
+        "user-agent": "google-genai-sdk/2.23.0 gl-node/v22.23.2",
+        "x-goog-api-client": "google-genai-sdk/2.23.0 gl-node/v22.23.2"
+      },
+      "request_body": "{\"contents\":[{\"parts\":[{\"text\":\"Enrich the catalogue entry for the video game titled \\\"Barkley, Shut Up and Jam: Gaiden\\\". Return only facts you can verify. Use null for any field you cannot verify. If you do not recognise the game, say so through a low confidence_score and null fields rather than guessing.\"}],\"role\":\"user\"}],\"generationConfig\":{\"responseMimeType\":\"application/json\",\"responseSchema\":{\"type\":\"OBJECT\",\"properties\":{\"title\":{\"type\":\"STRING\"},\"publisher\":{\"type\":\"STRING\",\"nullable\":true},\"original_game_release_date\":{\"type\":\"STRING\",\"nullable\":true},\"confidence_score\":{\"type\":\"NUMBER\",\"minimum\":0,\"maximum\":1},\"steam_app_id\":{\"type\":\"STRING\",\"nullable\":true},\"studio\":{\"type\":\"STRING\",\"nullable\":true},\"tags\":{\"type\":\"STRING\",\"nullable\":true},\"source_citation\":{\"type\":\"STRING\",\"nullable\":true}},\"required\":[\"title\",\"publisher\",\"original_game_release_date\",\"confidence_score\",\"steam_app_id\",\"studio\",\"tags\",\"source_citation\"]},\"thinkingConfig\":{\"thinkingBudget\":0}}}",
+      "latency_ms": 1356,
+      "status": 200,
+      "response_headers": {
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-encoding": "gzip",
+        "content-type": "application/json; charset=UTF-8",
+        "date": "Thu, 24 Sep 2026 23:45:05 GMT",
+        "server": "scaffolding on HTTPServer2",
+        "transfer-encoding": "chunked",
+        "vary": "Origin, X-Origin, Referer",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "SAMEORIGIN",
+        "x-xss-protection": "0"
+      },
+      "response_body": "{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"role\": \"model\",\n        \"parts\": [\n          {\n            \"text\": \"{\\\"title\\\": \\\"Barkley, Shut Up and Jam: Gaiden\\\", \\\"publisher\\\": null, \\\"original_game_release_date\\\": null, \\\"confidence_score\\\": 0.2, \\\"steam_app_id\\\": null, \\\"studio\\\": null, \\\"tags\\\": null, \\\"source_citation\\\": null}\"\n          }\n        ]\n      },\n      \"finishReason\": \"STOP\"\n    }\n  ],\n  \"usageMetadata\": {\n    \"promptTokenCount\": 121,\n    \"candidatesTokenCount\": 67,\n    \"totalTokenCount\": 188,\n    \"trafficType\": \"ON_DEMAND\",\n    \"promptTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 121\n      }\n    ],\n    \"candidatesTokensDetails\": [\n      {\n        \"modality\": \"TEXT\",\n        \"tokenCount\": 67\n      }\n    ]\n  },\n  \"modelVersion\": \"gemini-2.5-flash\",\n  \"createTime\": \"2026-09-24T23:45:05.183724Z\",\n  \"responseId\": \"Aba1aqybC66BtrIP9b6A4QY\"\n}\n"
+    }
+  ],
+  "computed_cost_usd": 0.0008681,
+  "result": {
+    "honoured": 3,
+    "of": 3,
+    "note": "schema_honoured is validation against the db.ts-derived columns, not a judgement of factual accuracy"
+  },
+  "exit_status": 0,
+  "finished_at": "2026-09-24T23:45:04.545Z"
+}

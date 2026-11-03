@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Stub `sleep` for ai056-preprod-contended-stop-test/run.sh: 100 times faster, so the
+# driver's 30 s helper wait and 90 s health wait take well under a second each.
+# REAL_SLEEP is resolved by run.sh before this directory is put on PATH.
+exec "$REAL_SLEEP" "$(awk -v s="$1" 'BEGIN { printf "%.3f", s / 100 }')"

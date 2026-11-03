@@ -1,0 +1,166 @@
+{
+  "_note": "Published list rates used to compute cost and to bound it before a request (AGENTS.md §3.1 condition 5). Nothing here is a charge. Standard tier only (the 2.5 tables have Standard | Priority | Flex/Batch tabs; the probes send no tier option). A rate is only as current as read_at.",
+  "source_url_requested": "https://cloud.google.com/vertex-ai/generative-ai/pricing?authuser=0",
+  "source_url_final": "not reported by the fetch tool; the page title read \"Agent Platform Pricing | Google Cloud\" (on 2026-09-24 the page redirected to https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing)",
+  "read_at": "2026-10-08T03:45:00Z",
+  "read_by": "Claude (Prompt Author, chat session), WebFetch of the public page; no credential. The tool returns extracted text in which table cells run together with no delimiter, so verbatim_rows are recorded exactly as extracted, cells unseparated. To be spot-checked against the page by the operator.",
+  "previous_read": {
+    "read_at": "2026-09-24T22:24:45.622Z",
+    "read_by": "Claude Code (agent), plain HTTPS GET of the public page; no credential",
+    "note": "That read recorded gemini-2.5-flash and text-embedding-005 only. Their figures are unchanged in this read."
+  },
+  "models": {
+    "gemini-2.5-flash": {
+      "tier": "Standard (Gemini 2.5 table tabs: Standard | Priority | Flex/Batch)",
+      "unit": "USD per 1M tokens",
+      "input_le_200k": 0.3,
+      "input_gt_200k": 0.3,
+      "cached_input_le_200k": 0.03,
+      "cached_input_gt_200k": 0.03,
+      "output_le_200k": 2.5,
+      "output_gt_200k": 2.5,
+      "audio_input_le_200k": 1.0,
+      "audio_input_gt_200k": 1.0,
+      "audio_input_note": "The extracted Audio Input row reads $1.00 then $0.30 in the >200K column, which matches no other tab (Priority is $1.80 in both). Recorded as $1.00 in both columns, the higher figure, until the operator checks the page. No code uses the audio rate: the run guard admits text-only requests.",
+      "context_cache_storage_per_1m_per_hour": 1.0,
+      "context_cache_storage_note": "Extracted as $0.000001 per token-hour ('Price Tok/hr'), the same for both context tiers; stored here as USD per 1M token-hours.",
+      "max_output_tokens": 65536,
+      "max_output_tokens_note": "The run guard's output ceiling (task proposal 015, decision 2 (b)). Codex's third pre-dispatch audit of WU-006 (2026-10-08) read Google's model page and reports 65,536 maximum output tokens for this model. The Prompt Author's fetch tool could not read that page.",
+      "max_input_tokens": 1048576,
+      "max_input_tokens_note": "The run guard's input ceiling for a grounded request, whose retrieved content may add input the request body does not show. Codex's third pre-dispatch audit of WU-006 (2026-10-08) read Google's model page and reports a 1,048,576-token context for this model. Google does not state that this context bounds grounding's internal processing; it is the best bound available.",
+      "billing_skus_covered": [
+        "Gemini 2.5 Flash GA Text Input",
+        "Gemini 2.5 Flash GA Text Output",
+        "Gemini 2.5 Flash GA Thinking Text Output (the 'response and reasoning' output rate)",
+        "Gemini 2.5 Flash GA Text Output (Thinking On) (the same rate)",
+        "Gemini 2.5 Flash GA Image Input (the 'Input (text, image, video)' rate)",
+        "Gemini 2.5 Flash Input Text Caching (the cached input rate)",
+        "Gemini 2.5 Flash GA Input Text Caching Storage (context_cache_storage_per_1m_per_hour)"
+      ],
+      "verbatim_rows": [
+        "ModelTypeToken Price <= 200K tokensPrice > 200K tokensPrice <= 200K cached input tokensPrice > 200K cached input tokens",
+        "Gemini 2.5 FlashInput (text, image, video)$0.30$0.30$0.03$0.03",
+        "Audio Input$1.00$0.30$0.10$0.10",
+        "Text output (response and reasoning)$2.50$2.50N/AN/A",
+        "Context Cache Storage: ModelPrice Tok/hr<= 200K input tokensPrice Tok/hr > 200K input tokens",
+        "Gemini 2.5 Flash$0.000001$0.000001"
+      ]
+    },
+    "gemini-2.5-pro": {
+      "tier": "Standard (Gemini 2.5 table tabs: Standard | Priority | Flex/Batch)",
+      "unit": "USD per 1M tokens",
+      "input_le_200k": 1.25,
+      "input_gt_200k": 2.5,
+      "cached_input_le_200k": 0.125,
+      "cached_input_gt_200k": 0.25,
+      "output_le_200k": 10.0,
+      "output_gt_200k": 15.0,
+      "context_cache_storage_per_1m_per_hour": 4.5,
+      "context_cache_storage_note": "Extracted as $0.0000045 per token-hour, the same for both context tiers; stored here as USD per 1M token-hours.",
+      "max_output_tokens": 65536,
+      "max_output_tokens_note": "The run guard's output ceiling (task proposal 015, decision 2 (b)). Codex's third pre-dispatch audit of WU-006 (2026-10-08) read Google's model page and reports 65,536 maximum output tokens for this model. The Prompt Author's fetch tool could not read that page.",
+      "max_input_tokens": 1048576,
+      "max_input_tokens_note": "The run guard's input ceiling for a grounded request, whose retrieved content may add input the request body does not show. Codex's third pre-dispatch audit of WU-006 (2026-10-08) read Google's model page and reports a 1,048,576-token context for this model. Google does not state that this context bounds grounding's internal processing; it is the best bound available.",
+      "billing_skus_covered": [
+        "Gemini 2.5 Pro Text Input",
+        "Gemini 2.5 Pro Text Output",
+        "Gemini 2.5 Pro Thinking Text Output (the 'response and reasoning' output rate)",
+        "Gemini 2.5 Pro Input Text Caching (the cached input rate)"
+      ],
+      "verbatim_rows": [
+        "ModelTypeToken Price <= 200K tokensPrice > 200K tokensPrice <= 200K cached input tokensPrice > 200K cached input tokens",
+        "Gemini 2.5 ProInput (text, image, video, audio)$1.25$2.50$0.125$0.25",
+        "Text output (response and reasoning)$10.00$15.00N/AN/A",
+        "Context Cache Storage: ModelPrice Tok/hr<= 200K input tokensPrice Tok/hr > 200K input tokens",
+        "Gemini 2.5 Pro$0.0000045$0.0000045"
+      ]
+    },
+    "text-embedding-005": {
+      "tier": "Embeddings for Text (Excluding Gemini Embedding), Global, Online requests",
+      "unit": "USD per 1,000 count",
+      "input_per_1000_count": 2.5e-5,
+      "unit_ambiguity": "The page does not define 'count' for this row, and does not name text-embedding-005. The scripts price it on the API's metadata.billableCharacterCount (#114) and also record the string length and the API's token_count, so the figure can be recomputed on either basis.",
+      "verbatim_rows": [
+        "ModelTypeRegionRequest TypePrice / 1,000 count (USD)",
+        "Embeddings for Text (Excluding Gemini Embedding)InputGlobalOnline requests$0.000025",
+        "Batch requests$0.00002",
+        "OutputGlobalOnline requestsNo charge",
+        "Batch requestsNo charge"
+      ]
+    },
+    "gemini-3.8-flash": {
+      "tier": "Standard, Global endpoint (the 3.8 Flash table has Standard | Priority | Flex/Batch tabs and Global | Non-global rows; P-11 calls the global endpoint and sends no tier option)",
+      "unit": "USD per 1M tokens",
+      "read_at": "2026-10-13T15:30:00Z",
+      "read_by": "Claude (Prompt Author, chat session), WebFetch of the public pricing page; no credential. This row only; the other rows keep the file's read_at.",
+      "input_le_200k": 0.75,
+      "input_gt_200k": 0.75,
+      "cached_input_le_200k": 0.075,
+      "cached_input_gt_200k": 0.075,
+      "output_le_200k": 3.75,
+      "output_gt_200k": 3.75,
+      "context_cache_storage_per_1m_per_hour": 1.0,
+      "context_cache_storage_note": "The page's explicit-caching row names the Gemini 3.x Flash family, including 3.8 Flash, at $0.000001 per token-hour for both context tiers; stored here as USD per 1M token-hours.",
+      "pricing_period_note": "Introductory pricing through December 31, 2026; from January 1, 2027 the page lists $1.50 / $7.50 (Global). The section 3.1 window ends 2026-11-06, so only the introductory rates apply to it.",
+      "non_global_note": "Non-global rows are $0.825 input and $4.125 output. P-11 calls the global endpoint only (gemini-3.8-flash answered countTokens on aiplatform.googleapis.com, location global, and not on us-central1, 2026-10-13), so the non-global rates are not used.",
+      "max_output_tokens": 65536,
+      "max_output_tokens_note": "Google's Gemini API 'What's new in Gemini 3.8 Flash' page states '64k max output tokens' (read 2026-10-13); recorded as 65,536.",
+      "max_input_tokens": 1048576,
+      "max_input_tokens_note": "The same page states a '1M token context window'; recorded as 1,048,576, the figure the 2.5 rows use for 1M.",
+      "verbatim_rows": [
+        "Gemini 3.8 Flash*through December 31, 2026 | Input (text, image, video, audio) | Global | $0.75 | $0.75 | $0.075 | $0.075",
+        "Non-global | $0.825 | $0.825 | $0.0825 | $0.0825",
+        "Text output (response and reasoning) | Global | $3.75 | $3.75 | N/A | N/A",
+        "Non-global | $4.125 | $4.125 | N/A | N/A",
+        "Gemini 3.8 Flash, Gemini 3.7 Flash, Gemini 3.6 Flash, and CodeMender using these models are offered with introductory pricing of $0.75 / $3.75 per 1M tokens input / output through December 31, 2026. Starting January 1, 2027, standard pricing of $1.5 / $7.5 per 1M tokens input / output will apply."
+      ],
+      "verbatim_rows_note": "The fetch tool returned the table as cells; they are recorded here separated by ' | '. To be spot-checked against the page by the operator."
+    },
+    "gemini-3.1-flash-lite": {
+      "tier": "Standard, Global endpoint (the Gemini 3 Standard table has Global and Non-global rows; enrich-gemini.mjs calls the global endpoint and sends no tier option)",
+      "unit": "USD per 1M tokens",
+      "read_at": "2026-10-13T20:00:00Z",
+      "read_by": "Claude (Prompt Author, chat session), WebFetch of the public pricing page (https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing) and of Google's Gemini API model page for gemini-3.1-flash-lite; no credential. This row only; the other rows keep their own read_at.",
+      "input_le_200k": 0.25,
+      "input_gt_200k": 0.25,
+      "cached_input_le_200k": 0.025,
+      "cached_input_gt_200k": 0.025,
+      "output_le_200k": 1.5,
+      "output_gt_200k": 1.5,
+      "non_global_note": "Non-global rows are $0.275 input and $1.65 output. enrich-gemini.mjs calls the global endpoint only (gemini-3.1-flash-lite answered countTokens on aiplatform.googleapis.com, location global, and not on us-central1, 2026-10-13), so the non-global rates are not used.",
+      "audio_note": "The page also lists audio input at $0.50 (Global). It is not recorded as a rate: the run guard admits text and inline PNG or JPEG images only.",
+      "max_output_tokens": 65536,
+      "max_output_tokens_note": "Google's Gemini API model page for gemini-3.1-flash-lite states an output token limit of 65,536 (read 2026-10-13).",
+      "max_input_tokens": 1048576,
+      "max_input_tokens_note": "The same page states an input token limit of 1,048,576.",
+      "thinking_note": "Google's Gemini 3 developer guide: minimal is supported on Gemini 3.1 Flash-Lite, where it is the default, and minimal 'does not guarantee that thinking is off'. The run guard bounds every thinking level by max_output_tokens.",
+      "verbatim_rows": [
+        "Gemini 3.1 Flash-Lite | Input (text, image, video) | Global | $0.25 | $0.25 | $0.025 | $0.025",
+        "Non-global* | $0.275 | $0.275 | $0.0275 | $0.0275",
+        "Input (audio) | Global | $0.50 | $0.50 | $0.05 | $0.05",
+        "Non-global* | $0.55 | $0.55 | $0.055 | $0.055",
+        "Text output (response and reasoning) | Global | $1.50 | $1.50 | N/A | N/A",
+        "Non-global* | $1.65 | $1.65 | N/A | N/A"
+      ],
+      "verbatim_rows_note": "The fetch tool returned the rows with cells run together; they are recorded here separated by ' | ', in the table's column order (<= 200K, > 200K, <= 200K cached, > 200K cached). To be spot-checked against the page by the operator."
+    }
+  },
+  "fees": {
+    "grounding_google_search": {
+      "usd_per_1000": 35,
+      "unit": "USD per 1,000 Grounding Prompts",
+      "free_allowance": "1,500 Grounding Prompts per day combined for Gemini 2.0 Flash, 2.5 Flash and 2.5 Flash-Lite; 10,000 per day for Gemini 2.5 Pro. The run guard assumes none: every grounded request is bounded and computed at the full fee.",
+      "verbatim_rows": [
+        "FeatureUsagePrice (USD)",
+        "Grounding with Google SearchGemini 2.0 Flash, 2.5 Flash and 2.5 Flash-Lite include a combined 1,500 Grounding Prompts per day at no additional charge. Gemini 2.5 Pro includes 10,000 Grounding Prompts per day at no additional charge.Grounding Prompts exceeding those limits are billed at $35 per 1,000 Grounding Prompts.",
+        "0 count to 10,000 count$0.00 (Free)",
+        "10,000 count and above$35.00",
+        "** Grounding with Google Search and Web Grounding for Enterprise are billed only when a Grounding Prompt successfully returns sources (i.e., results containing at least one support URL from the web). Gemini model usage fees apply separately."
+      ]
+    }
+  },
+  "not_on_page": [
+    "No separate price line for the code execution tool. P-5 cost is computed from tokens only.",
+    "Implicit caching has no storage line. Explicit caching does: Gemini 2.5 Flash GA Input Text Caching Storage was billed on 2026-09-22 (05:00 to 10:00, #122), so the earlier note that these scripts do not use explicit caching did not match the billing record. What created that cache is not established here (#122 keeps it open). The run guard refuses any request that names an explicit cache."
+  ]
+}

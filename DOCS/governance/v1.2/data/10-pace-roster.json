@@ -1,0 +1,742 @@
+{
+  "version": "1.2",
+  "date": "2026-10-01",
+  "operator": "Joel Georges",
+  "roles": {
+    "prompt_author": {
+      "purpose": "Produce self-contained prompts for Implementers and Researchers",
+      "pace": {
+        "P": {
+          "agent": "ChatGPT",
+          "eligibility": "Different party from content writer and executor.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Claude Desktop",
+          "eligibility": "Different party from content writer and executor.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "M365 Copilot Premium",
+          "eligibility": "Bounded review only; no synthesis.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Execution inactive; §3.2 grants no spending.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-MODEL",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "specifier_architect": {
+      "pace": {
+        "P": {
+          "agent": "ChatGPT",
+          "status": "pending bounded specification test"
+        },
+        "A": {
+          "agent": "Claude Desktop",
+          "status": "pending bounded specification test"
+        },
+        "C": {
+          "agent": "M365 Copilot Premium",
+          "restriction": "authorship exclusion"
+        },
+        "E": {
+          "agent": "Codex"
+        }
+      }
+    },
+    "implementer_frontend": {
+      "pace": {
+        "P": {
+          "agent": "Cline × ChatGPT Subscription / operator-designated Codex",
+          "eligibility": "Option (b): Claude Desktop WUD; non-OpenAI WUD only. One level, not independent backups. Codex needs an eligible local runtime and full §4 gate evidence. Cline Frontend remains conditional on citation-discipline follow-up.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Execution inactive; no §3.2 spending authorization.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Claude Code",
+          "eligibility": "Unavailable for a Claude Desktop WUD. Requires ChatGPT authorship or substantive re-authorship, required independent document audit and Codex reviewer assignment; otherwise unavailable.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": null,
+          "eligibility": "Unavailable: no assigned lane; Antigravity not qualified for this specialty.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-OPTION",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "implementer_backend": {
+      "pace": {
+        "P": {
+          "agent": "Antigravity × Gemini 3.8 Flash High",
+          "eligibility": "Assessed bounded backend or comparable specialized work only; WUD vendor/model family must differ from Google. No Argon inheritance.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Execution inactive; no §3.2 spending authorization.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Cline × ChatGPT Subscription / operator-designated Codex",
+          "eligibility": "Non-OpenAI WUD only; both routes occupy this one level. Codex needs an eligible local runtime and full §4 gate evidence.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Claude Code",
+          "eligibility": "Non-Anthropic WUD only, with required independent document audit and Codex as reviewer.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-BOUNDED",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "implementer_devops": {
+      "pace": {
+        "P": {
+          "agent": "Cline × ChatGPT Subscription / operator-designated Codex",
+          "eligibility": "Option (b): Claude Desktop WUD; non-OpenAI WUD only. One level, not independent backups. Codex needs an eligible local runtime and full §4 gate evidence.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Execution inactive; no §3.2 spending authorization.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Claude Code",
+          "eligibility": "Unavailable for a Claude Desktop WUD. Requires ChatGPT authorship or substantive re-authorship, required independent document audit and Codex reviewer assignment; otherwise unavailable.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": null,
+          "eligibility": "Unavailable: no assigned lane; Antigravity not qualified for this specialty.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-OPTION",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "implementer_database": {
+      "pace": {
+        "P": {
+          "agent": "Cline × ChatGPT Subscription / operator-designated Codex",
+          "eligibility": "Option (b): Claude Desktop WUD; non-OpenAI WUD only. One level, not independent backups. Codex needs an eligible local runtime and full §4 gate evidence.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Execution inactive; no §3.2 spending authorization.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Claude Code",
+          "eligibility": "Unavailable for a Claude Desktop WUD. Requires ChatGPT authorship or substantive re-authorship, required independent document audit and Codex reviewer assignment; otherwise unavailable.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": null,
+          "eligibility": "Unavailable: no assigned lane; Antigravity not qualified for this specialty.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-OPTION",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "implementer_cloud": {
+      "pace": {
+        "P": {
+          "agent": "Cline × ChatGPT Subscription / operator-designated Codex",
+          "eligibility": "Option (b): Claude Desktop WUD; non-OpenAI WUD only. One level, not independent backups. Codex needs an eligible local runtime and full §4 gate evidence.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Execution inactive; no §3.2 spending authorization.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Claude Code",
+          "eligibility": "Unavailable for a Claude Desktop WUD. Requires ChatGPT authorship or substantive re-authorship, required independent document audit and Codex reviewer assignment; otherwise unavailable.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": null,
+          "eligibility": "Unavailable: no assigned lane; Antigravity not qualified for this specialty.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-OPTION",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "implementer_specialized": {
+      "pace": {
+        "P": {
+          "agent": "Antigravity × Gemini 3.8 Flash High",
+          "eligibility": "Assessed bounded backend or comparable specialized work only; WUD vendor/model family must differ from Google. No Argon inheritance.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Execution inactive; no §3.2 spending authorization.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Cline × ChatGPT Subscription / operator-designated Codex",
+          "eligibility": "Non-OpenAI WUD only; both routes occupy this one level. Codex needs an eligible local runtime and full §4 gate evidence.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Claude Code",
+          "eligibility": "Non-Anthropic WUD only, with required independent document audit and Codex as reviewer.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "outside_qualification": "Use implementer_devops full P/A/C/E and conditions; no Antigravity implementation qualification.",
+      "correlations": "CF-HOST; CF-BOUNDED; CF-OPTION for work outside qualification",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "schema_architecture_discovery": {
+      "pace": {
+        "P": {
+          "agent": "Antigravity",
+          "eligibility": "Gemini 3.8 Flash High: assessed discovery only.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "ChatGPT (Plus)",
+          "eligibility": "Existing Alternate retained.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Claude Code",
+          "eligibility": "Existing Contingency retained.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Cline × ChatGPT Subscription",
+          "eligibility": "Existing Emergency retained.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-DISCOVERY",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "github_implementer": {
+      "pace": {
+        "P": {
+          "agent": "Copilot Pro",
+          "eligibility": "Small, bounded GitHub work; prefer deterministic authorized operations.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "ChatGPT (Plus)",
+          "eligibility": "Existing Alternate retained; never file own authored text.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Cline × ChatGPT Subscription",
+          "eligibility": "Existing Contingency retained; §10.1 author/filer separation.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Existing Emergency retained; execution inactive under §3.2.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-GITHUB",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "researcher": {
+      "pace": {
+        "P": {
+          "agent": "ChatGPT"
+        },
+        "A": {
+          "agent": "Claude Desktop"
+        },
+        "C": {
+          "agent": "M365 Copilot Premium"
+        },
+        "E": {
+          "agent": "DeepSeek Agent"
+        }
+      }
+    },
+    "document_writer_content": {
+      "pace": {
+        "P": {
+          "agent": "ChatGPT",
+          "eligibility": "Historical persistence caveat retained; no self-placement or self-audit.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Claude Desktop",
+          "eligibility": "No self-placement or self-audit.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "M365 Copilot Premium",
+          "eligibility": "Bounded review only; no synthesis.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Cline × ChatGPT Subscription",
+          "eligibility": "Different party from prompt writer, placer and auditor.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-CONTENT; CF-MODEL",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "document_writer_placement": {
+      "pace": {
+        "P": {
+          "agent": "ChatGPT (Plus)",
+          "eligibility": "Existing Primary retained; never own content.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Claude Code",
+          "eligibility": "Existing Alternate retained; never audit own placement.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Cline × ChatGPT Subscription",
+          "eligibility": "Existing Contingency retained.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Existing Emergency retained; execution inactive under §3.2.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-PLACEMENT",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "document_auditor": {
+      "pace": {
+        "P": {
+          "agent": "Claude Desktop",
+          "eligibility": "Non-Anthropic-authored documents only; no own content or placement.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "ChatGPT (Plus)",
+          "eligibility": "Non-OpenAI-authored documents only; no own content or placement.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": null,
+          "eligibility": "Unavailable: no assigned lane.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Claude Code",
+          "eligibility": "Non-Anthropic-authored documents only; never its own placement or content; Emergency only when P/A/C unavailable.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-AUDIT",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "adversarial_reviewer": {
+      "pace": {
+        "P": {
+          "agent": "DeepSeek Agent",
+          "condition": "exclude artifacts it authored"
+        },
+        "A": {
+          "agent": "Claude Desktop"
+        },
+        "C": {
+          "agent": "Codex"
+        },
+        "E": {
+          "agent": "M365 Copilot Premium",
+          "condition": "only when it did not author the artifact"
+        }
+      }
+    },
+    "github_analyst": {
+      "pace": {
+        "P": {
+          "agent": "Copilot Pro",
+          "eligibility": "Small, bounded GitHub work; prefer deterministic authorized operations.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "ChatGPT (Plus)",
+          "eligibility": "Existing Alternate retained; never file own authored text.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": "Cline × ChatGPT Subscription",
+          "eligibility": "Existing Contingency retained; §10.1 author/filer separation.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": "Cline × DeepSeek",
+          "eligibility": "Existing Emergency retained; execution inactive under §3.2.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-GITHUB",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    },
+    "reviewer_code_security": {
+      "pace": {
+        "P": {
+          "agent": "Claude Code",
+          "eligibility": "Read-only default; never own implementation or placement.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "A": {
+          "agent": "Codex",
+          "eligibility": "When Primary unavailable, capped or conflicted; never own implementation or placement.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "C": {
+          "agent": null,
+          "eligibility": "Unavailable: no assigned lane.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        },
+        "E": {
+          "agent": null,
+          "eligibility": "Unavailable: no assigned lane.",
+          "model_selection": "explicit before dispatch; no automatic switching"
+        }
+      },
+      "correlations": "CF-HOST; CF-REVIEW",
+      "adoption": "Operator adoption-comment-and-merge mechanism in AGENTS.md §16; named exceptions in 04 §3."
+    }
+  },
+  "historical_roster_2026_10_01": {
+    "version": "1.2",
+    "date": "2026-10-01",
+    "operator": "Joel Georges",
+    "roles": {
+      "prompt_author": {
+        "purpose": "Produce self-contained prompts for Implementers and Researchers",
+        "pace": {
+          "P": {
+            "agent": "Claude Desktop",
+            "model": "Opus 5.5",
+            "effort": "xhigh",
+            "tier": "Max (5x)"
+          },
+          "A": {
+            "agent": "ChatGPT",
+            "model": "GPT-5.6 Sol",
+            "effort": "High",
+            "tier": "Plus"
+          },
+          "C": {
+            "agent": "M365 Copilot Premium",
+            "restriction": "bounded review only"
+          },
+          "E": {
+            "agent": "Cline × DeepSeek",
+            "model": "deepseek-v4-pro"
+          }
+        }
+      },
+      "specifier_architect": {
+        "pace": {
+          "P": {
+            "agent": "ChatGPT",
+            "status": "pending bounded specification test"
+          },
+          "A": {
+            "agent": "Claude Desktop",
+            "status": "pending bounded specification test"
+          },
+          "C": {
+            "agent": "M365 Copilot Premium",
+            "restriction": "authorship exclusion"
+          },
+          "E": {
+            "agent": "Codex"
+          }
+        }
+      },
+      "implementer_frontend": {
+        "pace": {
+          "P": {
+            "agent": "Cline × ChatGPT Subscription",
+            "condition": "conditional on citation-discipline follow-up"
+          },
+          "A": {
+            "agent": "Claude Code"
+          },
+          "C": {
+            "agent": "Cline × DeepSeek"
+          },
+          "E": {
+            "agent": "Antigravity",
+            "condition": "conditional on browser automation being active"
+          }
+        }
+      },
+      "implementer_backend": {
+        "pace": {
+          "P": {
+            "agent": "Cline × ChatGPT Subscription"
+          },
+          "A": {
+            "agent": "Claude Code"
+          },
+          "C": {
+            "agent": "Antigravity",
+            "note": "confirmed via retest"
+          },
+          "E": {
+            "agent": "Copilot Pro"
+          }
+        }
+      },
+      "implementer_devops": {
+        "pace": {
+          "P": {
+            "agent": "Cline × ChatGPT Subscription"
+          },
+          "A": {
+            "agent": "Claude Code"
+          },
+          "C": {
+            "agent": "Cline × DeepSeek"
+          },
+          "E": {
+            "agent": "Copilot Pro"
+          }
+        }
+      },
+      "implementer_database": {
+        "pace": {
+          "P": {
+            "agent": "Cline × ChatGPT Subscription"
+          },
+          "A": {
+            "agent": "Claude Code"
+          },
+          "C": {
+            "agent": "Cline × DeepSeek"
+          },
+          "E": {
+            "agent": null
+          }
+        }
+      },
+      "implementer_cloud": {
+        "pace": {
+          "P": {
+            "agent": "Cline × ChatGPT Subscription"
+          },
+          "A": {
+            "agent": "Copilot Pro"
+          },
+          "C": {
+            "agent": "Cline × DeepSeek"
+          },
+          "E": {
+            "agent": "Claude Code"
+          }
+        }
+      },
+      "implementer_specialized": {
+        "pace": {
+          "P": {
+            "agent": "Cline × ChatGPT Subscription"
+          },
+          "A": {
+            "agent": "Claude Code"
+          },
+          "C": {
+            "agent": "Antigravity",
+            "note": "confirmed via retest"
+          },
+          "E": {
+            "agent": "Copilot Pro"
+          }
+        }
+      },
+      "schema_architecture_discovery": {
+        "pace": {
+          "P": {
+            "agent": "Antigravity",
+            "note": "confirmed"
+          },
+          "A": {
+            "agent": "ChatGPT"
+          },
+          "C": {
+            "agent": "Claude Code"
+          },
+          "E": {
+            "agent": "Cline × ChatGPT Subscription"
+          }
+        }
+      },
+      "github_implementer": {
+        "pace": {
+          "P": {
+            "agent": "Copilot Pro"
+          },
+          "A": {
+            "agent": "ChatGPT"
+          },
+          "C": {
+            "agent": "Cline × ChatGPT Subscription"
+          },
+          "E": {
+            "agent": "Cline × DeepSeek"
+          }
+        }
+      },
+      "researcher": {
+        "pace": {
+          "P": {
+            "agent": "ChatGPT"
+          },
+          "A": {
+            "agent": "Claude Desktop"
+          },
+          "C": {
+            "agent": "M365 Copilot Premium"
+          },
+          "E": {
+            "agent": "DeepSeek Agent"
+          }
+        }
+      },
+      "document_writer_content": {
+        "pace": {
+          "P": {
+            "agent": "Claude Desktop",
+            "note": "reformatted source test — Excellent"
+          },
+          "A": {
+            "agent": "ChatGPT",
+            "caveat": "no file persistence"
+          },
+          "C": {
+            "agent": "M365 Copilot Premium",
+            "restriction": "bounded review only"
+          },
+          "E": {
+            "agent": "Cline × ChatGPT Subscription"
+          }
+        }
+      },
+      "document_writer_placement": {
+        "pace": {
+          "P": {
+            "agent": "ChatGPT"
+          },
+          "A": {
+            "agent": "Claude Code"
+          },
+          "C": {
+            "agent": "Cline × ChatGPT Subscription"
+          },
+          "E": {
+            "agent": "Cline × DeepSeek"
+          }
+        }
+      },
+      "document_auditor": {
+        "pace": {
+          "P": {
+            "agent": null,
+            "note": "recused"
+          },
+          "A": {
+            "agent": "Claude Desktop",
+            "restriction": "non-Claude-authored, non-OpenAI-authored documents only"
+          },
+          "C": {
+            "agent": "ChatGPT",
+            "restriction": "non-OpenAI-authored documents only"
+          },
+          "E": {
+            "agent": "Claude Code",
+            "restriction": "non-Claude-authored documents only"
+          }
+        }
+      },
+      "adversarial_reviewer": {
+        "pace": {
+          "P": {
+            "agent": "DeepSeek Agent",
+            "condition": "exclude artifacts it authored"
+          },
+          "A": {
+            "agent": "Claude Desktop"
+          },
+          "C": {
+            "agent": "Codex"
+          },
+          "E": {
+            "agent": "M365 Copilot Premium",
+            "condition": "only when it did not author the artifact"
+          }
+        }
+      },
+      "github_analyst": {
+        "pace": {
+          "P": {
+            "agent": "Copilot Pro"
+          },
+          "A": {
+            "agent": "ChatGPT"
+          },
+          "C": {
+            "agent": "Cline × ChatGPT Subscription"
+          },
+          "E": {
+            "agent": "Cline × DeepSeek"
+          }
+        }
+      }
+    }
+  },
+  "operating_model_amendment": {
+    "authored": "2026-10-19",
+    "base": "e2e709da9171adae1dead5d65e20e25744fb5d7c",
+    "issue_ref": "#139",
+    "work_id": "AI-070",
+    "effect": "Effective at the operator’s merge into `develop` of the PR for governance issue #139 (work ID AI-070), using the adoption mechanism in AGENTS.md §16. The adoption comment, merge SHA and evaluation end date are recorded on that issue.",
+    "adoption": "The adoption mechanism is the operator’s adoption comment on governance issue #139, posted before merge and citing the SHA-256 of the final authoritative `edit-blocks.json`. The comment explicitly adopts option (b), every changed PACE assignment, and every named correlated-failure exception in 04 §3. The operator-approved merge of that issue’s PR into `develop` makes this amendment effective; the comment alone grants no authority.",
+    "option_b": "Claude Desktop WUD authoring outside Antigravity qualifications; required document audit before implementation.",
+    "exceptions": {
+      "CF-HOST": "Roles 1–17: all local slots share the operator workstation. A host outage can defeat all local levels together. Remote host independence is unknown and never inferred.",
+      "CF-MODEL": "Roles 1/2/11/12/15: a Microsoft-branded surface may use an OpenAI or Anthropic upstream model. Record the actual selected model before dispatch; possible provider overlap is acknowledged, never permission to ignore artifact restrictions.",
+      "CF-OPTION": "Roles 3/5/6/7 and Role 8 outside qualification: Primary Cline × ChatGPT and inactive Alternate Cline × DeepSeek share Cline; Codex is an OpenAI/provider/account substitution inside Primary, not another level. Claude Desktop WUD author and Claude Code fallback share Anthropic, so fallback remains unavailable until the WUD is substantively authored by ChatGPT and audited as required; Codex must review.",
+      "CF-BOUNDED": "Roles 4/8 assessed classes: inactive Alternate and Contingency Cline routes share Cline; Contingency Codex and Cline × ChatGPT share OpenAI/account. No independent extra level is claimed.",
+      "CF-DISCOVERY": "Role 9 Alternate ChatGPT and Emergency Cline × ChatGPT share OpenAI and the ChatGPT Plus account; both may fail together.",
+      "CF-GITHUB": "Roles 10/16 Alternate ChatGPT and Contingency Cline × ChatGPT share OpenAI/account; Contingency and inactive Emergency share Cline. Copilot’s actual upstream model can add provider overlap and must be checked.",
+      "CF-CONTENT": "Role 12 Primary ChatGPT and Emergency Cline × ChatGPT share OpenAI/account. M365 remains bounded-review-only and can add upstream overlap.",
+      "CF-PLACEMENT": "Role 13 Primary ChatGPT and Contingency Cline × ChatGPT share OpenAI/account; Contingency and inactive Emergency share Cline. This acknowledges backup correlation, not permission for self-placement.",
+      "CF-AUDIT": "Role 14 Primary Claude Desktop and Emergency Claude Code share Anthropic provider and account. Exhaustion or provider failure can remove both; Anthropic-authored documents have only ChatGPT Alternate.",
+      "CF-REVIEW": "Role 17 local Primary and Alternate share the workstation. The option-(b) Anthropic WUD author and Claude Code reviewer share provider/account across roles. Distinct-agent code review remains required; no three-vendor independence is claimed."
+    },
+    "capacity": "When the shared Claude allowance is exhausted, Role 14 Primary and Emergency fail together, and option-(b) WUD authoring stops. New work that needs either service waits. Work whose WUD is already authored and validly audited may proceed only while its implementation and review lanes remain eligible and available; an exhausted Claude Code review lane may use independent Codex review where permitted. When ChatGPT Plus is exhausted, the option-(b) Primary, the ChatGPT authorship precondition for the Claude Code fallback, and Role 17 Alternate fail. An existing ChatGPT-authored, validly audited WUD does not require fresh authorship solely because of that exhaustion, but still needs an available independent reviewer. No paid route is added. Record blocked-work duration and cause, including authoring, audit, implementation and review delays, on the governance issue as evaluation evidence.",
+    "history": "All original configuration values and confirmed-via-retest notes are preserved in historical_roster_2026_10_01. No current model/effort/entitlement is inferred.",
+    "role_2": "Both pending bounded specification tests retained.",
+    "role_11": "Assignments unchanged; no paid execution granted.",
+    "deepseek_execution": "inactive; no §3.2 spending authorization",
+    "slot_configuration": "Before dispatch record actual model, effort, tier, tool surface, non-secret account and host references, verification date and qualification evidence."
+  }
+}

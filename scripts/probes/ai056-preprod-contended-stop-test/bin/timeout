@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Stub `timeout` for ai056-preprod-contended-stop-test/run.sh: the real timeout with
+# every duration divided by 10, so a hang is still cut off, in a tenth of the time.
+# Accepts the form the driver uses: timeout -k KILL DURATION COMMAND...
+# REAL_TIMEOUT is resolved by run.sh before this directory is put on PATH.
+scale() { awk -v s="$1" 'BEGIN { printf "%.2f", s / 10 }'; }
+[ "$1" = -k ] || { echo "stub timeout: expected -k" >&2; exit 125; }
+k=$(scale "$2"); d=$(scale "$3"); shift 3
+exec "$REAL_TIMEOUT" -k "$k" "$d" "$@"

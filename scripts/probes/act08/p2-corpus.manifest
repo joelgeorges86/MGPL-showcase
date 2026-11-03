@@ -1,0 +1,19 @@
+# ACT-08 P-2 corpus manifest: one entry per line, in submission order.
+# "@git-ls-files" expands to the output of `git ls-files` at run time (the repository tree).
+# Every other line is a repository-relative path. A missing path stops the probe; nothing is skipped silently.
+# Rule files: AGENTS.md, CLAUDE.md, .clinerules/*. Schema authority: src/db.ts.
+@git-ls-files
+AGENTS.md
+CLAUDE.md
+.clinerules/00-README.md
+.clinerules/01-core-contract.md
+.clinerules/02-workforce-routing.md
+.clinerules/03-agentic-xml-delimiters.md
+.clinerules/03-mgpl-sprint-doctrine.md
+.clinerules/04-definition-of-done.md
+.clinerules/05-retailer-taxonomy.md
+.clinerules/06-drm-offline-moddability.md
+.clinerules/07-retro-preservation.md
+.clinerules/08-state-persistence.md
+.clinerules/09-ui-patterns.md
+src/db.ts

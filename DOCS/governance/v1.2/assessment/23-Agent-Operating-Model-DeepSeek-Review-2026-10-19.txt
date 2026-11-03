@@ -1,0 +1,319 @@
+**Evidence limitation (prominent):** I do not have access to the private MGPL repository, its `AGENTS.md`, the PACE matrix, `DOCS/CODE_REVIEW_WORKFLOW.md`, the spending ledger, the GitHub issue procedure, or the assessment history. The governance description in the audit request is therefore **Operator-reported**, not independently verified by me. My verdict is a **provisional formal-compliance assessment** based on that summary. Where an exact rule could change the outcome, I identify the source that must be inspected. I do not claim to have verified Claude’s undisclosed findings.
+
+---
+
+## 1. Independent auditor declaration
+
+**Model identity.** I am DeepSeek, operating through a client interface. My upstream vendor is DeepSeek. I have no persistent memory of prior MGPL sessions and cannot confirm whether I previously contributed to MGPL model-selection research. If such reports exist, I do not treat them as independent corroboration of anything in this audit.
+
+**Interest in DeepSeek API adoption.** DeepSeek is proposed as a cost-sensitive implementation model through Cline. I therefore have a direct commercial interest in the proposal’s Cline/DeepSeek route being authorized. I disclose that interest explicitly. In this audit I give the strongest existing alternative to Cline/DeepSeek: **Claude Code or Codex for implementation where vendor separation permits, and Cline/OpenAI for non-OpenAI-authored WUDs** (subject to capacity and independence). I do not recommend DeepSeek API adoption on the basis of price alone.
+
+**Audit scope.** I assess the proposal’s logic, its consistency with the governance summary supplied, its independence properties, its spending controls, and the minimum governance path to lawful activation. I do not write to the repository, file issues, execute code, authorize spending, or change governance.
+
+**Access limitations.** No private repository access. No credentials, financial accounts, production logs, or personal data were accessed. The findings below distinguish documented violations from hypothetical risks and policy preferences.
+
+---
+
+## 2. Executive verdict
+
+**FAIL — blocking findings require correction before adoption.**
+
+The proposal’s **direction is largely coherent**: concentrating ChatGPT on authoring, Claude Desktop on document review, Claude Code on PR review, Antigravity on Gemini engineering, and Cline on cost-sensitive implementation is a recognizable specialization model. Some parts are sensible and likely to improve throughput if implemented with discipline.
+
+The proposal is **not formally compliant** with the governance described. Blocking defects include:
+
+1. **No established spending authorization for general DeepSeek API usage through Cline.** The existing §3.1 ledger entries are narrow and do not automatically authorize a general route.
+2. **The Document Auditor restriction is unresolved.** Claude Desktop’s existing auditor slot excludes OpenAI-authored documents, so its review of ChatGPT-authored WUDs is advisory, not operative, unless a scoped exception is recorded.
+3. **The transition PR review is self-referential.** ChatGPT authors the governance content, Claude Code is proposed as placement agent, and the amendment would remove Codex’s mandatory review. The current Codex requirement remains binding until the amendment is adopted, and Claude Code cannot review its own placement work.
+4. **PACE four-level independence is not demonstrated.** Multiple roles depend on Anthropic (Claude Desktop and Claude Code) and OpenAI (ChatGPT and Codex). The matrix must record actual independence, not assume four levels exist.
+5. **Gemini/Antigravity eligibility is overbroad.** Historical failures do not disqualify Antigravity, but they do not qualify Gemini 3.8 Flash or Gemini 4 Argon. Model/task-specific qualification is required; broad engineering eligibility immediately is not defensible.
+6. **OpenAI auto-reload is an uncontrolled Reserved Action risk** if enabled without a recorded monthly cap.
+
+This is a **FAIL of formal governance compliance**, not a rejection of the operating model’s logic. The proposal can become compliant with targeted corrections, most of which are recording decisions and evidence rather than inventing new machinery.
+
+---
+
+## 3. Confirmed requirements (Operator’s intended model, not expanded)
+
+The Principal Operator intends, for an initial two-week trial:
+
+- **ChatGPT** becomes Primary Prompt Author and Primary WUD/specification writer; drafts governance amendments and external research; proposes GitHub issues/updates where appropriate; incorporates document-audit findings.
+- **Claude Desktop** becomes Primary document reviewer of ChatGPT-authored WUDs, prompts, governance proposals, and material documentation changes. It cannot audit its own authored documents. It remains an alternate author.
+- **Claude Code** becomes ordinary independent PR reviewer, reviewing diffs, approved WUDs, tests, security controls and invariants. It must not review implementation it authored. Codex is no longer the default PR reviewer after the new rule is effective, but remains eligible where independence permits.
+- **Antigravity** becomes a principal engineering implementation agent using native Google Gemini models: Gemini 3.8 Flash for routine development/test/repository discovery; Gemini 4 Argon for complex engineering when available and explicitly selected. Antigravity is not a Prompt Author, WUD writer, governance author, document auditor, or external researcher.
+- **Cline** continues with OpenAI via the ChatGPT subscription and DeepSeek via API. DeepSeek is available for appropriately qualified low-cost engineering, not exclusive. Cline/Vertex AI is not assumed reliable.
+- **Codex** is available for selected engineering work, but must not implement ChatGPT-authored WUDs.
+- **GitHub Copilot** focuses on small GitHub-specific tasks; deterministic commands preferred where AI is unnecessary.
+- **No new agents, subscriptions, paid execution routes, or infrastructure are planned.** No automatic model changes or billable overages beyond approved authorization.
+
+---
+
+## 4. Governance conflict matrix
+
+| ID | Current rule/source | Proposed behavior | Actual conflict | Severity | Required correction | Verification status |
+|---|---|---|---|---|---|---|---|
+| **G-01 Auditor eligibility** | PACE Document Auditor: Claude Desktop Alternate restricted to non-Claude/non-OpenAI-authored documents; ChatGPT Contingency restricted to non-OpenAI-authored | Claude Desktop ordinarily reviews ChatGPT-authored WUDs/governance | Direct conflict: Claude Desktop is excluded from OpenAI-authored documents in the current slot | **Critical** | Operator records a scoped temporary auditor exception and/or amends the anomalous Claude restriction, preserving different-vendor separation; exception recorded separately from change-request approval | Operator-reported; source must be inspected |
+| **G-02 Transition PR review** | `AGENTS.md` §5 and `DOCS/CODE_REVIEW_WORKFLOW.md` require Codex review of substantive code changes | Claude Code becomes normal PR reviewer; Codex no longer default | The governance-transition PR would remove the binding Codex requirement while being authored/placed by parties interested in the outcome | **Critical** | Transition PR reviewed under **current** Codex requirement or by an independent reviewer who did not author or place it; amendment becomes effective only after operator merge | Operator-reported |
+| **G-03 PACE independence** | Four backup levels; prohibited shared harnesses/upstream developers/serving platforms/accounts/hosts | ChatGPT/OpenAI, Claude Desktop/Anthropic, Claude Code/Anthropic, Antigravity/Google, Cline/OpenAI or DeepSeek, Codex/OpenAI | Only two upstream vendors cover authoring and review; Anthropic covers both document review and PR review; OpenAI covers both authoring and possible implementation | **High** | Record actual independent levels; do not claim four independent levels; identify single-vendor concentration and mitigation | Operator-reported; matrix must be inspected |
+| **G-04 Gemini scope** | Historical Gemini 3.1 Pro chatbot and 2.5 Pro via Cline/Vertex failures; no Antigravity qualification in binding governance | Broad Antigravity engineering eligibility for 3.8 Flash and 4 Argon | Historical failures do not automatically disqualify Antigravity, but neither 3.8 Flash nor 4 Argon has been qualified for MGPL engineering | **High** | Explicit model/task qualification for 3.8 Flash and separately for 4 Argon; preserve historical failures unchanged; no inference that 3.8 Flash success qualifies 4 Argon | Operator-reported; assessment files must be inspected |
+| **G-05 DeepSeek spending** | `AGENTS.md` §3.1 narrowly scoped ledger entries for specific Vertex/Gemini operations, bounded by routes, models, caps, stop conditions and expiry | General Cline/DeepSeek low-cost engineering route | Narrow entries do not authorize a general DeepSeek API route | **Critical** | Capped ledger entry for Cline/DeepSeek with route, model, request cap, dollar cap, stop condition, expiry; or keep route inactive | Operator-reported; §3.1 must be inspected |
+| **G-06 GitHub issue authority** | `AGENTS.md` §10.1 strict conditions: staged issue-body file named by operator, author/filer separation, SHA-256 evidence, no alteration, duplicate search; Reserved Actions/PAE for additional GitHub changes | ChatGPT determines whether new issues/updates should be proposed; Copilot handles approved issue filing/metadata | “Determines” is compatible with proposal only if ChatGPT does not self-file and all §10.1 conditions are met; otherwise conflict | **High** | Clarify ChatGPT may draft/propose but not file; filing remains operator-authorized and §10.1-compliant | Operator-reported |
+| **G-07 OpenAI auto-reload** | Reserved Actions model; spending controls; no unauthorized billable overages | Auto-reload reportedly enabled without established ceiling | Auto-reload without a recorded monthly cap is an uncontrolled recurring spending authority | **High** | Record monthly reload limit or disable auto-reload pending operator decision; treat as Reserved Action | Operator-reported; billing settings not verified |
+
+---
+
+## 5. Findings
+
+### F-01 — General DeepSeek API spending is not authorized
+
+- **Location:** `AGENTS.md` §3.1 (as summarized); proposal §4.E.
+- **Severity:** **Critical.**
+- **Evidence disposition:** Operator-reported; source not inspected.
+- **Description:** The existing ledger entries are described as narrowly bounded to named Vertex/Gemini routes. They do not authorize a general Cline/DeepSeek engineering route. The proposal treats DeepSeek as “available” and “selectively” used without a defined ceiling, stop condition, or expiry.
+- **Why it matters:** An unauthorized billable route is a direct spending-control violation. “Low cost” is not an authorization. A route that is cheap per token can still accumulate cost through retries, long contexts, and failed attempts.
+- **Exact correction:** Before any Cline/DeepSeek use, add a bounded ledger entry specifying: named route (Cline → DeepSeek provider), permitted models, task classes, request cap, dollar cap, stop condition, expiry date, and operator approval record. If those are not established, keep the route inactive.
+- **Blocks adoption:** **Yes.**
+
+### F-02 — Claude Desktop’s auditor slot does not authorize ordinary review of ChatGPT-authored documents
+
+- **Location:** PACE Document Auditor row; proposal §4.B.
+- **Severity:** **Critical.**
+- **Evidence disposition:** Operator-reported; source not inspected.
+- **Description:** The current Claude Desktop Alternate slot is described as restricted to non-Claude-authored and non-OpenAI-authored documents. A ChatGPT-authored WUD is OpenAI-authored. Claude’s review is therefore advisory unless the operator records a scoped exception or amends the restriction.
+- **Why it matters:** An advisory review is not an operative audit. Treating it as operative would bypass the author/auditor vendor-separation rule without a recorded decision. Conversely, refusing any Claude review would leave the ordinary workflow without a practical document auditor, because the Primary slot is recused.
+- **Exact correction:** The operator should record a **scoped temporary auditor exception** for Claude Desktop to audit ChatGPT-authored documents for the trial, preserving the general different-vendor rule outside the exception. Separately, amend the anomalous Claude restriction in the PACE matrix prospectively. The exception should be recorded **separately from approval of the change request** because it changes an assignment restriction, not just the proposal’s content.
+- **Blocks adoption:** **Yes.**
+
+### F-03 — The transition PR cannot be reviewed by the agent placing it
+
+- **Location:** `AGENTS.md` §5; `DOCS/CODE_REVIEW_WORKFLOW.md`; proposal §4.C.
+- **Severity:** **Critical.**
+- **Evidence disposition:** Operator-reported; source not inspected.
+- **Description:** The proposal would make Claude Code the ordinary PR reviewer. The governance-transition PR would implement that change. If Claude Code is also the placement agent, it would be reviewing or effectively certifying its own placement work. The current Codex requirement remains binding until the amendment is adopted; the amendment cannot self-authorize its own review waiver.
+- **Why it matters:** This is the central self-certification risk in the proposal. A governance change that removes the reviewer who would otherwise review it is procedurally invalid unless an independent reviewer performs the transition review.
+- **Exact correction:** The transition PR must be reviewed under the **current** Codex requirement, or by another independent reviewer who did not author or place the content, with the review identifying the reviewed commit. Claude Code may place the amendment but must not review its own placement. The new Claude Code PR-review rule becomes effective only after operator merge and a recorded effective date.
+- **Blocks adoption:** **Yes.**
+
+### F-04 — PACE matrix does not demonstrate four independent backup levels
+
+- **Location:** PACE matrix; independence rules on shared harnesses/vendors/accounts/hosts.
+- **Severity:** **High.**
+- **Evidence disposition:** Operator-reported; matrix not inspected.
+- **Description:** The proposed model concentrates document review and PR review on Anthropic (Claude Desktop and Claude Code) and authoring plus possible implementation on OpenAI (ChatGPT and Codex). Antigravity provides Google diversity, but only for implementation. DeepSeek provides another vendor only for implementation. The matrix may have four labels but not four independent upstream vendors for each role.
+- **Why it matters:** PACE levels are resilience claims. If Alternate and Contingency share the same upstream vendor, they are not independent backup levels for a vendor-level outage or policy change. Treating them as four levels would be inaccurate.
+- **Exact correction:** Record actual independence per role. Where only two independent upstream vendors exist, state that explicitly and identify the concentration. Do not invent a fourth vendor. Mitigations can include sequencing rather than parallel capacity.
+- **Blocks adoption:** **Yes**, as a recording and accuracy correction, not necessarily as a rejection of the roles themselves.
+
+### F-05 — Antigravity/Gemini eligibility is overbroad and conflates models
+
+- **Location:** Proposal §4.D; historical Gemini assessment files.
+- **Severity:** **High.**
+- **Evidence disposition:** Operator-reported; historical reports not inspected.
+- **Description:** The historical failures are reported for Gemini 3.1 Pro on chatbot and Gemini 2.5 Pro via Cline/Vertex. Those failures are relevant but not universal. The proposal nonetheless grants broad Antigravity engineering eligibility for Gemini 3.8 Flash and Gemini 4 Argon. No binding qualification for either model/task combination is described.
+- **Why it matters:** A model change is not automatically a new qualification. Successful 3.8 Flash use would not establish 4 Argon reliability. Broad eligibility before qualification creates a quality and governance gap, especially for complex work.
+- **Exact correction:** Grant **explicit model/task qualifications**: e.g., “Gemini 3.8 Flash — routine development, tests, repository discovery, gate diagnosis,” and separately “Gemini 4 Argon — complex engineering only when explicitly selected and after a bounded qualification.” Preserve the historical failures unchanged, without erasing or universalizing them.
+- **Blocks adoption:** **Yes**, until the qualification record exists.
+
+### F-06 — ChatGPT’s issue-determination role must not become filing authority
+
+- **Location:** `AGENTS.md` §10.1; proposal §4.A.
+- **Severity:** **High.**
+- **Evidence disposition:** Operator-reported; source not inspected.
+- **Description:** The proposal says ChatGPT “determines, where appropriate, whether new GitHub issues or updates should be proposed.” That is compatible with drafting and proposing. It is not compatible with self-filing under §10.1, which requires separation between issue-body author and filing agent, a staged file named by the operator, SHA-256 evidence, no alteration, and duplicate search.
+- **Why it matters:** Issue creation is a reserved/propose-approve-execute action. Letting the author determine and file would collapse the separation §10.1 exists to preserve.
+- **Exact correction:** Clarify in the amendment that ChatGPT may draft/propose issue content, but filing remains with an authorized filing agent under §10.1 and operator approval. Copilot may file only after those conditions are met.
+- **Blocks adoption:** **Yes**, as a clarification.
+
+### F-07 — OpenAI auto-reload is an uncontrolled spending authority
+
+- **Location:** Reserved Actions model; billing settings.
+- **Severity:** **High.**
+- **Evidence disposition:** Operator-reported; billing settings not independently verified.
+- **Description:** The operator reportedly has auto-reload enabled without a clearly established ceiling. If the monthly reload limit is blank or absent, auto-reload can purchase repeatedly. This is a recurring spending authorization, not a one-time purchase.
+- **Why it matters:** The proposal’s cost-control goal is undermined if an OpenAI billing route can replenish without a recorded cap. A spending cap is not satisfied by “the operator is watching.”
+- **Exact correction:** Record a monthly reload limit or disable auto-reload pending operator decision. Treat enabling or raising the limit as a Reserved Action. Separately, verify whether the observed “short reset” is an AI-credit reset or a different billing-cycle artifact; do not assume it is the monthly subscription allowance reset.
+- **Blocks adoption:** **Yes**, until a cap or disable decision is recorded.
+
+### F-08 — Mandatory Claude Desktop + Claude Code review may bottleneck one Anthropic allowance
+
+- **Location:** Proposal §4.B and §4.C; subscription/allowance facts.
+- **Severity:** **Medium** (operational risk, not a formal rule violation).
+- **Evidence disposition:** Inferred from the proposal’s role assignments; actual allowance balances unknown.
+- **Description:** Both the ordinary document review and the ordinary PR review would consume Anthropic capacity. If they share a subscription or rate-limit pool, a busy week could exhaust the allowance at the review stage, which is precisely when throughput matters.
+- **Why it matters:** The proposal aims to prevent allowance exhaustion but may relocate it to the review bottleneck.
+- **Exact correction:** Record whether Claude Desktop and Claude Code share an allowance or account. If they do, define a fallback ordering (e.g., Codex for PR review where independence permits; Claude Desktop for document review; or DeepSeek for first-pass advisory review) without weakening formal independence. Monitor review-queue delay as a trial metric.
+- **Blocks adoption:** No, provided the bottleneck is acknowledged and a fallback is recorded.
+
+### F-09 — GitHub Copilot reset observation appears inconsistent with documented billing
+
+- **Location:** Proposal §4.G.
+- **Severity:** **Low.**
+- **Evidence disposition:** Sourced externally; the operator’s specific observation is operator-reported.
+- **Description:** Public GitHub documentation and community reports indicate Copilot AI Credits reset monthly on the 1st at 00:00 UTC, not on a short interval. The operator’s “short usage-reset interval” may be a different mechanism (e.g., premium-request recovery, session limit, or plan-specific behavior).
+- **Why it matters:** Cost planning based on an incorrect reset assumption can misallocate work.
+- **Exact correction:** Verify the specific Copilot plan’s billing mechanism before relying on any reset interval. Do not equate it with the ChatGPT subscription’s monthly reset. Restricting Copilot to small tasks is sensible, but deterministic commands should be the default where they accomplish the same result.
+- **Blocks adoption:** No.
+
+---
+
+## 6. Independence assessment
+
+| Scenario | Spec author | Implementer | PR reviewer | Status | Governing constraint and reasoning |
+|---|---|---|---|---|---|
+| **A** | ChatGPT / OpenAI | Antigravity / Gemini | Claude Code / Anthropic | **Permitted, conditional** | Three different upstream vendors: OpenAI, Google, Anthropic. Spec-author/implementer separation satisfied. Code author/reviewer separation satisfied. Condition: Antigravity must be qualified for the task/model; Claude Code must not have authored the implementation. |
+| **B** | ChatGPT / OpenAI | Cline / DeepSeek | Claude Code / Anthropic | **Permitted, conditional** | Three different vendors. Spec-author/implementer separation satisfied. Condition: DeepSeek route must have spending authorization and qualification; Claude Code must not have authored. This is the scenario where my conflict of interest is most direct. |
+| **C** | Claude / Anthropic | Codex / OpenAI | Claude Code / Anthropic | **Conditional — review independence weak** | Spec author and PR reviewer share Anthropic. The explicit rule is “code authors and code reviewers must be distinct agents,” not necessarily different upstream vendors; Claude Code is a distinct agent from Claude Desktop/Claude author. But the same-vendor review reduces adversarial value and may violate the spirit of vendor separation. Permitted only if the matrix’s agent-level rule is satisfied and the shared-vendor risk is recorded; stronger practice is Codex or another non-Anthropic reviewer for Claude-authored specs. |
+| **D** | ChatGPT / OpenAI | Codex / OpenAI | Claude Code / Anthropic | **Prohibited as described** | Spec author and implementer share OpenAI. The vendor-separation rule for WUD author/implementer is violated. Codex cannot implement a ChatGPT-authored WUD under the current rule. Changing the reviewer does not cure the author/implementer conflict. |
+| **E** | Claude / Anthropic | Claude Code / Anthropic | Codex / OpenAI | **Prohibited** | Spec author and implementer share Anthropic. Claude Code is the same upstream vendor as the Claude-authored WUD. The implementer is not independent of the specification author at vendor level. Even though the reviewer is independent, the author/implementer separation fails. |
+
+**Role independence vs PACE-level independence.** Role independence asks whether the specific agent performing role X is distinct from the agent performing role Y. PACE-level independence asks whether backup levels are genuinely independent under the prohibited-sharing rules (harness, upstream developer, serving platform, account, host). Scenario C can satisfy role independence at agent level while failing PACE-level vendor independence. The proposal should not conflate the two.
+
+---
+
+## 7. Financial and quota analysis
+
+**Confirmed external pricing facts (not MGPL-specific balances):**
+
+- DeepSeek V4 Flash is extremely inexpensive at published API rates — on the order of $0.14 per million input tokens and $0.28 per million output tokens, with much lower cached-input rates. DeepSeek V4 Pro is more expensive but still well below frontier Anthropic/OpenAI rates. Cline’s routing can inflate effective costs if provider pinning is absent; one public issue reports 3–5× inflation from unpinned OpenRouter routing.
+- GitHub Copilot moved to AI Credits/usage-based billing; included allowances reset monthly on the 1st at 00:00 UTC, not on a short interval. One credit equals $0.01 of usage.
+- OpenAI auto-reload supports an optional monthly reload limit. Leaving the limit blank permits unlimited automatic recharges. This is a confirmed product behavior, not an MGPL-specific finding.
+
+**Operations consuming capacity or expenditure:**
+
+| Operation | Likely cost mechanism | Bottleneck risk |
+|---|---|---|
+| ChatGPT authoring/research | ChatGPT subscription allowance, possibly purchased credits/auto-reload | Auto-reload without cap; weekly allowance exhaustion |
+| Claude Desktop document review | Anthropic subscription allowance | Shared Anthropic pool with Claude Code |
+| Claude Code PR review | Anthropic subscription allowance | Same shared pool; review queue delay |
+| Antigravity/Gemini engineering | Google/Antigravity capacity | Model availability (Argon explicitly selected); 3.8 Flash capacity |
+| Cline/OpenAI | ChatGPT subscription via Cline | Same OpenAI allowance as authoring; vendor conflict for ChatGPT-authored WUDs |
+| Cline/DeepSeek | DeepSeek API, billed per token | **No general authorization**; hidden retry/rework costs |
+| Codex implementation | OpenAI/ChatGPT subscription or Codex allowance | Same vendor pool as ChatGPT; not a vendor-separated implementer for ChatGPT WUDs |
+| GitHub Copilot | GitHub AI Credits, monthly reset | Small if restricted to bounded tasks; deterministic commands cheaper |
+
+**Qualitative economic assessment.** DeepSeek is likely the lowest marginal-cost implementation route, but token price is not total cost. Failed attempts, rework, review cycles, and context inflation can erase the advantage. The proposal’s cost-control argument for DeepSeek is plausible **if** the route is capped and qualified. It is not sufficient to justify authorization on price alone.
+
+The more serious financial risk is **not** DeepSeek; it is **uncontrolled auto-reload and shared Anthropic review capacity**. A cheap implementer does not help if the review stage is the bottleneck or if an OpenAI billing route replenishes without a ceiling.
+
+**Cheaper already-funded alternatives for review independence:**
+
+- **Codex** for PR review where it did not author the implementation and where OpenAI/Anthropic separation is not required by a specific rule.
+- **Claude Desktop** for document review only, with PR review moved to Codex where independence permits.
+- **DeepSeek** for **advisory** first-pass review, not formal Document Auditor authority, if a capped route is authorized — but this creates a conflict because DeepSeek would be reviewing work that may compete with its own implementation route. The conflict should be disclosed.
+- **Deterministic tooling** (type-check, lint, tests, security scanners) as the primary quality gate, with AI review focused on judgment calls rather than volume.
+
+**No invented caps.** I do not assert a dollar ceiling. The operator must record actual balances and caps; the audit can only specify the structure those controls must take.
+
+---
+
+## 8. Comparison with Claude’s reported blockers
+
+**Claude blocker 1 — Missing change-request issue.**
+
+- **Agree.** A governance change should have a change-request issue before placement, under the existing issue procedure. The issue itself must comply with §10.1, including author/filer separation and SHA-256 evidence. This is a procedural prerequisite, not merely a preference.
+- **Unverified:** Whether an issue now exists; whether it complies with §10.1.
+
+**Claude blocker 2 — Auditor eligibility.**
+
+- **Agree with the interpretation.** Claude Desktop’s current auditor slot excludes OpenAI-authored documents. Its review of a ChatGPT-authored proposal is advisory unless a scoped exception is recorded. DeepSeek’s Adversarial Reviewer assignment does **not** confer Document Auditor authority; it is a different role. DeepSeek can provide independent adversarial input, but it cannot fill the Document Auditor slot or cure the restriction.
+- **Correction:** Record a scoped temporary auditor exception for Claude Desktop and/or amend the anomalous restriction prospectively, preserving different-vendor separation outside the exception. The exception must be recorded separately from approval of the change request.
+- **Unverified:** Exact wording of the PACE Document Auditor restrictions.
+
+**Claude blocker 3 — Implementer order.**
+
+- **Partly agree.** The proposed priority order (Antigravity principal, Cline/DeepSeek cost-sensitive alternative, Cline/OpenAI or Codex for compatible non-OpenAI WUDs, Claude Code normal PR reviewer) is directionally sensible. It is **not sufficient** because it does not resolve the Gemini qualification gap or the DeepSeek spending authorization. “Qualified and authorized” is a placeholder, not a control. The order also creates scenario C weakness when Claude authors the WUD and Claude Code reviews; that must be recorded as a shared-vendor risk.
+- **Correction:** Add explicit model/task qualification for 3.8 Flash and 4 Argon, and a capped DeepSeek ledger entry. Record the Claude-author/Claude-review shared-vendor condition.
+
+**Claude blocker 4 — Spending authorization.**
+
+- **Agree.** No general DeepSeek API spending authorization exists in the binding governance described. A defined ceiling, stop condition, and expiry — or continued inactivity — is required. The ChatGPT auto-reload concern is also valid; auto-reload without a cap is an uncontrolled spending authority and should be treated as a Reserved Action.
+- **Correction:** Bounded DeepSeek ledger entry; monthly OpenAI reload limit or disable auto-reload pending decision.
+- **Unverified:** Actual billing settings; actual DeepSeek usage; actual OpenAI reload cap.
+
+**Other Claude corrections supplied.**
+
+- **Codex transition PR review does not independently audit ChatGPT-authored governance content.** Correct. Codex reviewing placement code is not the same as document audit. Both functions may be needed, but they must be assigned separately and not conflated.
+- **Claude Desktop document audit and Codex PR/code-placement review are distinct purposes.** Correct. The proposal should not treat one as substituting for the other.
+- **Two historical Gemini failures must remain in the assessment record.** Correct. They should be preserved unchanged, without erasure or universalization.
+- **Claude Code as placement agent must not approve its own work.** Correct. This is the self-certification defect.
+
+I do **not** adjudicate the undisclosed findings. I do not claim to have verified all 12.
+
+---
+
+## 9. Required changes versus optional improvements
+
+### Governance-required corrections (blocking)
+
+1. **Record a scoped Document Auditor exception for Claude Desktop** to review ChatGPT-authored documents for the trial, and/or amend the anomalous Claude restriction prospectively. Record separately from change-request approval. Preserve different-vendor separation outside the exception.
+2. **Keep the current Codex PR-review requirement binding for the transition PR.** The transition PR must be reviewed under the existing rule or by an independent reviewer who did not author or place it. Claude Code may place but not review its own placement.
+3. **Add a bounded DeepSeek/Cline spending ledger entry** with route, models, task classes, request cap, dollar cap, stop condition, and expiry — or keep the route inactive.
+4. **Record a monthly OpenAI auto-reload limit or disable auto-reload** pending operator decision; treat it as a Reserved Action.
+5. **Add explicit model/task qualifications for Antigravity Gemini 3.8 Flash and separately for Gemini 4 Argon.** Do not grant broad engineering eligibility immediately.
+6. **Clarify that ChatGPT may propose but not file GitHub issues.** Filing remains under §10.1 and operator approval.
+7. **Record actual PACE independence.** Do not claim four independent backup levels if only two upstream vendors cover the relevant roles. Identify single-vendor concentrations.
+
+### Optional improvements (not blocking)
+
+- Record whether Claude Desktop and Claude Code share an allowance; define fallback ordering if they do.
+- Add trial metrics for review-queue delay, rework rate, and per-task cost.
+- Verify the Copilot billing mechanism before relying on any reset interval.
+- Prefer deterministic GitHub commands over Copilot for routine operations.
+- Record a revert trigger (e.g., two consecutive review-quality failures or a spending overrun) in the trial plan.
+
+I do not recommend new agents, subscriptions, or recurring administrative machinery. The existing governance structure is sufficient if the decisions are recorded.
+
+---
+
+## 10. Minimal compliant implementation sequence
+
+1. **File the change-request issue** under the existing MGPL issue procedure, including a staged issue-body file named by the operator, author/filer separation, SHA-256 evidence, duplicate search, and no alteration after filing. ChatGPT may draft/propose; an authorized filing agent files.
+2. **Record the scoped auditor exception** for Claude Desktop, separately from the change request. State the trial duration, the documents covered, the vendor-separation rule preserved outside the exception, and the operator’s approval. Alternatively or additionally, amend the anomalous Claude restriction prospectively.
+3. **Record spending decisions.** Add a capped Cline/DeepSeek ledger entry or keep the route inactive. Record an OpenAI auto-reload monthly limit or disable it pending decision.
+4. **Draft the governance amendment** (ChatGPT may author) covering: ChatGPT authoring, Claude Desktop review, Claude Code PR review, Antigravity qualifications, Cline routes, Codex role, Copilot scope, PACE independence record, and transition effective date.
+5. **Independently review the amendment under the current rules.** Codex reviews the transition PR under §5/`CODE_REVIEW_WORKFLOW.md`, or another independent reviewer who did not author or place it. Claude Desktop’s document review is advisory unless the exception is recorded; the exception makes it operative. Claude Code may place the amendment but must not review its own placement.
+6. **Run governance-relevant gates.** Type-check, lint, spelling, unit, E2E, and security gates as applicable; for governance-only changes, at minimum the documentation/lint/spelling gates and any repository-specific governance checks. A governance-only PR may have reduced application-test obligations, but it must not skip independent review and operator approval.
+7. **Operator merges.** The Principal Operator merges the amendment. No agent merges.
+8. **Record the effective date.** The new assignments become operational only after merge and a recorded effective date. Until then, the current Codex PR-review requirement and current auditor restrictions remain binding.
+9. **Run the two-week trial** with explicit qualifications, spending caps, and trial metrics.
+10. **Review and decide** whether to continue, adjust, or revert.
+
+**Revert triggers:** spending overrun beyond the recorded cap; repeated independence violations; review-quality degradation (e.g., missed blocking defects); inability to maintain the review queue within the trial period; or any evidence that a model/task qualification is invalid.
+
+---
+
+## 11. Final recommendation to the Principal Operator
+
+**Adopt with specific required corrections — not as proposed.**
+
+The operating model’s specialization logic is reasonable, and most of the defects are governance-recording defects rather than reasons to abandon the direction. But the proposal as written is not compliant: it would authorize an unbounded billable route, rely on an auditor whose slot excludes the documents in question, and remove the reviewer who would otherwise review the removal.
+
+The **strongest downside** of this recommendation is that the corrections delay activation and require the operator to make explicit spending and exception decisions. That is the correct trade: same-day activation without those decisions would create an unauthorized spending route and a self-certifying governance change.
+
+A limited pilot is a close second choice, but it is only credible **after** the corrections are recorded. A pilot without the auditor exception, spending cap, and transition reviewer would merely run the same defects at smaller scale.
+
+I do **not** recommend rejecting the model outright. I do **not** recommend adopting as proposed.
+
+---
+
+## 12. Unresolved evidence requests
+
+Only the evidence strictly necessary for a fully supported conclusion:
+
+1. **`AGENTS.md`** — exact text of §3.1 (billable external calls), §5 (PR review), and §10.1 (GitHub issues).
+2. **PACE Role Matrix** — exact Document Auditor assignments, Adversarial Reviewer assignments, independence rules, and backup-level definitions.
+3. **`DOCS/CODE_REVIEW_WORKFLOW.md`** — current Codex review requirement, commit-identification rule, and stale-review rule.
+4. **Change-request issue** — whether one exists, its filing evidence, and whether it complies with §10.1.
+5. **Spending ledger / authorization records** — current DeepSeek route status, any existing caps, OpenAI auto-reload monthly limit, and Anthropic allowance structure.
+6. **Historical Gemini assessment files** — exact scope of the 3.1 Pro and 2.5 Pro failures, and any Antigravity qualification evidence for 3.8 Flash or 4 Argon.
+7. **Copilot plan/billing record** — to confirm whether the observed reset is an AI-credit reset or another mechanism.
+
+---
+
+## Handoff summary
+
+- **Final verdict:** **FAIL** (provisional formal-compliance assessment; governance sources not independently verified).
+- **Blocking findings:** **7** — F-01 DeepSeek spending unauthorized; F-02 Claude auditor slot excludes ChatGPT-authored documents; F-03 transition PR self-certification; F-04 PACE independence not demonstrated; F-05 Antigravity/Gemini eligibility overbroad; F-06 ChatGPT issue-determination must not become filing authority; F-07 OpenAI auto-reload uncontrolled. F-08 and F-09 are nonblocking.
+- **Required operator decisions:** (a) scoped Claude Desktop auditor exception and/or PACE amendment; (b) independent reviewer for the transition PR under the current Codex rule; (c) capped DeepSeek ledger entry or inactive route; (d) OpenAI auto-reload monthly cap or disable; (e) explicit Gemini 3.8 Flash and 4 Argon qualifications; (f) clarification that ChatGPT proposes but does not file issues; (g) recorded PACE independence.
+- **Exact source documents still needed:** `AGENTS.md` §§3.1, 5, 10.1; PACE Role Matrix; `DOCS/CODE_REVIEW_WORKFLOW.md`; change-request issue; spending ledger/authorization records; historical Gemini assessment files; Copilot billing record.
+- **Next reviewer action:** Inspect the listed sources and confirm or revise the seven blocking findings. Do not activate the new assignments until the operator records the auditor exception, spending caps, transition reviewer, Gemini qualifications, and effective date, and the amendment is independently reviewed and operator-merged.

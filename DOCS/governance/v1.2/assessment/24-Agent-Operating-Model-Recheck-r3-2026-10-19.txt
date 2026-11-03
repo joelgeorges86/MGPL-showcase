@@ -1,0 +1,313 @@
+# Advisory Review r3: MGPL Agent Operating Model Amendment Package (2026-10-19)
+
+```text
+AUDITOR VERDICT (ADVISORY ONLY)
+-------------------------------
+Document: MGPL-governance-amendment-package (40 edit blocks, 16 target files)
+          edit-blocks.json SHA-256 6fda90a82e2d8cb9…  manifest.json 90a61a6770335391…
+Auditor:  Claude Desktop lane (Claude; session configured as claude-opus-5-5)
+Standing: ADVISORY. Current Role 14 restricts Claude Desktop to non-OpenAI-authored
+          documents. This review is not a formal Document Auditor verdict. The B-2
+          exception route stays withdrawn (r1).
+Date:     2026-10-19
+Basis:    remote develop e2e709da9171adae1dead5d65e20e25744fb5d7c (verified twice today)
+Verdict:  FAIL on the 06 scale (blocking findings; revise before adoption).
+          Mechanically exact and largely faithful. One provenance defect blocks
+          the transition as designed.
+```
+
+## 1. Summary
+
+The package is the most complete version so far:
+
+- All 40 blocks replay exactly, in order, against the claimed base.
+- The replay reproduces every manifest hash and every file under `proposed-files/`.
+- §3.1 is byte-identical, and the run-guard parser returns the same 7 entries and window.
+- No original capability value, changelog entry or profile line is altered.
+- All nine r2 findings are addressed.
+
+It is still not clearable, for four reasons:
+
+1. **G-1. The package names its content author as the OpenAI Codex lane.**
+   - Codex is not an eligible Role 12 content writer.
+   - It is also the reviewer that current §5 requires for this exact PR.
+   - §14.4 forbids an agent reviewing content it produced.
+   - As authored, the transition cannot be completed compliantly.
+2. **G-2. Adoption has no defined mechanism.** The text makes option (b) and the named exceptions "proposals until the operator adopts", but never says what the adoption record is. After merge, routes would stay ambiguous.
+3. **G-3. Four files fail Prettier.** CI's format check would fail, and any reformatting by the placer would break the hash binding.
+4. **G-4 and G-5. Structural faults.**
+   - New content sits after the documents' end markers.
+   - Binding text keeps "pending" and "prospective" values that become false at merge.
+
+## 2. Reviewed evidence
+
+**Package.** `C:\Users\joelg\Documents\Codex\2026-10-19\referenced-chatgpt-conversation-this-is-an\outputs\MGPL-governance-amendment-package`, staged read-only. SHA-256 prefixes:
+
+| File | SHA-256 prefix |
+|---|---|
+| `edit-blocks.json` | `6fda90a8` |
+| `MGPL-governance-amendment-edit-blocks.md` | `02e1806c` |
+| `manifest.json` | `90a61a67` |
+| `MGPL-governance-issue-body-draft.md` | `fe0676d5` |
+| `MGPL-package-verification.md` | `63c71671` |
+| `README.md` | `cb4e4be3` |
+
+The 16 proposed files match the manifest `after_sha256` values.
+
+**Revisions.**
+- **Claimed base:** `e2e709da…`, the same in the JSON and the manifest.
+- **Remote `develop`:** `e2e709da…`, by `git ls-remote` at 11:3x EDT. No drift.
+- **Local `C:\dev\MGPL`:** checked out on `develop` at `84f5fd38…`. Its cached `origin/develop` is a stale `a1341932…`. It has a pre-existing modification to `DOCS/doc_audit_log.md` and an untracked `Claude outputs/`. None of this was used, and the package's statement about it is accurate.
+
+**Issues.** The newest issue is still #210, so no governance issue has been filed. #139 (AI-070) is open.
+
+**Checks executed**, in a disposable copy (`git archive` of the base, outside every checkout):
+
+| Check | Result |
+|---|---|
+| Base-file hashes against `manifest.before_sha256` | 11/11 match |
+| Replay of `edit-blocks.json` | 40/40 applied, each replacement matched exactly once, all 5 CREATE targets absent |
+| Replay against manifest and `proposed-files/` | 16/16 identical |
+| §3.1 section, raw bytes | Identical; base and head both LF-only |
+| `parseAuthorizations` | `7 {"end_ms":1793923200000,"total_usd":275,"stop_line_usd":20} #117,#185,#192,#158,#199,#207,#208`, the same before and after |
+| `check-agents-md-integrity.js` | OK: 1,067 lines, 16 sections |
+| JSON parse of the 10, 11 and 13 files | OK |
+| `11-agent-capability-matrix.json` flattened diff | No pre-existing value changed; only additions |
+| `13-change-log.json` | All 3 versions and 21 findings unchanged; 1 version appended |
+| Profiles 17–19 | Each original file is an exact byte prefix of the new one |
+| Archived 20, r1 and r2 | Byte-identical to my originals (`f3d398d5`, `695a248f`, `2aba10bd`) |
+| Roster against 04 | Agents agree at every level. The only differences are pre-existing naming ones: Role 2 and Role 11 "Claude Desktop (Opus 5.5)" |
+| Markdown edit blocks against JSON | Blocks 01 and 07 differ only by trailing blank lines. Block 37's readable copy is truncated (see G-11) |
+| Prettier 3.9.6 with the repo's `.prettierrc.json` | **4 files fail** (G-3) |
+
+**Not run:**
+- the full MGPL gate chain (Windows, Doppler; it is a placement prerequisite);
+- CI and Playwright;
+- cspell, which does not cover `DOCS/`;
+- verification of the DeepSeek source against its original. Only the package's normalized copy and its claimed pre-normalization hash `92fd1ae7…` were available.
+
+## 3. Findings, by severity
+
+### G-1. The content author is Codex: an ineligible author, and in conflict with the mandatory transition reviewer
+
+**Critical.** Blocks authoring clearance, placement and merge.
+
+- **Where:**
+  - `MGPL-governance-amendment-edit-blocks.md` line 5: "Author: OpenAI Codex lane continuing the ChatGPT proposal".
+  - `integration/21-…` line 4: "Content author: OpenAI Codex lane".
+  - The issue-body provenance: "Proposed by: OpenAI Codex lane".
+- **Rules:**
+  - Current 04 Role 12 (Document Writer, Content) is P Claude Desktop, A ChatGPT, C M365 (bounded review only), E Cline × ChatGPT. Codex holds no Role 12 slot, before or after the amendment.
+  - §14.4 (line 946): an agent that produces content must not be the agent assigned to review or place it.
+  - §5 step 4 requires **Codex** `/review` for this PR, and offers no alternative reviewer.
+- **Consequence:** The only reviewer the current rules allow for the transition PR is the agent that wrote the content. That review would be self-review. No other §5 reviewer exists until the amendment itself is effective, so the transition cannot complete. DeepSeek's own correction 5 points the same way: the reviewer must be one "who did not author or place it".
+- **Correction:**
+  1. An eligible Role 12 lane must author or substantively re-author the content of record. Operator intent is ChatGPT. It may use this package as reviewed source material, but under the package's own §14.4 text, copying or relabeling does not change authorship. Whether ChatGPT's ownership is substantive is the operator's call. The amount of Codex text it keeps bears on whether Codex can then honestly review it.
+  2. Record the actual author truthfully in all three places: the edit-blocks header, integration/21, and the issue-body provenance.
+  3. If Codex authorship is kept, the transition cannot use Codex as reviewer, and current rules supply no substitute. Placement would wait for an operator decision outside the current text.
+
+### G-2. Adoption of option (b) and the named §14.3 exceptions has no defined record
+
+**High.** Blocks route activation; correct before clearance.
+
+- **Where:**
+  - AGENTS.md §14.2, last paragraph: "proposals until the operator adopts this amendment".
+  - The §16 effect paragraph: "after … approval of option (b) and named correlated-failure exceptions".
+  - Every 04 exception line: "operator adoption required".
+  - The 04 "Prospective amendment" section.
+  - `10-pace-roster.json` `proposed_amendment.status` and `exceptions`.
+  - The 13 entry's `status`.
+- **Rules:** §14.3 (an exception must be recorded); §3.3 Precedence (authority comes only by amendment).
+- **Consequence:** After merge, the binding text still says "proposal until adopted" without naming what adoption is. An agent cannot tell whether option (b) routes or a correlated substitution are active. The package's own rule ("an unaccepted exception leaves the affected substitution unavailable") would then make most implementer slots unavailable.
+- **Correction:** Define one record, for example: "the operator's adoption comment on the governance issue, citing the final package SHA-256, posted before merge; the merge of this amendment completes adoption." Then write every affected sentence so that it is true after merge, with the issue number filled in (G-5).
+
+### G-3. Four files are not Prettier-clean
+
+**High.** Blocks placement and merge.
+
+- **Where:**
+  - `AGENTS.md`: 8 lines change, in the §16 record table and the extra blank lines at 988 and end of file.
+  - `04-PACE-Role-Matrix-v1.0.md`: 168 lines change, all the unpadded tables.
+  - `assessment/RECHECK-r1-…` and `RECHECK-r2-…`.
+- **Rule:** CI's lint-test job runs `npm run format:check`, which applies `prettier --check` to changed `**/*.md` and `**/*.json` (`scripts/check-format-changed.js` lines 12–13). PR #209 needed exactly this fix.
+- **Consequence:**
+  - Placed as authored, the PR fails CI.
+  - If the placer runs `prettier --write`, the placed bytes no longer match the reviewed hashes, and the formal audit cannot bind to the approved source.
+  - I confirmed separately that §3.1 stays identical after Prettier.
+- **Correction:** Ship Prettier-formatted text (prettier 3.9.6, repo config) with new manifest hashes. For r1 and r2, archive the formatted copies and record both hashes as whitespace-only normalization, as the package already does for the DeepSeek source.
+
+### G-4. New content placed after the document end markers
+
+**Medium.** Blocks authoring clearance.
+
+- **Where:**
+  - AGENTS.md Block 10 appends `### Prospective amendment record — 2026-10-19`, with a second, separate change table, *after* `**End of AGENTS.md v1.2.**`.
+  - 04 Blocks 25–26 put Role 17 and `## Prospective amendment` after `**End of PACE Role Matrix v1.0.**`.
+- **Rule/precedent:** PR #209 audit Finding 1 required the new row to be part of the §16 table.
+- **Correction:**
+  - Append one row to the existing §16 table, and put any effect paragraph inside §16 above the end marker.
+  - In 04, insert Role 17 and the prospective section before the end marker.
+  - Update the 04 header (still "v1.0, October 1, 2026") with an amendment line.
+
+### G-5. Binding text carries values that become false at merge
+
+**Medium.** Blocks authoring clearance.
+
+- **Where:**
+  - The §16 record's date cell, "Effective merge pending".
+  - The 13 entry, `status: "prospective; … merge pending"`.
+  - The roster's `proposed_amendment.status`.
+  - Every 11 addendum: `status: "prospective until effective merge"`.
+  - The addenda to profiles 17–19: "Prospective … Effective only at operator-approved merge".
+- **Consequence:** Each of these stays wrong after merge unless another governance PR edits it.
+- **Correction:** Use wording that stays true after merge. For example: "Effective at the operator's merge into `develop` of the PR for #<issue>. The merge SHA, adoption record and evaluation end date are recorded on #<issue>." Keep `issue_ref`/`work_id` as the only issue-dependent fields; they are filled in the final package. Use the placement date in the §16 Date cell, as earlier amendment rows do.
+
+### G-6. Issue-filing path: #139 is an open near-match
+
+**Medium.** Blocks filing by an agent lane, not authoring.
+
+- **Where:** Issue-body Evidence, "#139 (reviewer-role record) … overlap must be checked".
+- **Rule:** §10.1 condition 5: a near-match is reported, not filed. #139 (AI-070, open) has acceptance criteria for "Reviewer (code and security)" and for the correlated-failure exceptions and slot metadata. This amendment delivers part of each.
+- **Consequence:** An agent filer will hit #139 and must stop.
+- **Correction:** The body should state the relation explicitly: partial overlap; #139 stays open and is not closed by this change; which of its criteria are advanced. The operator decides whether to file the issue himself.
+
+The issue-body draft is otherwise sound:
+- it follows the §10.2 order;
+- its provenance is honest and invents no work ID;
+- it correctly refuses to write `_staging\issues\`.
+
+Staging this package is not the same as creating an eligible staged issue body. The operator must still place and name that file.
+
+### G-7. Allowance-exhaustion stalls are recorded only as "load risk"
+
+**Medium.** Affects route activation; not blocking.
+
+Route tests on the replayed text:
+
+- **Claude allowance exhausted:**
+  - Role 14 P (Claude Desktop) and E (Claude Code) fall together.
+  - A ChatGPT-authored WUD or document then has no eligible auditor.
+  - Option-(b) WUD authoring also stops.
+  - Net effect: **every** implementation path waits.
+- **ChatGPT Plus exhausted:**
+  - The option-(b) Primary (Cline × ChatGPT or Codex) is unavailable.
+  - So is the precondition for the Claude Code fallback (ChatGPT re-authorship), and Role 17 A.
+- **Logical deadlocks:** none. The text says "work waits", and no route claims independence it lacks.
+- **Correction:** Add one cross-role consequence note to the 04 prospective section, and make it an evaluation metric.
+
+### G-8. §5 step 5 requires WUD provenance on every PR
+
+**Medium.** Non-blocking.
+
+Fixes, governance amendments and ledger PRs have no WUD. Add: "or `none`, with the reason."
+
+### G-9. The prompt-template insertion splits the Context section
+
+**Low-Medium.** Non-blocking.
+
+05 Blocks 33–34 insert `## Assigned lane and work-unit provenance` between "You are executing…" / "You are producing…" and the "[One paragraph…]" placeholder, in both templates. Move it after `## Environment`. The researcher template also carries implementer, WUD and PR fields that do not apply to a research brief; trim them.
+
+### G-10. Archive standing and the system-of-record list
+
+**Low-Medium.** Non-blocking.
+
+- **Superseded content unflagged:** assessment/20 (my original review) is archived verbatim. It contains the withdrawn B-2 and a §8 placement prompt with *Claude Code as placer*, which is superseded by r1/r2 and the transition. integration/21 notes B-2 but not the superseded placement prompt.
+- **§15.2 incomplete:** only integration/21 is added. The four assessment files are not listed.
+- **Naming:** `RECHECK-*` and `DeepSeek-…txt` break the numbered `NN-` convention.
+- **Misleading name:** integration/21 is named "Change-Request-2026-10-18", but it holds the 2026-10-19 amendment record and says it does not reproduce decisions A–I. So the operator's A–I decision record (request SHA-256 `d18c7f49…`) is placed nowhere.
+- **Correction:**
+  - List every new file in §15.2, with its standing.
+  - Note the superseded §8 prompt in integration/21.
+  - Either place the original request as the A–I record, or rename 21.
+
+### G-11. The readable Markdown misrenders Block 37
+
+**Low.** Non-blocking, because the JSON is authoritative.
+
+The archived review's inner four-backtick fence closes the outer fence early. The readable copy shows 67,159 of 76,873 characters. Blocks 01 and 07 drop trailing blank lines. Use a longer outer fence.
+
+### G-12. Minor points
+
+**Low.**
+
+- **§14.4 "Transition" bullet:** this becomes permanent binding text about a one-time event; move it to §16 or integration/21.
+- **Roster historical values:** the roster nulls these, which are kept in 11 except "Max (5x)":
+  - the historical Prompt Author slot values (Opus 5.5/xhigh/Max (5x); GPT-5.6 Sol/High/Plus; deepseek-v4-pro);
+  - the "confirmed via retest" notes.
+
+  Say so in the 13 entry.
+- **Antigravity Frontend E:** the removal of its slot ("conditional on browser automation") is only implied. State it in the §16 or 13 summary.
+
+## 4. Disposition of earlier findings
+
+| ID | Status | Note |
+|---|---|---|
+| D-1 Claude Code fallback vendor conflict | **Resolved** | Roles 3/5/6/7 C need ChatGPT authorship or re-authorship, renewed audit and Codex review; otherwise unavailable. CODE_REVIEW_WORKFLOW says changing the reviewer does not cure the conflict |
+| D-2 Unapproved removals | **Resolved** | Roles 1 (M365 C), 9, 10, 11, 13 and 16 preserved; DeepSeek slots marked inactive |
+| D-3 Full PACE form | **Resolved in content** | Placement fault in G-4 |
+| D-4 Auditor wording, Claude Code E | **Resolved** | Non-Anthropic only; E kept; shared-account exception named |
+| D-5 Exact text | **Resolved** | Replay is exact. Formatting in G-3 |
+| D-6 Claude Desktop load | **Partly** | Recorded as load risk; full stall consequence in G-7 |
+| D-7 Paid execution | **Resolved** | §3.2: operator controls settings; lanes stop and report; grants nothing; consistent with §3 table, §3.3 and the §3.1 parser boundary |
+| D-8 Stale profile line | **Resolved** | 17 addendum; original kept |
+| D-9 Role 2 pending | **Resolved** | |
+| B-1 Issue | **Pending, correctly** | No identifier invented |
+| B-2 Chat exception | **Withdrawn (r1); stays withdrawn** | |
+| DeepSeek F-02 / G-01 (scoped auditor exception) | **Disagree** | Same reasoning as r1: the §14.4 exception clause attaches to the vendor rule, not to the slot annotation, and §3.3 Precedence routes authority through amendment. The package correctly gives it no force |
+| DeepSeek F-03 (transition reviewer must not have authored or placed) | **Agree. Now applies to Codex** | G-1 |
+| R-10 effective point | Improved | Merge-stable wording still needed (G-5) |
+| R-11 independence record | Improved | Adoption mechanism still needed (G-2) |
+| R-19 shared allowance | Open | G-7 |
+
+**Requirements confirmed as met:**
+- Role 13 preserved.
+- Role 14 E kept, with its restriction and exception.
+- Option (b) is framed as a proposal.
+- Gemini history (3.1 Pro chat, Cline × Vertex 2.5 Pro) preserved.
+- Antigravity is Gemini-only and model- and task-specific: Argon unqualified; Database excluded; Frontend, DevOps and Cloud need qualification.
+- The Codex runtime caveat is kept.
+- DeepSeek is inactive, and no ceiling, expiry, balance or billing observation is invented.
+- Reserved Actions, §10, the gates, stale-review rules and operator merge are unchanged.
+- The review workflow keeps doctor/gates, P0/P1, lower-priority handling, re-review, the PR command, the fallback ladder, PR-posted provenance and SHA binding. It adds a review of every new head.
+- The transition explicitly cannot authorize its own audit or review rule.
+
+## 5. Readiness
+
+**1. Is the authored text complete and suitable for the next independent-review stage?**
+
+**No, but close.** In content it is complete and mechanically exact. It needs one author revision covering G-1 to G-5. G-6 to G-12 are recommended in the same pass. The next revision can be the final one if:
+- authorship is resolved by an eligible Role 12 lane;
+- the adoption record is defined;
+- the files are Prettier-clean;
+- the end-marker placement is fixed;
+- the wording is merge-stable.
+
+**2. Is the package currently eligible for mechanical placement?**
+
+**No.** Apart from the defects, its own prerequisites are unmet: no issue or work ID, no adoption record, no final hashed revision. It does block placement by itself: the header, README and verification all say "not authorized for mechanical placement". The placer is forbidden to fill pending values.
+
+## 6. Remaining prerequisites
+
+**Defects in the authored package** (author revision):
+- G-1 eligible content author, recorded truthfully;
+- G-2 adoption record;
+- G-3 Prettier;
+- G-4 end markers;
+- G-5 merge-stable wording;
+- recommended: G-6 to G-12.
+
+**Intentionally pending** (not defects):
+- the issue number, work ID, branch and PR references;
+- the operator's adoption of option (b), the changed preferences and the named exceptions, recorded as G-2 defines;
+- the operator-placed, named staged issue body, then a compliant filing with near-match handling for #139, or filing by the operator himself.
+
+**After placement:**
+- Cline × ChatGPT Subscription places at Role 13 C, from a prompt written by another party;
+- the full gate chain passes on the placed head, with `.mgpl/gate-evidence.json`;
+- Claude Code performs the formal Role 14 E document audit of the placed head;
+- Codex performs the §5 review of the same head, unless G-1 is resolved some other way;
+- both are renewed after any new commit;
+- the operator merges, then records the merge SHA and evaluation dates;
+- promotion to `main` stays separate.
+
+No file was changed, and no issue, commit, push, merge or billing change was made. This review is advisory and grants no approval.

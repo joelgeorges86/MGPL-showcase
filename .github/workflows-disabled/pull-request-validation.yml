@@ -1,0 +1,173 @@
+name: Pull Request Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  lint-test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # ESLint and Prettier check the files this pull request changes
+      # (scripts/lib/changed-files.js), so the checkout needs full history.
+      MGPL_LINT_BASE: ${{ github.event.pull_request.base.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: AGENTS.md integrity (rulebook truncation guard)
+        run: npm run check:agents
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier check
+        run: npm run format:check
+
+      - name: TypeScript verification
+        run: npx tsc --noEmit
+
+      - name: Client script syntax check
+        run: npm run test:client
+
+      - name: Spell-check gate
+        run: npm run test:spell
+
+      - name: Unit tests (Vitest)
+        run: npm run test:unit
+
+      - name: Master gate suite (S1-S4 security + Q1-Q5 quality; no Playwright)
+        run: bash gates/run-all.sh
+
+  changes:
+    name: Detect E2E-relevant changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      e2e: ${{ steps.classify.outputs.e2e }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # E2E is required unless this is a pull request into develop and every
+      # changed file is under DOCS/ or is a Markdown file outside src/, public/
+      # and test/ (AGENTS.md section 4). The application does not serve or read
+      # those files, and the E2E specs do not read them. Renames are listed as a
+      # deletion plus an addition, so moving a code file into DOCS/ still
+      # requires E2E. An empty list requires E2E. If this step fails, the
+      # Playwright E2E Suite check fails.
+      - name: Classify changed files
+        id: classify
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          changed="$RUNNER_TEMP/changed.txt"
+          git -c core.quotePath=false diff --name-only --no-renames "$BASE_SHA...$HEAD_SHA" > "$changed"
+          total=$(awk 'NF { n++ } END { print n + 0 }' "$changed")
+          other=$(awk 'NF && !/^DOCS\// && !(/\.md$/ && !/^(src|public|test)\//) { n++ } END { print n + 0 }' "$changed")
+          if [ "$BASE_REF" != "develop" ] || [ "$total" = "0" ] || [ "$other" != "0" ]; then
+            e2e=true
+          else
+            e2e=false
+          fi
+          echo "Base: $BASE_REF; changed files: $total; outside the docs rule: $other; E2E required: $e2e"
+          echo "e2e=$e2e" >> "$GITHUB_OUTPUT"
+
+  test-e2e:
+    name: E2E shard ${{ matrix.shard }} of ${{ strategy.job-total }}
+    needs: [lint-test, changes]
+    if: needs.changes.outputs.e2e == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium (Playwright)
+        run: npx playwright install --with-deps chromium
+
+      - name: Create test database directory
+        run: mkdir -p data
+
+      # Each shard runs on its own runner with its own seeded ./data/test_mgpl.db,
+      # still with one worker (AGENTS.md section 4, gate 5). The shard count is
+      # the length of the matrix list above. --forbid-only fails the run if a
+      # test.only was left in, and the github reporter annotates each failing
+      # test on the pull request.
+      - name: Run Playwright E2E shard (one worker, seeded test DB on this runner)
+        run: npm run test:e2e -- --shard=${{ matrix.shard }}/${{ strategy.job-total }} --forbid-only --reporter=list,github
+
+      - name: Upload Playwright artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-shard-${{ matrix.shard }}
+          path: test-results/
+
+  # The required status check. It passes when E2E was not required, or when
+  # every shard passed. It fails in every other case, including a failed,
+  # cancelled or skipped shard job when E2E was required.
+  e2e-result:
+    name: Playwright E2E Suite
+    needs: [changes, test-e2e]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check the E2E result
+        env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          E2E_REQUIRED: ${{ needs.changes.outputs.e2e }}
+          SHARDS_RESULT: ${{ needs.test-e2e.result }}
+        run: |
+          echo "changes=$CHANGES_RESULT e2e-required=$E2E_REQUIRED shards=$SHARDS_RESULT"
+          if [ "$CHANGES_RESULT" != "success" ]; then
+            echo "::error::Change detection did not succeed, so E2E cannot be skipped."
+            exit 1
+          fi
+          if [ "$E2E_REQUIRED" = "false" ]; then
+            echo "Only files covered by the docs rule changed. E2E was not required (AGENTS.md section 4)."
+            exit 0
+          fi
+          if [ "$SHARDS_RESULT" = "success" ]; then
+            echo "All E2E shards passed."
+            exit 0
+          fi
+          echo "::error::E2E was required, but the shard job result is $SHARDS_RESULT. A skipped result means an earlier job failed."
+          exit 1

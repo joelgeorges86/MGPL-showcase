@@ -1,0 +1,40 @@
+{
+  "planActMode": "plan",
+  "alwaysAllowReadOnly": true,
+  "alwaysAllowWrite": false,
+  "writeScopes": [
+    "src/**",
+    "test/**",
+    "public/**",
+    "scripts/**",
+    "gates/**",
+    ".agents/**",
+    ".vscode/**",
+    "DOCS/**",
+    "*.json",
+    "*.md"
+  ],
+  "readScopes": ["**/*"],
+  "executeWhitelist": [
+    "npm run doctor",
+    "npm run dev",
+    "doppler run -- npm run dev",
+    "npm run build",
+    "npm run test:types",
+    "npx tsc --noEmit",
+    "npm run test:client",
+    "npm run test:spell",
+    "npm run test:unit",
+    "npm run test:e2e",
+    "npx playwright test --workers=1",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File .agents/skills/mgpl-gate-runner/scripts/run-gates.ps1",
+    "git status",
+    "git diff",
+    "git log",
+    "node --version",
+    "npm --version",
+    "npx --version",
+    "doppler --version"
+  ],
+  "customInstructions": "AGENTS.md is the canonical source of truth when present. Use Plan Mode for analysis and Act Mode for approved edits. Before non-trivial work, run `npm run doctor` to verify MCP, extension, shell, Doppler, Node, and gate paths. Start local development only with `doppler run -- npm run dev`. Before claiming completion or PR readiness, run the canonical gate helper: `powershell -NoProfile -ExecutionPolicy Bypass -File .agents/skills/mgpl-gate-runner/scripts/run-gates.ps1`. The gate helper runs doctor, TypeScript, client syntax, spelling, unit tests, Playwright with exactly one worker, and `gates/run-all.sh` via explicitly resolved Git Bash. Do not run bare `bash gates/run-all.sh`, do not run bare `npm run dev`, do not add Prisma, and do not deploy, merge to main, or perform production writes."
+}

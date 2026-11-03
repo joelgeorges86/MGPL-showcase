@@ -1,0 +1,343 @@
+name: Deploy Preprod
+
+# MGPL v1.1 - Preprod CI/CD Pipeline
+#
+# Triggers on every push/merge to `develop`. Four sequential jobs:
+#   1. lint-test    - npm ci, tsc --noEmit, client script syntax, cspell,
+#                     unit tests (Vitest), then the master gate suite
+#                     (Security S1-S4 + Quality Q1-Q5 via gates/run-all.sh;
+#                     no Playwright).
+#   2. test-e2e     - installs Chromium and runs the full Playwright E2E suite
+#                     in four shards on separate runners. Each shard runs
+#                     serially (one worker) against its own seeded
+#                     ./data/test_mgpl.db.
+#   3. build-push   - multi-stage Docker build, pushed to GHCR tagged with
+#                     both the commit SHA and the floating `preprod` tag.
+#   4. deploy       - joins the Tailnet via a Tailscale OAuth API client, SSHes to
+#                     the shared test/preprod node over its Tailscale IP, copies
+#                     this commit's Compose file, pulls the SHA-tagged GHCR image,
+#                     and recreates only `app` in the mgpl-preprod project.
+#                     In the same SSH session, polls /healthz inside the app
+#                     container for HTTP 200 (30 attempts, 5s between failures).
+#                     No new host port is published. The host needs no
+#                     registry login of its own: each run logs in with the
+#                     job's GITHUB_TOKEN, sent over SSH on standard input, into
+#                     a temporary Docker config that the host script's exit
+#                     trap removes (not after SIGKILL or a host failure). After a passing health check the deployed image is
+#                     also tagged `preprod` on the host, so a restart by hand
+#                     without IMAGE_TAG uses it (WU-010, #80).
+#
+# build-push is gated on BOTH lint-test and test-e2e so a failing unit suite,
+# gate check, or E2E suite can never reach preprod.
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  PREPROD_TAILSCALE_HOST: 100.112.63.68
+
+jobs:
+  lint-test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # ESLint and Prettier check the files this push changes
+      # (scripts/lib/changed-files.js), so the checkout needs full history.
+      MGPL_LINT_BASE: ${{ github.event.before }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Prettier check
+        run: npm run format:check
+
+      - name: TypeScript verification
+        run: npx tsc --noEmit
+
+      - name: Client script syntax check
+        run: npm run test:client
+
+      - name: Spell-check gate
+        run: npm run test:spell
+
+      - name: Unit tests (Vitest)
+        run: npm run test:unit
+
+      - name: Master gate suite (S1-S4 security + Q1-Q5 quality; no Playwright)
+        run: bash gates/run-all.sh
+
+  test-e2e:
+    name: Playwright E2E Suite (shard ${{ matrix.shard }} of ${{ strategy.job-total }})
+    needs: lint-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium (Playwright)
+        run: npx playwright install --with-deps chromium
+
+      # build-push needs test-e2e, which succeeds only when every shard passes.
+      # --forbid-only fails the run if a test.only was left in.
+      - name: Run Playwright E2E shard (one worker, seeded test DB on this runner)
+        run: npm run test:e2e -- --shard=${{ matrix.shard }}/${{ strategy.job-total }} --forbid-only --reporter=list,github
+
+      - name: Upload Playwright artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces-shard-${{ matrix.shard }}
+          path: test-results/
+
+  build-push:
+    name: Build & Push Docker Image
+    needs: [lint-test, test-e2e]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      image_name: ${{ steps.image.outputs.name }}
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Normalize image name (GHCR requires lowercase)
+        id: image
+        run: echo "name=$(echo '${{ env.IMAGE_NAME }}' | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ steps.image.outputs.name }}:preprod
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy over Tailscale
+    needs: build-push
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # WU-010 (#80): fail early, and by name, when a deploy setting is empty.
+      # Lengths only; no value is printed.
+      - name: Check the deploy settings
+        env:
+          SSH_USER: ${{ vars.STAGING_SSH_USER }}
+          SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+        run: |
+          missing=0
+          if [ -z "$SSH_USER" ]; then echo "::error::vars.STAGING_SSH_USER is empty."; missing=1; fi
+          if [ -z "$SSH_KEY" ]; then echo "::error::secrets.STAGING_SSH_KEY is empty."; missing=1; fi
+          if [ "$missing" -ne 0 ]; then exit 1; fi
+          echo "Deploy settings present."
+
+      - name: Join Tailnet
+        uses: tailscale/github-action@v3
+        with:
+          # OAuth API client (https://tailscale.com/s/oauth-clients) with the
+          # writable `auth_keys` scope. The ephemeral runner node is tagged
+          # `tag:ci`; the OAuth client must be allowed to apply that tag and
+          # the tailnet ACL must permit it to reach the shared test/preprod node.
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      # WU-010 (#80): the action has reported success after a failed join
+      # (2026-09-23, 2026-09-28). Check the join and the SSH port before
+      # deploying. Prints the backend state only, never addresses or names.
+      - name: Check the tailnet connection
+        run: |
+          state=$(tailscale status --json 2>/dev/null | jq -r '.BackendState // "unknown"' || echo unknown)
+          echo "Tailscale backend state: $state"
+          if [ "$state" != "Running" ]; then
+            echo "::error::Tailscale is not running after Join Tailnet (state: $state)."
+            exit 1
+          fi
+          for i in 1 2 3 4 5 6; do
+            # shellcheck disable=SC2016 # $0 expands inside the child shell, by design.
+            if timeout 10 bash -c 'exec 3<>"/dev/tcp/$0/22"' "$PREPROD_TAILSCALE_HOST" 2>/dev/null; then
+              echo "The preprod node's SSH port answers over the tailnet (try $i)."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::The preprod node's SSH port did not answer over the tailnet after 6 tries."
+          exit 1
+
+      - name: Deploy to preprod node via SSH over Tailscale
+        env:
+          STAGING_SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_USER: ${{ vars.STAGING_SSH_USER }}
+          IMAGE_NAME: ${{ needs.build-push.outputs.image_name }}
+          IMAGE_TAG: ${{ github.sha }}
+          # WU-010 (#80): the job's own token, read-only for packages. It
+          # reaches the host only on SSH standard input, never on a command
+          # line or in the host's environment, and it expires with the job.
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$STAGING_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh_opts=(-o StrictHostKeyChecking=accept-new -o BatchMode=yes -o ConnectTimeout=15 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 -i ~/.ssh/id_ed25519)
+          remote="${SSH_USER}@${PREPROD_TAILSCALE_HOST}"
+          errlog="$RUNNER_TEMP/mgpl-ssh-stderr.log"
+          host_re=${PREPROD_TAILSCALE_HOST//./\\.}
+
+          # One ssh or scp stage. Its standard error is printed afterwards with
+          # the node's address and the SSH user masked, never raw.
+          run_stage() {
+            local stage="$1"
+            shift
+            "$@" 2>"$errlog" && { sed -e "s/${host_re}/<host>/g" -e "s/${SSH_USER}@/<user>@/g" "$errlog"; return 0; }
+            local rc=$?
+            sed -e "s/${host_re}/<host>/g" -e "s/${SSH_USER}@/<user>@/g" "$errlog"
+            echo "::error::${stage} failed (exit ${rc})."
+            return "$rc"
+          }
+          # Best effort: remove the copied script if the run never started it.
+          cleanup_remote() {
+            if [ -n "${script:-}" ]; then
+              # shellcheck disable=SC2029 # the path is meant to expand on the runner.
+              ssh "${ssh_opts[@]}" "$remote" "rm -f '$script'" >/dev/null 2>&1 || true
+            fi
+          }
+
+          cat > "$RUNNER_TEMP/mgpl-remote-deploy.sh" <<'REMOTE'
+          #!/usr/bin/env bash
+          # Runs on the preprod host. Arguments: registry, image name, image tag,
+          # registry user. Standard input: one line, the registry token.
+          set -euo pipefail
+          # Cleanup is installed first. It runs on every exit, including after
+          # INT, TERM or HUP; it cannot run after SIGKILL or a host failure.
+          cfg=""
+          cleanup() {
+            if [ -n "$cfg" ]; then rm -rf "$cfg"; fi
+            rm -f "$0"
+          }
+          trap cleanup EXIT
+          trap 'exit 130' INT
+          trap 'exit 143' TERM HUP
+          registry="$1" image_name="$2" image_tag="$3" registry_user="$4"
+          cfg=$(mktemp -d)
+          chmod 700 "$cfg"
+
+          token=""
+          IFS= read -r token || true
+          if [ -z "$token" ]; then
+            echo "No registry token arrived on standard input." >&2
+            exit 1
+          fi
+          # A user-level Compose plugin lives under ~/.docker; keep it reachable.
+          if [ -d "$HOME/.docker/cli-plugins" ]; then
+            ln -s "$HOME/.docker/cli-plugins" "$cfg/cli-plugins"
+          fi
+          printf '%s' "$token" | DOCKER_CONFIG="$cfg" docker login "$registry" -u "$registry_user" --password-stdin >/dev/null
+          token=""
+          echo "Registry login: per-run token, temporary Docker config."
+
+          cd /opt/mgpl
+          export REGISTRY="$registry" IMAGE_NAME="$image_name" IMAGE_TAG="$image_tag"
+          compose=(docker compose -p mgpl-preprod -f docker-compose.preprod.yml)
+          DOCKER_CONFIG="$cfg" timeout 300 "${compose[@]}" pull app
+          "${compose[@]}" up -d --no-deps --no-build --pull never app
+
+          for i in $(seq 1 30); do
+            probe_exit=0
+            response=$("${compose[@]}" exec -T app \
+              wget --server-response --no-verbose --tries=1 --timeout=5 \
+              --max-redirect=0 --spider http://127.0.0.1:4000/healthz </dev/null 2>&1) || probe_exit=$?
+            status=$(printf '%s\n' "$response" | awk '/^[[:space:]]*HTTP\// { code=$2 } END { print code }')
+            status=${status:-000}
+            if [ "$probe_exit" -eq 0 ] && [ "$status" = "200" ]; then
+              echo "Health check passed on attempt $i (HTTP $status)."
+              docker tag "$registry/$image_name:$image_tag" "$registry/$image_name:preprod"
+              echo "Tagged the deployed image as preprod on the host."
+              exit 0
+            fi
+            echo "Attempt $i: HTTP $status (probe exit $probe_exit)."
+            if [ "$i" -lt 30 ]; then
+              sleep 5
+            fi
+          done
+          echo "Health check failed after 30 attempts." >&2
+          exit 1
+          REMOTE
+
+          script=""
+          run_stage "Copy the Compose file" scp "${ssh_opts[@]}" docker-compose.preprod.yml "$remote:/opt/mgpl/docker-compose.preprod.yml" || exit 1
+          run_stage "Create a path for the deploy script" ssh "${ssh_opts[@]}" "$remote" 'mktemp /tmp/mgpl-deploy.XXXXXX' >"$RUNNER_TEMP/mgpl-script-path" || exit 1
+          script=$(head -n 1 "$RUNNER_TEMP/mgpl-script-path")
+          case "$script" in
+            /tmp/mgpl-deploy.*) ;;
+            *)
+              echo "::error::The host returned an unexpected path for the deploy script."
+              exit 1
+              ;;
+          esac
+          if ! run_stage "Copy the deploy script" scp "${ssh_opts[@]}" "$RUNNER_TEMP/mgpl-remote-deploy.sh" "$remote:$script"; then
+            cleanup_remote
+            exit 1
+          fi
+          # shellcheck disable=SC2029 # the arguments are meant to expand on the runner.
+          if ! printf '%s\n' "$GHCR_TOKEN" | run_stage "Deploy on the preprod node" ssh "${ssh_opts[@]}" "$remote" \
+            "bash '$script' '$REGISTRY' '$IMAGE_NAME' '$IMAGE_TAG' '$GHCR_USER'"; then
+            cleanup_remote
+            exit 1
+          fi

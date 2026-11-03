@@ -1,0 +1,266 @@
+{
+  "version": "1.2",
+  "date": "2026-10-01",
+  "tiers": {
+    "prohibited": {
+      "definition": "Never, regardless of who asks, regardless of approval",
+      "operator_involvement": "None — the action cannot be performed",
+      "actions": [
+        {
+          "id": "P-01",
+          "category": "Version control",
+          "text": "Commit, push, or merge to main"
+        },
+        {
+          "id": "P-02",
+          "category": "Version control",
+          "text": "Merge to develop (was suspended; now Prohibited)"
+        },
+        { "id": "P-03", "category": "Version control", "text": "Force push" },
+        {
+          "id": "P-04",
+          "category": "Version control",
+          "text": "Delete any long-lived branch"
+        },
+        {
+          "id": "P-05",
+          "category": "Version control",
+          "text": "Create, modify, or delete a branch rule"
+        },
+        {
+          "id": "P-06",
+          "category": "Version control",
+          "text": "Create, modify, or delete a required status check"
+        },
+        {
+          "id": "P-07",
+          "category": "Version control",
+          "text": "Create, modify, or delete a merge control"
+        },
+        {
+          "id": "P-08",
+          "category": "Credentials",
+          "text": "Read, print, set, rotate, delete, or enumerate a secret value"
+        },
+        {
+          "id": "P-09",
+          "category": "Credentials",
+          "text": "Create, rotate, or widen any credential or token — except operator-provisioned, scoped credentials for read-only repo access when explicitly authorized"
+        },
+        {
+          "id": "P-10",
+          "category": "Credentials",
+          "text": "Hold or use a secret-store browsing tool"
+        },
+        {
+          "id": "P-11",
+          "category": "Credentials",
+          "text": "Print any infrastructure identifier in cleartext"
+        },
+        {
+          "id": "P-12",
+          "category": "Data/production",
+          "text": "Operate against the production database"
+        },
+        {
+          "id": "P-13",
+          "category": "Data/production",
+          "text": "Export production data"
+        },
+        {
+          "id": "P-14",
+          "category": "Data/production",
+          "text": "Access production logs without operator-supplied sanitized excerpts"
+        },
+        {
+          "id": "P-15",
+          "category": "Controls",
+          "text": "Weaken, disable, skip, bypass, or reconfigure any control that blocked work"
+        },
+        {
+          "id": "P-16",
+          "category": "Controls",
+          "text": "Record or report gate evidence for a run that did not execute the recorded gates"
+        },
+        {
+          "id": "P-17",
+          "category": "Controls",
+          "text": "Push a branch carrying an unreverted change to a security control"
+        },
+        {
+          "id": "P-18",
+          "category": "Controls",
+          "text": "Modify the gate chain itself without an approved work unit naming that change"
+        },
+        {
+          "id": "P-19",
+          "category": "Memory",
+          "text": "Hold a persistent memory store containing architecture facts, approvals, or acceptance evidence — versioned repo files excluded"
+        },
+        {
+          "id": "P-20",
+          "category": "Infrastructure",
+          "text": "Provision any infrastructure resource"
+        },
+        {
+          "id": "P-21",
+          "category": "Infrastructure",
+          "text": "Add a domain to an allowlist"
+        },
+        {
+          "id": "P-22",
+          "category": "Infrastructure",
+          "text": "Modify a firewall rule"
+        },
+        {
+          "id": "P-23",
+          "category": "Infrastructure",
+          "text": "Modify a DNS record"
+        },
+        {
+          "id": "P-24",
+          "category": "Tooling",
+          "text": "Install any MCP server, plugin, hook, or extension"
+        },
+        {
+          "id": "P-25",
+          "category": "Tooling",
+          "text": "Enable or activate an MCP server that is present but disabled — exception: enabling a pre-installed, inert, operator-authorized extension is P-A-E"
+        },
+        {
+          "id": "P-26",
+          "category": "Staging",
+          "text": "Write any file under _staging\\issues\\"
+        },
+        {
+          "id": "P-27",
+          "category": "Staging",
+          "text": "Edit the body of an existing GitHub issue — moved to P-A-E"
+        },
+        {
+          "id": "P-28",
+          "category": "Staging",
+          "text": "Delete a branch, worktree, or stash"
+        }
+      ]
+    },
+    "pae": {
+      "definition": "Propose, Approve, Execute — per-action operator approval required",
+      "actions": [
+        {
+          "id": "PAE-01",
+          "category": "Board",
+          "text": "Set priority on a project board item"
+        },
+        {
+          "id": "PAE-02",
+          "category": "Board",
+          "text": "Set work type on a project board item"
+        },
+        {
+          "id": "PAE-03",
+          "category": "Board",
+          "text": "Set backlog state on a project board item"
+        },
+        {
+          "id": "PAE-04",
+          "category": "Board",
+          "text": "Archive or unarchive a project board item"
+        },
+        {
+          "id": "PAE-05",
+          "category": "Issues",
+          "text": "Edit the body of an existing GitHub issue"
+        },
+        {
+          "id": "PAE-06",
+          "category": "Issues",
+          "text": "Close an existing GitHub issue"
+        },
+        {
+          "id": "PAE-07",
+          "category": "Issues",
+          "text": "Reopen an existing GitHub issue"
+        },
+        {
+          "id": "PAE-08",
+          "category": "Issues",
+          "text": "Add or remove labels on an existing GitHub issue"
+        },
+        {
+          "id": "PAE-09",
+          "category": "Issues",
+          "text": "Add or remove assignees on an existing GitHub issue"
+        },
+        {
+          "id": "PAE-10",
+          "category": "PRs",
+          "text": "Close a pull request without merging"
+        },
+        {
+          "id": "PAE-11",
+          "category": "PRs",
+          "text": "Delete a remote feature branch (only the Agent's own feature branches)"
+        },
+        {
+          "id": "PAE-12",
+          "category": "Repo",
+          "text": "Modify a file outside the assigned task's declared scope, if required to complete the task"
+        },
+        {
+          "id": "PAE-13",
+          "category": "Tooling",
+          "text": "Enable a pre-installed, inert MCP server, plugin, or extension"
+        }
+      ]
+    },
+    "permitted": {
+      "definition": "Within scope of an assigned task, no per-action approval required",
+      "actions": [
+        {
+          "id": "PERM-01",
+          "text": "Read any file in the workspace — except secret values and production material"
+        },
+        {
+          "id": "PERM-02",
+          "text": "Run any read-only command — except commands that would read secrets"
+        },
+        {
+          "id": "PERM-03",
+          "text": "Create new files in a scratch or assigned directory"
+        },
+        {
+          "id": "PERM-04",
+          "text": "Modify files within the declared scope of the current task"
+        },
+        {
+          "id": "PERM-05",
+          "text": "Run tests, gates, linters, and type checks"
+        },
+        {
+          "id": "PERM-06",
+          "text": "Push a feature branch (never to main or develop)"
+        },
+        { "id": "PERM-07", "text": "Open a pull request" },
+        { "id": "PERM-08", "text": "Comment on pull requests and issues" },
+        { "id": "PERM-09", "text": "Run gh read operations" },
+        { "id": "PERM-10", "text": "Run git read operations" },
+        { "id": "PERM-11", "text": "Create branches locally" },
+        {
+          "id": "PERM-12",
+          "text": "Delete the Agent's own local scratch branches"
+        }
+      ]
+    }
+  },
+  "pae_workflow": {
+    "format": "PROPOSED ACTION\\n---------------\\nAction: <verb + object>\\nScope: <single item, or explicit batch>\\nRationale: <why this action>\\nReversibility: <how to undo this action>\\nDependencies: <what else is affected>\\nEvidence: <what the operator should inspect before approving>\\nAWAITING: operator approval",
+    "rules": [
+      "One proposal per action. Batching only when explicitly requested.",
+      "No execution before approval. If approval does not come, the proposal sits.",
+      "Execute exactly what was approved. If the approved action differs, re-propose.",
+      "Report completion. Replace AWAITING with EXECUTED and add evidence.",
+      "Stale-approval rule: Approval binds to the exact proposed change and version reviewed."
+    ]
+  }
+}

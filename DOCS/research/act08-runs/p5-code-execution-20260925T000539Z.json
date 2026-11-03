@@ -1,0 +1,48 @@
+{
+  "probe": "p5-code-execution",
+  "evidence_contract": "DOCS/specs/ACT-08-google-cloud-capability-exploration.md",
+  "executed_by": "Principal Operator (operator-run script; the recording agent did not execute this)",
+  "started_at": "2026-09-25T00:05:39.195Z",
+  "argv": ["--run"],
+  "git_head": "a99b840c91cc2607f60b7e329286f0f599bb8d11",
+  "node_version": "v22.23.2",
+  "sdk": {
+    "package": "@google/genai",
+    "version": "2.23.0"
+  },
+  "project": "mgpl-508415",
+  "location": "us-central1",
+  "credential": "Application Default Credentials, not inspected by the script. Record the identity per the runbook.",
+  "model": "gemini-2.5-flash",
+  "endpoint_expected": "https://us-central1-aiplatform.googleapis.com/v1beta1/projects/mgpl-508415/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
+  "rate": {
+    "model": "gemini-2.5-flash",
+    "tier": "Standard (Gemini 2.5 table tabs: Standard | Priority | Flex/Batch)",
+    "unit": "USD per 1M tokens",
+    "verbatim_rows": [
+      "Model | Type | Token Price <= 200K tokens | Price > 200K tokens | Price <= 200K cached input tokens | Price > 200K cached input tokens |",
+      "Gemini 2.5 Flash | Input (text, image, video) | $0.30 | $0.30 | $0.03 | $0.03 |",
+      " | Text output (response and reasoning) | $2.50 | $2.50 | N/A | N/A |"
+    ],
+    "source_url": "https://cloud.google.com/gemini-enterprise-agent-platform/generative-ai/pricing",
+    "read_at": "2026-09-24T22:24:45.622Z"
+  },
+  "recorded_2026_09_17": {
+    "source": "DOCS/research/ACT-08-phase1-results-and-gemini-charter.md, P-5 (operator-executed)",
+    "reported_result": "47.22",
+    "independently_verified": "47.2171",
+    "tokens": {
+      "prompt": 62,
+      "response": 224,
+      "tool_use_overhead": 361,
+      "thinking": 92,
+      "total": 739
+    },
+    "prompt_recorded": false,
+    "values_recorded": false
+  },
+  "finding": "P-5 cannot be rerun faithfully: the 2026-09-17 prompt and its ten playtime values are not recorded in the repository. Pass the original prompt with --prompt-file to capture cost for the same test.",
+  "computed_cost_usd": 0,
+  "exit_status": 3,
+  "finished_at": "2026-09-25T00:05:39.232Z"
+}

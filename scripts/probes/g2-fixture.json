@@ -1,0 +1,34 @@
+{
+  "cases": [
+    {
+      "tranche": "A",
+      "title": "Quarnix Vortex Protocol IX",
+      "provenance": "verified_without_network",
+      "output": {
+        "title": "Quarnix Vortex Protocol IX",
+        "confidenceScore": 0.02,
+        "publisher": null,
+        "releaseDate": null,
+        "steamAppId": null,
+        "studio": null,
+        "tags": null,
+        "sourceCitation": null
+      }
+    },
+    {
+      "tranche": "B",
+      "title": "Barkley, Shut Up and Jam: Gaiden",
+      "provenance": "assumed_absent",
+      "output": {
+        "title": "Barkley, Shut Up and Jam: Gaiden",
+        "confidenceScore": 0.15,
+        "publisher": null,
+        "releaseDate": null,
+        "steamAppId": null,
+        "studio": null,
+        "tags": null,
+        "sourceCitation": null
+      }
+    }
+  ]
+}

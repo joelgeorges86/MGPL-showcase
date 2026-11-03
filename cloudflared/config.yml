@@ -1,0 +1,31 @@
+# MGPL v1.1 - Cloudflare Tunnel Ingress Configuration
+#
+# Routes public hostnames through the Cloudflare Tunnel to the internal Caddy
+# reverse proxy on localhost:2080. TLS terminates at Cloudflare; the origin is
+# plain HTTP on the loopback interface.
+#
+# Setup:
+#   1. Create a tunnel and obtain its UUID + credentials JSON:
+#        cloudflared tunnel create mgpl
+#   2. Place the credentials file at /etc/cloudflared/<TUNNEL_UUID>.json
+#   3. Add DNS routes:
+#        cloudflared tunnel route dns mgpl staging.mgpl.io
+#        cloudflared tunnel route dns mgpl admin.mgpl.io
+#   4. Run: cloudflared tunnel --config /etc/cloudflared/config.yml run mgpl
+#
+# Replace <TUNNEL_UUID> below with your tunnel's UUID (or inject via env).
+
+tunnel: <TUNNEL_UUID>
+credentials-file: /etc/cloudflared/<TUNNEL_UUID>.json
+
+ingress:
+  # MGPL staging API
+  - hostname: staging.mgpl.io
+    service: http://localhost:2080
+
+  # VCM admin service
+  - hostname: admin.mgpl.io
+    service: http://localhost:2080
+
+  # Catch-all: return 404 for any unmatched hostname/path.
+  - service: http_status:404

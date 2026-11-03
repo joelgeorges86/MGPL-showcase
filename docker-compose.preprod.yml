@@ -1,0 +1,77 @@
+# MGPL — Preprod environment Compose stack (shared non-production VPS).
+#
+# Pre-production mirror closest to Production durability. Own app container, own
+# SQLite file (mgpl-preprod.db), own internal port, and a Litestream replication
+# sidecar (mirrors Production's durability). Secrets are injected at runtime by
+# Doppler via `env_file: .env.doppler.preprod`.
+#
+# Bring up:
+#   doppler secrets download --config preprod --format docker --no-file > .env.doppler.preprod
+#   docker compose -p mgpl-preprod -f docker-compose.preprod.yml pull app
+#   docker compose -p mgpl-preprod -f docker-compose.preprod.yml up -d --no-build
+#
+# Local build: temporarily replace app.image below with this block, then run
+# `docker compose -p mgpl-preprod -f docker-compose.preprod.yml up -d --build`:
+#   build:
+#     context: .
+#     dockerfile: Dockerfile
+
+services:
+  app:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-joelgeorges86/mgpl}:${IMAGE_TAG:-preprod}
+    container_name: mgpl-preprod-app
+    restart: unless-stopped
+    # AI-043 / AI-056: shutdown waits for the one SQLite call in progress when the
+    # signal lands (up to that handle's busy timeout: 10 s for db.ts, 5 s for the
+    # others; two calls in the six single-game handlers tracked in #109), then the
+    # 5 s drain, which one call on an unregistered per-request handle (library.ts,
+    # sync.ts) can extend. Loops of per-item writes check for shutdown between
+    # items, so a request's size does not add to that; the one exception,
+    # /api/state/import, stays atomic instead (see src/routes/state.ts).
+    stop_grace_period: 30s
+    env_file:
+      - .env.doppler.preprod
+    environment:
+      - PORT=4000
+      - NODE_ENV=production
+      - DB_PATH=/data/mgpl-preprod.db
+      - DISABLE_CRON=true
+    volumes:
+      - ./data-preprod:/data
+    healthcheck:
+      test:
+        ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  litestream:
+    image: litestream/litestream:0.3
+    container_name: mgpl-preprod-litestream
+    restart: unless-stopped
+    depends_on:
+      - app
+    env_file:
+      - .env.doppler.preprod
+    volumes:
+      - ./data-preprod:/data
+      - ./litestream.preprod.yml:/etc/litestream.yml:ro
+    command: ["replicate", "-config", "/etc/litestream.yml"]
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: mgpl-preprod-caddy
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "127.0.0.1:2082:80"
+    volumes:
+      - ./Caddyfile.preprod:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_logs:/var/log/caddy
+
+volumes:
+  caddy_data:
+  caddy_logs:

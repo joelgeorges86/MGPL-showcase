@@ -1,0 +1,74 @@
+{
+  "name": "MGPL Dashboard",
+  "short_name": "MGPL",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#0ea5e9",
+  "description": "Multi-Platform Gaming Library Manager — offline-first dashboard for your game library, device fleet, deals and backlog.",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/feathericons/feather/master/icons/gamepad.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Wishlist",
+      "short_name": "Wishlist",
+      "description": "View your tracked wishlist and price alerts",
+      "url": "/#/wishlist",
+      "icons": [
+        {
+          "src": "/icons/icon-192.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Backlog",
+      "short_name": "Backlog",
+      "description": "Open your game backlog and session tracker",
+      "url": "/#/backlog",
+      "icons": [
+        {
+          "src": "/icons/icon-192.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Retro Hub",
+      "short_name": "Retro",
+      "description": "Explore the retro preservation hub",
+      "url": "/#/retro",
+      "icons": [
+        {
+          "src": "/icons/icon-192.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

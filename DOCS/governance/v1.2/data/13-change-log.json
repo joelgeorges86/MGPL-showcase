@@ -1,0 +1,140 @@
+{
+  "versions": [
+    {
+      "version": "1.0",
+      "date": "2026-09-29",
+      "summary": "Initial assessment. Nine Agents assessed across three phases."
+    },
+    {
+      "version": "1.1",
+      "date": "2026-09-30",
+      "summary": "28 factual corrections; 4 structural additions; 3 retest resolutions; Cline evidence-discipline finding; corrected Codex shell-execution claim; Auditor independence rule added; correlated-failure model added; slot configuration model added; Emergency definition reconciled."
+    },
+    {
+      "version": "1.2",
+      "date": "2026-10-01",
+      "summary": "Document Writer (Content) Primary and Prompt Author Primary reassigned to Claude Desktop; M365 removed from content-production roles; Gemini exclusion confirmed by second fidelity failure; three new findings (4.21, 4.22, 4.23); two citation corrections (Finding 4.20, Finding 37); test-design note added."
+    },
+    {
+      "version": "1.2",
+      "date": "2026-10-19",
+      "issue_ref": "#139",
+      "work_id": "AI-070",
+      "base": "e2e709da9171adae1dead5d65e20e25744fb5d7c",
+      "effect": "Effective at the operator’s merge into `develop` of the PR for governance issue #139 (work ID AI-070), using the adoption mechanism in AGENTS.md §16. The adoption comment, merge SHA and evaluation end date are recorded on that issue.",
+      "adoption": "The adoption mechanism is the operator’s adoption comment on governance issue #139, posted before merge and citing the SHA-256 of the final authoritative `edit-blocks.json`. The comment explicitly adopts option (b), every changed PACE assignment, and every named correlated-failure exception in 04 §3. The operator-approved merge of that issue’s PR into `develop` makes this amendment effective; the comment alone grants no authority.",
+      "summary": "Writing/audit assignments and bounded engineering PACE amended; Role 17 added; Role 13 retained. Option (b) and each named exception use AGENTS.md §16 adoption. Former Antigravity Frontend Emergency slot conditional on browser automation removed. §3.1 unchanged; §3.2 grants no paid execution.",
+      "history": "All original versions/findings and capability values retained. Original roster values, including Opus 5.5/xhigh/Max (5x), GPT-5.6 Sol/High/Plus, deepseek-v4-pro and confirmed via retest notes, are in 10-pace-roster.json historical_roster_2026_10_01. Original profile lines remain above their dated addenda.",
+      "evidence_record": "DOCS/governance/v1.2/integration/25-Agent-Operating-Model-Integration-2026-10-19.md",
+      "evaluation": "Merge timestamp through merge + 14 days; day 7/day 14 evidence includes blocked-work duration/cause; continue until amended absent operator decision.",
+      "review_standing": "Source reviews are historical/advisory; no approval, formal audit, gate pass or reviewer independence is asserted."
+    }
+  ],
+  "findings": [
+    {
+      "id": "3.1",
+      "title": "Auditor independence breach",
+      "status": "Resolved"
+    },
+    {
+      "id": "3.2",
+      "title": "Missing Reviewer and Specifier roles",
+      "status": "Resolved — Reviewer and Specifier added"
+    },
+    {
+      "id": "3.3",
+      "title": "Correlated failure not modeled",
+      "status": "Resolved — model added"
+    },
+    {
+      "id": "3.4",
+      "title": "Emergency definition contradicts Idle Rule",
+      "status": "Resolved"
+    },
+    {
+      "id": "3.5",
+      "title": "Three-tier Reserved Actions internal contradictions",
+      "status": "Resolved"
+    },
+    {
+      "id": "3.6",
+      "title": "Tier tests do not produce tier assignments",
+      "status": "Resolved — lists authoritative, tests guidance"
+    },
+    {
+      "id": "3.7",
+      "title": "Enforcement behavioral not mechanical",
+      "status": "Partially resolved"
+    },
+    {
+      "id": "3.8",
+      "title": "Placements compare incomparable scores",
+      "status": "Resolved — slot configuration added"
+    },
+    {
+      "id": "3.9",
+      "title": "Slots name products not configurations",
+      "status": "Resolved"
+    },
+    {
+      "id": "3.10",
+      "title": "Authorship unrecorded",
+      "status": "Resolved — author field added"
+    },
+    {
+      "id": "4.1",
+      "title": "Claude Desktop — Document Writer (Placement) disagreement",
+      "status": "Resolved"
+    },
+    {
+      "id": "4.4",
+      "title": "Claude Code — Document Writer (Placement)",
+      "status": "Resolved — promoted to Alternate"
+    },
+    {
+      "id": "4.7",
+      "title": "Antigravity — Backend exclusion",
+      "status": "Resolved — Contingency"
+    },
+    {
+      "id": "4.8",
+      "title": "Antigravity — Database placement",
+      "status": "Resolved — removed"
+    },
+    {
+      "id": "4.13",
+      "title": "Cline — Frontend Primary under-evidenced",
+      "status": "Resolved — retained conditional"
+    },
+    {
+      "id": "4.16",
+      "title": "Codex — Not placed in any role",
+      "status": "Resolved — Discovery Alternate"
+    },
+    {
+      "id": "4.17",
+      "title": "Codex — shell execution works",
+      "status": "Resolved — claim corrected"
+    },
+    {
+      "id": "4.19",
+      "title": "M365 — Auditor Emergency conflict",
+      "status": "Resolved — removed"
+    },
+    {
+      "id": "4.21",
+      "title": "M365 synthesis failure",
+      "status": "Accepted — removed from content-production roles"
+    },
+    {
+      "id": "4.22",
+      "title": "Gemini reformat fidelity failure",
+      "status": "Accepted — remains excluded"
+    },
+    {
+      "id": "4.23",
+      "title": "ChatGPT file persistence gap",
+      "status": "Accepted — remains Alternate with caveat"
+    }
+  ]
+}

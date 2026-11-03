@@ -1,0 +1,82 @@
+{
+  "version": "2026-09-15",
+  "sourcePolicy": "MGPL Joint AI Agent Operating Plan v3.3 section 19.2",
+  "configurationLocation": "C:\\Users\\joelg\\AppData\\Roaming\\Code\\User\\globalStorage\\saoudrizwan.claude-dev\\settings\\cline_mcp_settings.json",
+  "profileSwitching": {
+    "nativeVsCodeProfileSupport": false,
+    "implementation": "Use the canonical Cline VS Code configuration with only the named enabled set for the active work unit.",
+    "isolatedProfiles": "Use separate reviewed configuration copies or Cline CLI --config/data-dir only when a role-specific session is required.",
+    "infrastructureDefault": "disabled"
+  },
+  "profiles": {
+    "implementation": {
+      "enabled": ["fetch"],
+      "conditional": ["playwright", "sqlite"],
+      "disabledByDefault": [
+        "cloudflare-api",
+        "google-bigquery",
+        "google-cloud-storage",
+        "atlassian",
+        "microsoft-learn"
+      ],
+      "neverEnabled": [
+        "filesystem",
+        "memory",
+        "github.com/executeautomation/mcp-playwright",
+        "legacy @modelcontextprotocol/server-github",
+        "MCP_DOCKER"
+      ],
+      "writePolicy": "No database, infrastructure, issue-tracker, or observability writes by default."
+    },
+    "review": {
+      "enabled": ["fetch"],
+      "conditional": ["playwright", "atlassian", "microsoft-learn"],
+      "disabledByDefault": ["sqlite", "cloudflare-api", "google-bigquery", "google-cloud-storage"],
+      "neverEnabled": [
+        "filesystem",
+        "memory",
+        "github.com/executeautomation/mcp-playwright",
+        "legacy @modelcontextprotocol/server-github",
+        "MCP_DOCKER"
+      ],
+      "writePolicy": "Read-only review. Any review publication requires one explicitly approved action."
+    },
+    "research": {
+      "enabled": ["fetch", "microsoft-learn"],
+      "conditional": ["atlassian"],
+      "disabledByDefault": [
+        "sqlite",
+        "playwright",
+        "cloudflare-api",
+        "google-bigquery",
+        "google-cloud-storage"
+      ],
+      "neverEnabled": [
+        "filesystem",
+        "memory",
+        "github.com/executeautomation/mcp-playwright",
+        "legacy @modelcontextprotocol/server-github",
+        "MCP_DOCKER"
+      ],
+      "writePolicy": "Documentation and knowledge retrieval only."
+    },
+    "infrastructure": {
+      "enabled": [],
+      "conditional": ["cloudflare-api", "google-cloud-storage", "google-bigquery"],
+      "disabledByDefault": ["fetch", "sqlite", "playwright", "atlassian", "microsoft-learn"],
+      "neverEnabled": [
+        "filesystem",
+        "memory",
+        "github.com/executeautomation/mcp-playwright",
+        "legacy @modelcontextprotocol/server-github",
+        "MCP_DOCKER"
+      ],
+      "writePolicy": "Read-only preferred. Mutation requires an approved work unit. Provisioning and credential creation remain Principal Operator responsibilities."
+    }
+  },
+  "notes": [
+    "The VS Code Cline extension currently uses one active MCP configuration rather than native role-profile switching.",
+    "Profile definitions are repository-owned policy artifacts; enabling a conditional server requires an explicit reviewed configuration change or isolated session configuration.",
+    "No credential values are stored in this profile document."
+  ]
+}

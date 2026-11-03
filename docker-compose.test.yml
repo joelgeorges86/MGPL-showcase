@@ -1,0 +1,50 @@
+# MGPL — Test environment Compose stack (shared non-production VPS).
+#
+# Independent, disposable integration tier. Own app container, own SQLite file
+# (mgpl-test.db), own internal port. No Litestream (disposable by design).
+# Secrets are injected at runtime by Doppler via `env_file: .env.doppler.test`.
+#
+# Bring up:
+#   doppler secrets download --config test --format docker --no-file > .env.doppler.test
+#   docker compose -p mgpl-test -f docker-compose.test.yml up -d --build
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mgpl-test-app
+    restart: unless-stopped
+    env_file:
+      - .env.doppler.test
+    environment:
+      - PORT=4000
+      - NODE_ENV=staging
+      - DB_PATH=/data/mgpl-test.db
+      - DISABLE_CRON=true
+    volumes:
+      - ./data-test:/data
+    healthcheck:
+      test:
+        ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:4000/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: mgpl-test-caddy
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "127.0.0.1:2081:80"
+    volumes:
+      - ./Caddyfile.test:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_logs:/var/log/caddy
+
+volumes:
+  caddy_data:
+  caddy_logs:

@@ -1,0 +1,307 @@
+{
+  "version": "1.2",
+  "date": "2026-10-01",
+  "agents": {
+    "claude_desktop_opus_5.5": {
+      "vendor": "Anthropic",
+      "model": "Opus 5.5",
+      "effort": "xhigh",
+      "phase_1": {
+        "score": "137/140",
+        "percent": 97.9
+      },
+      "phase_2": {
+        "weighted": "3.25/3.25",
+        "note": "impossible task; scored on process"
+      },
+      "reformat_test": {
+        "verdict": "Excellent",
+        "file_produced": true
+      },
+      "hallucination_depth": 5,
+      "best_roles": [
+        "Prompt Author",
+        "Document Writer (Content)",
+        "Researcher",
+        "Reviewer",
+        "Adversarial Reviewer"
+      ],
+      "not_fit_roles": [
+        "Implementer on chat surface",
+        "Lead/Orchestrator",
+        "Independent Auditor of Claude lanes"
+      ],
+      "known_limitations": [
+        "Memory conflict (Reserved Action — resolved prospectively, existing files remain)",
+        "Shared-identity risk (13 active connectors act as operator)",
+        "Vendor overlap with Claude Code"
+      ]
+    },
+    "chatgpt_plus": {
+      "vendor": "OpenAI",
+      "model": "GPT-5.6 Sol",
+      "effort": "High",
+      "tier": "Plus",
+      "phase_1": {
+        "score": "176/185",
+        "percent": 95
+      },
+      "phase_2": {
+        "score": "75/75"
+      },
+      "reformat_test": {
+        "verdict": "Pass with capability gap",
+        "file_produced": false
+      },
+      "hallucination_depth": 5,
+      "best_roles": [
+        "Researcher",
+        "Specifier",
+        "Document Writer (Placement)",
+        "Document Writer (Content) Alternate"
+      ],
+      "not_fit_roles": [
+        "Implementer (requires Business tier for MCP)",
+        "Independent Auditor of OpenAI lanes"
+      ],
+      "known_limitations": [
+        "No custom MCP connectors on Plus",
+        "Codex context window clamp",
+        "No file persistence in chat surface"
+      ]
+    },
+    "gemini_3.1_pro": {
+      "vendor": "Google",
+      "model": "Gemini 3.1 Pro",
+      "effort": "Extended thinking",
+      "tier": "Google AI Pro",
+      "phase_1": {
+        "score": "121/155",
+        "percent": 78
+      },
+      "phase_2": {
+        "score": "30/60",
+        "status": "Fail"
+      },
+      "reformat_test": {
+        "verdict": "Fail",
+        "failures": ["removed 2 prohibited items", "omitted findings", "added product name"]
+      },
+      "hallucination_depth": "2 → 3 (after correction test)",
+      "best_roles": [],
+      "not_fit_roles": ["All"],
+      "known_limitations": [
+        "Vendor bias — defensive confabulation on Google-related findings",
+        "Fidelity failures in reformat tasks",
+        "Do not use for MGPL work"
+      ]
+    },
+    "m365_copilot_premium": {
+      "vendor": "Microsoft",
+      "model": "Think Deeper (OpenAI o1)",
+      "tier": "M365 Premium (personal, annual)",
+      "phase_1": {
+        "score": "152/165",
+        "percent": 92
+      },
+      "phase_2": {
+        "score": "95/95",
+        "note": "bounded review task"
+      },
+      "governance_synthesis": {
+        "verdict": "Fail",
+        "failures": [
+          "renamed MGPL",
+          "redefined PACE",
+          "fabricated findings",
+          "changed tier structure"
+        ]
+      },
+      "hallucination_depth": 5,
+      "best_roles": ["Bounded review of pasted artifacts"],
+      "not_fit_roles": ["Document Writer (Content)", "Prompt Author", "Any synthesis role"],
+      "known_limitations": [
+        "Synthesis failure — cannot faithfully build on source material",
+        "No local filesystem access",
+        "Cannot save files to disk"
+      ]
+    },
+    "cline_chatgpt_subscription": {
+      "vendor": "OpenAI via Cline harness",
+      "model": "GPT-6.1-Sol",
+      "effort": "XHigh",
+      "phase_1": {
+        "score": "163/165",
+        "percent": 98.8
+      },
+      "phase_2": {
+        "score": "85/85",
+        "raw": "84/85 + bonus"
+      },
+      "frontend_retest": {
+        "score": "50/50",
+        "note": "Playwright passed first-run"
+      },
+      "hallucination_depth": 4,
+      "best_roles": ["Implementer (all specialties)", "GitHub Implementer", "GitHub Analyst"],
+      "known_limitations": [
+        "Evidence-discipline finding — self-disclosed fabricated documentation citations during Frontend retest",
+        "Frontend Primary conditional on citation-discipline follow-up"
+      ]
+    },
+    "cline_deepseek_v4_pro": {
+      "vendor": "DeepSeek via Cline harness",
+      "model": "deepseek-v4-pro",
+      "phase_2": {
+        "score": "85/85",
+        "raw": "81/85 + bonus"
+      },
+      "hallucination_depth": 5,
+      "cost_per_run": "$0.03",
+      "best_roles": ["Implementer (Contingency)", "Fallback when ChatGPT Subscription capped"],
+      "known_limitations": [
+        "Same harness as Primary — no harness-level redundancy",
+        "Documented 94% hallucination rate did not manifest on bounded tasks"
+      ]
+    },
+    "antigravity": {
+      "vendor": "Google",
+      "model": "Gemini 3.8 Flash High",
+      "tier": "Google AI Pro",
+      "phase_1": {
+        "score": "150/155",
+        "percent": 96.8
+      },
+      "phase_2": {
+        "score": "40/40"
+      },
+      "phase_3": {
+        "score": "97/100",
+        "note": "multi-file implementation, 4/4 tests first-pass"
+      },
+      "discovery_retest": {
+        "score": "85/85"
+      },
+      "backend_retest": {
+        "score": "85/85",
+        "tests": "11/11 first-pass"
+      },
+      "hallucination_depth": 5,
+      "best_roles": [
+        "Discovery",
+        "Schema & Architecture Discovery",
+        "Implementer (Backend, Specialized)"
+      ],
+      "known_limitations": [
+        "Rate limits (4-7 day lockout risk)",
+        "Kernel-level sandbox not supported on Windows",
+        "One supporting-detail fabrication in Phase 1"
+      ]
+    },
+    "github_copilot_pro": {
+      "vendor": "GitHub/Microsoft",
+      "tier": "Copilot Pro",
+      "phase_1": {
+        "score": "154/160",
+        "percent": 96.3
+      },
+      "phase_2": {
+        "score": "90/90",
+        "note": "workspace mode"
+      },
+      "phase_3": {
+        "score": "92/95",
+        "note": "GitHub lifecycle"
+      },
+      "hallucination_depth": 4,
+      "best_roles": ["GitHub Implementer", "GitHub Analyst", "Implementer (Cloud)"],
+      "known_limitations": [
+        "gh token currently has ADMIN scope",
+        "Imprecise language in Phase 2 Chat-mode disclosure"
+      ]
+    },
+    "codex": {
+      "vendor": "OpenAI",
+      "model": "GPT-6 Astra",
+      "tier": "Plus",
+      "phase_1": {
+        "score": "201/205",
+        "percent": 97.6
+      },
+      "phase_2": {
+        "score": "25/25",
+        "note": "environment repair"
+      },
+      "retest": {
+        "status": "shell execution confirmed; implementer blocked by Node version"
+      },
+      "hallucination_depth": 5,
+      "best_roles": [
+        "Specifier / Architect (Emergency)",
+        "Discovery (Alternate)",
+        "Adversarial Reviewer (Contingency)"
+      ],
+      "not_fit_roles": ["Implementer (accepted as unverified by operator)"],
+      "known_limitations": [
+        "Node v22.23.2 unavailable in Codex environment",
+        "Over-aggressive output filtering"
+      ]
+    },
+    "claude_code": {
+      "vendor": "Anthropic",
+      "model": "Opus 5.5",
+      "phase_1": {
+        "score": "198/200",
+        "percent": 99
+      },
+      "phase_2": {
+        "score": "50/50"
+      },
+      "retest": {
+        "score": "85/85",
+        "note": "standardized task"
+      },
+      "hallucination_depth": 5,
+      "best_roles": [
+        "Implementer (Alternate, most specialties)",
+        "Document Writer (Placement) Alternate"
+      ],
+      "known_limitations": [
+        "3 self-reported violations across two sessions",
+        "ADMIN-scoped gh and Doppler CLI tokens",
+        "Auto-mode requires operator presence"
+      ]
+    },
+    "deepseek_agent": {
+      "vendor": "DeepSeek",
+      "role": "Independent assessor",
+      "best_roles": [
+        "Document Auditor (recused from own documents)",
+        "Adversarial Reviewer (Primary, excluding own artifacts)"
+      ],
+      "known_limitations": ["Recused from auditing documents it authored"]
+    }
+  },
+  "operating_model_amendment": {
+    "authored": "2026-10-19",
+    "issue_ref": "#139",
+    "work_id": "AI-070",
+    "effect": "Effective at the operator’s merge into `develop` of the PR for governance issue #139 (work ID AI-070), using the adoption mechanism in AGENTS.md §16. The adoption comment, merge SHA and evaluation end date are recorded on that issue.",
+    "adoption": "The adoption mechanism is the operator’s adoption comment on governance issue #139, posted before merge and citing the SHA-256 of the final authoritative `edit-blocks.json`. The comment explicitly adopts option (b), every changed PACE assignment, and every named correlated-failure exception in 04 §3. The operator-approved merge of that issue’s PR into `develop` makes this amendment effective; the comment alone grants no authority.",
+    "history": "Every original agents value remains dated assessment evidence; the following notes qualify current routing without rewriting test outcomes. Historical roster configuration is in 10 historical_roster_2026_10_01.",
+    "notes": {
+      "chatgpt": "Role 1/12 Primary, Role 14 Alternate non-OpenAI-authored only; Role 13 unchanged; no self-placement. Historical persistence caveat and Role 2 pending test remain.",
+      "claude_desktop": "Role 1/12 Alternate; Role 14 Primary non-Anthropic-authored only. Option (b) uses Claude Desktop WUD authorship outside Antigravity qualifications, with required independent audit; Role 2 pending test remains.",
+      "claude_code": "Role 17 Primary; no own implementation/placement review. Role 14 Emergency non-Anthropic-authored only, never own placement. Shared allowance/account with Claude Desktop is CF-AUDIT, adopted through AGENTS.md §16.",
+      "gemini_3_1_pro_chat": "Original chat-surface failures and exclusion retained; they do not erase separately assessed Antigravity qualification.",
+      "cline_google_vertex_gemini_2_5_pro": "Excluded agent inference route; supplied archived review reports 18/85 and fabricated NameError. Distinct from a named §3.1 script calling Vertex.",
+      "antigravity": "Gemini only; Gemini 3.8 Flash High assessed discovery, bounded backend and comparable specialized work only. Database excluded; former Frontend Emergency slot conditional on browser automation removed. Preserve 4–7-day lockout, no Windows kernel sandbox and Phase 1 supporting-detail fabrication. Gemini 4 Argon inherits nothing; current client controls unverified.",
+      "codex": "Selected non-OpenAI-WUD implementation within the Cline × ChatGPT slot only; retain Node/runtime and unverified-implementation caveats, require eligible runtime and full local §4 gate evidence. Role 17 Alternate; never own implementation/placement review.",
+      "cline_chatgpt": "Frontend citation-discipline follow-up remains a condition; no retest claimed. Same slot as designated Codex, not independent backup levels. OpenAI WUD implementation prohibited.",
+      "deepseek": "Execution inactive. No authorization, current balance or billing observation claimed; advisory evidence does not confer Role 14 authority.",
+      "m365": "Bounded review only, no synthesis; actual upstream model must be recorded.",
+      "copilot": "Small, authorized GitHub operations; deterministic operations preferred. Hourly service recovery is not monthly credit replenishment. Actual upstream model must be recorded."
+    },
+    "capacity": "When the shared Claude allowance is exhausted, Role 14 Primary and Emergency fail together, and option-(b) WUD authoring stops. New work that needs either service waits. Work whose WUD is already authored and validly audited may proceed only while its implementation and review lanes remain eligible and available; an exhausted Claude Code review lane may use independent Codex review where permitted. When ChatGPT Plus is exhausted, the option-(b) Primary, the ChatGPT authorship precondition for the Claude Code fallback, and Role 17 Alternate fail. An existing ChatGPT-authored, validly audited WUD does not require fresh authorship solely because of that exhaustion, but still needs an available independent reviewer. No paid route is added. Record blocked-work duration and cause, including authoring, audit, implementation and review delays, on the governance issue as evaluation evidence."
+  }
+}

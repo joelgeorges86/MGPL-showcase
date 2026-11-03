@@ -1,0 +1,59 @@
+{
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "files.associations": {
+    "*.db": "sqlite"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": ["javascript", "typescript"],
+  "cSpell.configPath": "./cspell.json",
+  "playwright.reuseBrowser": true,
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.fontFamily": "Consolas, 'Courier New', monospace",
+  "cSpell.words": [
+    "battlenet",
+    "boxart",
+    "completionist",
+    "gamerpower",
+    "GamerPower",
+    "giveaways",
+    "HLTB",
+    "IGDB",
+    "isthereanydeal",
+    "ITAD",
+    "itad",
+    "itchio",
+    "MGPL",
+    "missable",
+    "noopener",
+    "noreferrer",
+    "NPSSO",
+    "npsso",
+    "playability",
+    "ubisoft",
+    "cheapshark",
+    "Elden",
+    "Witcher",
+    "Baldur's",
+    "Stardew",
+    "GOTY",
+    "mobo",
+    "psus",
+    "lastplayed",
+    "AUTOINCREMENT"
+  ],
+  "files.watcherExclude": {
+    "**/node_modules/**": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

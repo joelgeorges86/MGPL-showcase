@@ -1,0 +1,95 @@
+name: Pull Request Notifications
+
+on:
+  pull_request_target:
+    branches:
+      - main
+      - develop
+    types:
+      - opened
+      - reopened
+      - synchronize
+  workflow_run:
+    workflows:
+      - Pull Request Validation
+    types:
+      - completed
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  notify-pr-processing:
+    name: Notify PR processing
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Post processing notification
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const action = context.payload.action;
+            const pullRequest = context.payload.pull_request;
+            const change = action === 'synchronize'
+              ? 'New commits were pushed and validation restarted.'
+              : 'The pull request was submitted for validation.';
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pullRequest.number,
+              body: [
+                '🔄 **PR validation in progress**',
+                '',
+                change,
+                'I will post another notification when all checks finish.',
+                '',
+                `[View checks](${pullRequest.html_url}/checks)`
+              ].join('\n')
+            });
+
+  notify-validation-result:
+    name: Notify validation result
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Post validation result
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const run = context.payload.workflow_run;
+            const pullRequests = run.pull_requests || [];
+
+            if (pullRequests.length === 0) {
+              core.info('No pull request was associated with this workflow run.');
+              return;
+            }
+
+            const successful = run.conclusion === 'success';
+            const title = successful
+              ? '✅ **PR is ready to merge**'
+              : '❌ **PR validation failed**';
+            const details = successful
+              ? 'All required validation checks passed. Review the PR and push it to merge when approved.'
+              : `Validation finished with conclusion **${run.conclusion}**. Review the failed checks before merging.`;
+
+            for (const pullRequest of pullRequests) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pullRequest.number,
+                body: [
+                  title,
+                  '',
+                  details,
+                  '',
+                  `[View workflow run](${run.html_url}) · [Open pull request](${pullRequest.html_url})`
+                ].join('\n')
+              });
+            }

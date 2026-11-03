@@ -1,0 +1,55 @@
+{
+  "_provenance": {
+    "fixtures": "The 20 fixture texts embedded on 2026-09-17, taken from the keys of fixture-vectors.json in commit 07b460b ('untracked files on cline checkpoint', 2026-09-18), blob 8108e75b6ce3211f18c9dc88ec924691aee64010. At run time the script checks each text against that blob, byte for byte, before sending anything.",
+    "queries_and_expected": "The five queries and their recorded top three, verbatim from DOCS/research/ACT-08-phase1-results-and-gemini-charter.md, P-4 table (operator-executed, 2026-09-17).",
+    "not_recorded_on_2026-09-17": "Embedding task type, and whether fixtures were sent in one request or many. The script uses the SDK default (no taskType) and one request per text, then verifies against the stored vectors."
+  },
+  "model": "text-embedding-005",
+  "dimensions": 768,
+  "reference_blob": "8108e75b6ce3211f18c9dc88ec924691aee64010",
+  "reference_commit": "07b460b",
+  "fixtures": [
+    "Factorio: build automated factories, logistics puzzles, top-down, endlessly expandable",
+    "Celeste: precision platforming up a mountain, story about anxiety, tight controls, pixel art",
+    "Outer Wilds: solar system exploration, 22-minute time loop, knowledge-based progression, no combat",
+    "Return of the Obra Dinn: deduce what happened on a ghost ship, 1-bit visuals, logic puzzles",
+    "Sekiro: samurai action, parry-focused combat, vertical traversal, very difficult",
+    "Rocket League: cars playing football, physics driven, competitive multiplayer, no story",
+    "RimWorld: colony management sim, emergent stories, top-down, brutal failure states",
+    "What Remains of Edith Finch: walk through a family home, short vignettes, no fail state, melancholy",
+    "Doom Eternal: fast first-person shooter, aggressive movement, heavy metal, demon combat",
+    "Slay the Spire: deckbuilding roguelike, climb a tower, card synergies, turn-based",
+    "Stardew Valley: inherit a farm, grow crops, befriend villagers, relaxed pace, pixel art",
+    "Hades: roguelike dungeon crawler, Greek myth, isometric action, narrative between runs",
+    "Hollow Knight: explore a ruined insect kingdom, precise 2D combat, hand-drawn art, punishing difficulty",
+    "Into the Breach: turn-based tactics, tiny grid, perfect information, defend cities from bugs",
+    "Subnautica: underwater survival, alien ocean, crafting, genuine thalassophobia",
+    "Papers Please: immigration inspector, document checking, moral compromise, grim tone",
+    "Disco Elysium: detective RPG, no combat, dialogue driven, unreliable narrator, painted visuals",
+    "Portal 2: first-person physics puzzles, dry humour, test chambers, no combat",
+    "Dark Souls: interconnected medieval world, brutal combat, minimal guidance, heavy atmosphere",
+    "Journey: wordless desert pilgrimage, anonymous multiplayer, short, meditative"
+  ],
+  "queries": [
+    {
+      "query": "games about being sad",
+      "recorded_top3": ["Celeste 0.554", "Edith Finch 0.534", "Journey 0.512"]
+    },
+    {
+      "query": "something hard but fair",
+      "recorded_top3": ["Papers Please 0.497", "Hollow Knight 0.415", "Sekiro 0.402"]
+    },
+    {
+      "query": "no combat, just atmosphere",
+      "recorded_top3": ["Disco Elysium 0.598", "Portal 2 0.587", "Outer Wilds 0.581"]
+    },
+    {
+      "query": "a game I can finish in one sitting",
+      "recorded_top3": ["Journey 0.495", "Outer Wilds 0.492", "Obra Dinn 0.482"]
+    },
+    {
+      "query": "games where failure is part of the story",
+      "recorded_top3": ["RimWorld 0.577", "Edith Finch 0.531", "Hades 0.501"]
+    }
+  ]
+}
